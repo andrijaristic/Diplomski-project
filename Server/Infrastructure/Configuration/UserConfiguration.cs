@@ -23,7 +23,7 @@ namespace Infrastructure.Configuration
             builder.Property(x => x.Role)
                    .HasConversion(
                             x => x.ToString(), 
-                            x => Enum.Parse<UserRole>(x)
+                            x => Enum.Parse<UserType>(x)
                     );
 
             builder.Property(x => x.VerificationStatus)
