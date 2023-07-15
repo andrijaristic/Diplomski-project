@@ -89,7 +89,34 @@ namespace Service
             return _mapper.Map<DisplayUserDTO>(user);
         }
 
+        public async Task<DisplayUserDTO> UpdateUser(UpdateUserDTO updateUserDTO, string username)
+        {
+            User user = await _unitOfWork.Users.Find(updateUserDTO.Id);
+            if (user == null)
+            {
+                throw new UserByIdNotFoundException(updateUserDTO.Id);
+            }
+
+            if (!String.Equals(user.Username, username))
+            {
+                throw new InvalidUserInformationException();
+            }
+
+            ValidateUserUpdate(updateUserDTO);
+
+            user.FirstName = updateUserDTO.FirstName;
+            user.LastName = updateUserDTO.LastName;
+            user.Email = updateUserDTO.Email;
+            user.Country = updateUserDTO.Country;
+            user.PhoneNumber = updateUserDTO.PhoneNumber;
+
+            await _unitOfWork.Save();
+
+            return _mapper.Map<DisplayUserDTO>(user);
+        }
+
         // Validations
+        // TODO: Add proper validations for certain fields (ex. email & phone number) with regex
         private void ValidateNewUser(NewUserDTO newUserDTO)
         {
             ValidateUsername(newUserDTO.Username);
@@ -97,7 +124,18 @@ namespace Service
             ValidateFirstName(newUserDTO.FirstName);
             ValidateLastName(newUserDTO.LastName);
             ValidateEmail(newUserDTO.Email);
+            ValidateCountry(newUserDTO.Country);
+            ValidatePhoneNumber(newUserDTO.PhoneNumber);
             ValidateRole(newUserDTO.Role);
+        }
+
+        private void ValidateUserUpdate(UpdateUserDTO updateUserDTO)
+        {
+            ValidateFirstName(updateUserDTO.FirstName);
+            ValidateLastName(updateUserDTO.LastName);
+            ValidateCountry(updateUserDTO.Country);
+            ValidatePhoneNumber(updateUserDTO.PhoneNumber);
+            ValidateEmail(updateUserDTO.Email);
         }
 
         private void ValidateUsername(string username)
@@ -129,6 +167,22 @@ namespace Service
             if (string.IsNullOrWhiteSpace(lastName))
             {
                 throw new InvalidInputFieldException(nameof(lastName).ToUpper());
+            }
+        }
+
+        private void ValidateCountry(string country)
+        {
+            if (string.IsNullOrWhiteSpace(country))
+            {
+                throw new InvalidInputFieldException(nameof(country).ToUpper());
+            }
+        }
+
+        private void ValidatePhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                throw new InvalidInputFieldException(nameof(phoneNumber).ToUpper());
             }
         }
 

@@ -41,5 +41,13 @@ namespace Web.API.Controllers
             DisplayUserDTO displayUserDTO = await _userService.CreateUser(newUserDTO);
             return CreatedAtAction(nameof(Get), new { id = displayUserDTO.Id }, displayUserDTO);
         }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> Put([FromBody]UpdateUserDTO updateUserDTO)
+        {
+            DisplayUserDTO displayUserDTO = await _userService.UpdateUser(updateUserDTO, User.Identity.Name);
+            return Ok(displayUserDTO);
+        }
     }
 }
