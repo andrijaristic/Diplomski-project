@@ -13,5 +13,6 @@ namespace Domain.Interfaces.Services
         Task<AuthDTO> Login(LoginDTO loginDTO);
         Task<DisplayUserDTO> GetById(Guid id);
         Task<DisplayUserDTO> UpdateUser(UpdateUserDTO updateUserDTO, string username);
+        Task<DisplayUserDTO> ChangePassword(Guid id, ChangePasswordDTO changePasswordDTO, string username);
     }
 }

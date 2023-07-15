@@ -7,6 +7,7 @@ using Domain.Interfaces.Services;
 using Domain.Interfaces.Utilities;
 using Domain.Models;
 using Domain.Models.AppSettings;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using System;
@@ -109,6 +110,33 @@ namespace Service
             user.Email = updateUserDTO.Email;
             user.Country = updateUserDTO.Country;
             user.PhoneNumber = updateUserDTO.PhoneNumber;
+
+            await _unitOfWork.Save();
+
+            return _mapper.Map<DisplayUserDTO>(user);
+        }
+
+        public async Task<DisplayUserDTO> ChangePassword(Guid id, ChangePasswordDTO changePasswordDTO, string username)
+        {
+            User user = await _unitOfWork.Users.Find(id);
+            if (user == null)
+            {
+                throw new UserByIdNotFoundException(id);
+            }
+
+            if (!String.Equals(user.Username, username))
+            {
+                throw new InvalidUserInformationException();
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(changePasswordDTO.OldPassword, user.Password))
+            {
+                throw new InvalidPasswordException();
+            }
+
+            ValidatePassword(changePasswordDTO.NewPassword);
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(changePasswordDTO.NewPassword, BCrypt.Net.BCrypt.GenerateSalt());
 
             await _unitOfWork.Save();
 

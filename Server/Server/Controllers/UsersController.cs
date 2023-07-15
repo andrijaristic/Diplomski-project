@@ -49,5 +49,13 @@ namespace Web.API.Controllers
             DisplayUserDTO displayUserDTO = await _userService.UpdateUser(updateUserDTO, User.Identity.Name);
             return Ok(displayUserDTO);
         }
+
+        [HttpPut("{id}/change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(Guid id, [FromBody]ChangePasswordDTO changePasswordDTO)
+        {
+            DisplayUserDTO displayUserDTO = await _userService.ChangePassword(id, changePasswordDTO, User.Identity.Name);
+            return Ok(displayUserDTO);
+        }
     }
 }
