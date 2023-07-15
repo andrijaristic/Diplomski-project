@@ -28,7 +28,7 @@ namespace Web.API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody]LoginDTO loginDTO)
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
             AuthDTO authDTO = await _userService.Login(loginDTO);
             return Ok(authDTO);
@@ -36,7 +36,7 @@ namespace Web.API.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Post([FromBody]NewUserDTO newUserDTO)
+        public async Task<IActionResult> Post([FromBody] NewUserDTO newUserDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.CreateUser(newUserDTO);
             return CreatedAtAction(nameof(Get), new { id = displayUserDTO.Id }, displayUserDTO);
@@ -44,7 +44,7 @@ namespace Web.API.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Put([FromBody]UpdateUserDTO updateUserDTO)
+        public async Task<IActionResult> Put([FromBody] UpdateUserDTO updateUserDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.UpdateUser(updateUserDTO, User.Identity.Name);
             return Ok(displayUserDTO);
@@ -52,9 +52,17 @@ namespace Web.API.Controllers
 
         [HttpPut("{id}/change-password")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(Guid id, [FromBody]ChangePasswordDTO changePasswordDTO)
+        public async Task<IActionResult> ChangePassword(Guid id, [FromBody] ChangePasswordDTO changePasswordDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.ChangePassword(id, changePasswordDTO, User.Identity.Name);
+            return Ok(displayUserDTO);
+        }
+
+        [HttpPut("{id}/verify")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Verify(Guid id, [FromBody]VerifyUserDTO verifyUserDTO)
+        {
+            DisplayUserDTO displayUserDTO = await _userService.VerifyUser(id, verifyUserDTO.IsAccepted);
             return Ok(displayUserDTO);
         }
     }

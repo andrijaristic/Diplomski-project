@@ -81,7 +81,7 @@ namespace Service
             User user = _mapper.Map<User>(newUserDTO); 
             user.Password = BCrypt.Net.BCrypt.HashPassword(newUserDTO.Password, BCrypt.Net.BCrypt.GenerateSalt());
 
-            user.IsVerified = user.Role != UserType.PROPERTY_OWNER;
+            user.IsVerified = user.Role != UserType.PROPERTYOWNER;
             user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
 
             await _unitOfWork.Users.Add(user);
@@ -137,6 +137,32 @@ namespace Service
             ValidatePassword(changePasswordDTO.NewPassword);
 
             user.Password = BCrypt.Net.BCrypt.HashPassword(changePasswordDTO.NewPassword, BCrypt.Net.BCrypt.GenerateSalt());
+
+            await _unitOfWork.Save();
+
+            return _mapper.Map<DisplayUserDTO>(user);
+        }
+
+        public async Task<DisplayUserDTO> VerifyUser(Guid id, bool isAccepted)
+        {
+            User user = await _unitOfWork.Users.Find(id);
+            if (user == null)
+            {
+                throw new UserByIdNotFoundException(id);
+            }
+
+            if (user.Role != UserType.PROPERTYOWNER)
+            {
+                throw new InvalidRoleForVerificationException(user.Role.ToString());
+            }
+
+            if (user.IsVerified)
+            {
+                throw new UserAlreadyVerifiedException();
+            }
+
+            user.IsVerified = true;
+            user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
 
             await _unitOfWork.Save();
 

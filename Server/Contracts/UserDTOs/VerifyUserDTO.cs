@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Enums
+namespace Contracts.UserDTOs
 {
-    public enum UserType 
-    { 
-        RENTEE, 
-        PROPERTYOWNER,
-        ADMIN
+    public class VerifyUserDTO
+    {
+        public bool IsAccepted { get; set; }
     }
 }
