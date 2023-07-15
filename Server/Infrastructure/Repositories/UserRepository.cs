@@ -15,5 +15,11 @@ namespace Infrastructure.Repositories
         {
 
         }
+
+        public async Task<User> FindByUsername(string username)
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => String.Equals(x.Username, username));
+            return user;
+        }
     }
 }
