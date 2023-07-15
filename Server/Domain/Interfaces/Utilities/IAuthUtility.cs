@@ -9,6 +9,6 @@ namespace Domain.Interfaces.Utilities
 {
     public interface IAuthUtility
     {
-        string CreateToken(Guid id, UserType userRole, string key, string issuer, int duration);
+        string CreateToken(Guid id, string username, UserType userRole, string key, string issuer, int duration);
     }
 }

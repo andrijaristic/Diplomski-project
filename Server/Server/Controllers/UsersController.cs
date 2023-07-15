@@ -3,6 +3,7 @@ using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace Web.API.Controllers
 {
@@ -15,6 +16,14 @@ namespace Web.API.Controllers
         public UsersController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            DisplayUserDTO displayUserDTO = await _userService.GetById(id);
+            return Ok(displayUserDTO);
         }
 
         [HttpPost("login")]
@@ -30,7 +39,7 @@ namespace Web.API.Controllers
         public async Task<IActionResult> Post([FromBody]NewUserDTO newUserDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.CreateUser(newUserDTO);
-            return Ok(displayUserDTO);
+            return CreatedAtAction(nameof(Get), new { id = displayUserDTO.Id }, displayUserDTO);
         }
     }
 }

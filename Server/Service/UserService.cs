@@ -12,6 +12,7 @@ using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +33,17 @@ namespace Service
             _settings = settings;
         }
 
+        public async Task<DisplayUserDTO> GetById(Guid id)
+        {
+            User user = await _unitOfWork.Users.Find(id);
+            if (user == null)
+            {
+                throw new UserByIdNotFoundException(id);
+            }
+
+            return _mapper.Map<DisplayUserDTO>(user);
+        }
+
         public async Task<AuthDTO> Login(LoginDTO loginDTO)
         {
             User user = await _unitOfWork.Users.FindByUsername(loginDTO.Username);
@@ -47,7 +59,7 @@ namespace Service
 
             AuthDTO authDTO = new AuthDTO()
             {
-                Token = _authUtility.CreateToken(user.Id, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
+                Token = _authUtility.CreateToken(user.Id, user.Username, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
                 VerificationStatus = user.VerificationStatus.ToString().Trim(),
                 IsVerified = user.IsVerified
             };
@@ -68,11 +80,8 @@ namespace Service
             User user = _mapper.Map<User>(newUserDTO); 
             user.Password = BCrypt.Net.BCrypt.HashPassword(newUserDTO.Password, BCrypt.Net.BCrypt.GenerateSalt());
 
-            if (Enum.Equals(UserType.RENTEE, user.Role))
-            {
-                user.VerificationStatus = VerificationStatus.EXEMPT;
-                user.IsVerified = true;
-            }
+            user.IsVerified = user.Role != UserType.PROPERTY_OWNER;
+            user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
 
             await _unitOfWork.Users.Add(user);
             await _unitOfWork.Save();

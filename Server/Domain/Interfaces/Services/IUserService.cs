@@ -11,5 +11,6 @@ namespace Domain.Interfaces.Services
     {
         Task<DisplayUserDTO> CreateUser(NewUserDTO newUserDTO);
         Task<AuthDTO> Login(LoginDTO loginDTO);
+        Task<DisplayUserDTO> GetById(Guid id);
     }
 }

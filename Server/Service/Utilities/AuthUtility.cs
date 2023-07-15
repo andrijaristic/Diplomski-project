@@ -17,11 +17,12 @@ namespace Service.Utilities
 {
     public class AuthUtility : IAuthUtility
     {
-        public string CreateToken(Guid id, UserType userRole, string key, string issuer, int duration)
+        public string CreateToken(Guid id, string username, UserType userRole, string key, string issuer, int duration)
         {
             List<Claim> claims = new List<Claim>();
 
             claims.Add(new Claim(ClaimTypes.Role, userRole.ToString().ToLower()));
+            claims.Add(new Claim(ClaimTypes.Name, username));
             claims.Add(new Claim("id", id.ToString()));
 
             var signInCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256);
