@@ -15,5 +15,6 @@ namespace Domain.Interfaces.Services
         Task<DisplayUserDTO> UpdateUser(UpdateUserDTO updateUserDTO, string username);
         Task<DisplayUserDTO> ChangePassword(Guid id, ChangePasswordDTO changePasswordDTO, string username);
         Task<DisplayUserDTO> VerifyUser(Guid id, bool isAccepted);
+        Task<AuthDTO> ExternalLogin(ExternalLoginDTO externalLoginDTO);
     }
 }

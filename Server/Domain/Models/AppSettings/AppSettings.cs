@@ -9,6 +9,10 @@ namespace Domain.Models.AppSettings
     public class AppSettings
     {
         public string SecretKey { get; set; }
+        public string GoogleClientId { get; set; }
+        public string DefaultPassword { get; set; }
+        public string DefaultPhoneNumber { get; set; }
+        public string DefaultCountry { get; set; }
         public int MinUsernameLength { get; set; }
         public int MinPasswordLength { get; set; }
         public string TokenIssuer { get; set; }

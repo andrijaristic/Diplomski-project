@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Contracts.UserDTOs;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Domain.Interfaces.Utilities
     public interface IAuthUtility
     {
         string CreateToken(Guid id, string username, UserType userRole, string key, string issuer, int duration);
+        Task<SocialMediaDTO> VerifyGoogleToken(ExternalLoginDTO externalLoginDTO, string clientId);
     }
 }

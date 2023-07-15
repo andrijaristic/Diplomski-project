@@ -8,6 +8,8 @@ using Domain.Interfaces.Utilities;
 using Domain.Models;
 using Domain.Models.AppSettings;
 using Microsoft.AspNetCore.Connections.Features;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using System;
@@ -63,6 +65,56 @@ namespace Service
                 Token = _authUtility.CreateToken(user.Id, user.Username, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
                 VerificationStatus = user.VerificationStatus.ToString().Trim(),
                 IsVerified = user.IsVerified
+            };
+
+            return authDTO;
+        }
+
+        public async Task<AuthDTO> ExternalLogin(ExternalLoginDTO externalLoginDTO)
+        {
+            if (!Enum.TryParse(externalLoginDTO.Service, out ExternalLoginServices service))
+            {
+                throw new InvalidExternalLoginServiceException(externalLoginDTO.Service);
+            }
+
+            if (!Enum.TryParse(externalLoginDTO.Role, out UserType userType))
+            {
+                throw new InvalidRoleException(externalLoginDTO.Role);
+            }
+
+            SocialMediaDTO socialMediaDTO = await _authUtility.VerifyGoogleToken(externalLoginDTO, _settings.Value.GoogleClientId);
+            if (socialMediaDTO == null)
+            {
+                throw new InvalidServiceTokenException();
+            }
+
+            User user = await _unitOfWork.Users.FindByUsername(socialMediaDTO.Username);
+            if (user == null)
+            {
+                user = new User()
+                {
+                    Username = socialMediaDTO.Username,
+                    Password = BCrypt.Net.BCrypt.HashPassword(_settings.Value.DefaultPassword, BCrypt.Net.BCrypt.GenerateSalt()),
+                    FirstName = socialMediaDTO.FirstName,
+                    LastName = socialMediaDTO.LastName,
+                    Email = socialMediaDTO.Email,
+                    Country = _settings.Value.DefaultCountry,
+                    PhoneNumber = _settings.Value.DefaultPhoneNumber,
+                    Role = userType,
+                    IsVerified = userType != UserType.PROPERTYOWNER ? true : false,
+                };
+
+                user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
+
+                await _unitOfWork.Users.Add(user);
+                await _unitOfWork.Save();
+            }
+
+            AuthDTO authDTO = new AuthDTO()
+            {
+                Token = _authUtility.CreateToken(user.Id, user.Username, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
+                IsVerified = user.IsVerified,
+                VerificationStatus = user.VerificationStatus.ToString()
             };
 
             return authDTO;

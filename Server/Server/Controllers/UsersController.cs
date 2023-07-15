@@ -34,6 +34,14 @@ namespace Web.API.Controllers
             return Ok(authDTO);
         }
 
+        [HttpPost("external-login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLogin([FromBody]ExternalLoginDTO externalLoginDTO)
+        {
+            AuthDTO authDTO = await _userService.ExternalLogin(externalLoginDTO);
+            return Ok(authDTO);
+        }
+
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] NewUserDTO newUserDTO)
@@ -60,7 +68,7 @@ namespace Web.API.Controllers
 
         [HttpPut("{id}/verify")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Verify(Guid id, [FromBody]VerifyUserDTO verifyUserDTO)
+        public async Task<IActionResult> Verify(Guid id, [FromBody] VerifyUserDTO verifyUserDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.VerifyUser(id, verifyUserDTO.IsAccepted);
             return Ok(displayUserDTO);

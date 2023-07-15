@@ -1,7 +1,9 @@
-﻿using Domain.Enums;
+﻿using Contracts.UserDTOs;
+using Domain.Enums;
 using Domain.Interfaces.Utilities;
 using Domain.Models;
 using Domain.Models.AppSettings;
+using Google.Apis.Auth;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -34,6 +36,32 @@ namespace Service.Utilities
                         );
             
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        }
+
+        public async Task<SocialMediaDTO> VerifyGoogleToken(ExternalLoginDTO externalLoginDTO, string clientId)
+        {
+            try
+            {
+                var validationSettings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string>() { clientId }
+                };
+
+                var userInfo = await GoogleJsonWebSignature.ValidateAsync(externalLoginDTO.Token, validationSettings);
+                SocialMediaDTO socialMediaDTO = new SocialMediaDTO()
+                {
+                    Username = userInfo.Email.Split("@")[0],
+                    FirstName = userInfo.Name.Replace(userInfo.FamilyName, "").Trim(),
+                    LastName = userInfo.FamilyName,
+                    Email = userInfo.Email
+                };
+
+
+                return socialMediaDTO;
+            } catch
+            {
+                return null;
+            }
         }
     }
 }
