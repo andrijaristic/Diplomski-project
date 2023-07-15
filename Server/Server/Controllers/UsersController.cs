@@ -17,6 +17,14 @@ namespace Web.API.Controllers
             _userService = userService;
         }
 
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody]LoginDTO loginDTO)
+        {
+            AuthDTO authDTO = await _userService.Login(loginDTO);
+            return Ok(authDTO);
+        }
+
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody]NewUserDTO newUserDTO)

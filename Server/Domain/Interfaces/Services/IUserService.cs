@@ -10,5 +10,6 @@ namespace Domain.Interfaces.Services
     public interface IUserService
     {
         Task<DisplayUserDTO> CreateUser(NewUserDTO newUserDTO);
+        Task<AuthDTO> Login(LoginDTO loginDTO);
     }
 }

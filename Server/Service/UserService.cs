@@ -4,9 +4,11 @@ using Domain.Enums;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Domain.Interfaces.Utilities;
 using Domain.Models;
 using Domain.Models.AppSettings;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +21,38 @@ namespace Service
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuthUtility _authUtility;
         private readonly IOptions<AppSettings> _settings;
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IOptions<AppSettings> settings) 
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IAuthUtility authUtility, IOptions<AppSettings> settings) 
         {
             _mapper = mapper;
-            _unitOfWork= unitOfWork;
-            _settings= settings;
+            _unitOfWork = unitOfWork;
+            _authUtility = authUtility;
+            _settings = settings;
+        }
+
+        public async Task<AuthDTO> Login(LoginDTO loginDTO)
+        {
+            User user = await _unitOfWork.Users.FindByUsername(loginDTO.Username);
+            if(user == null)
+            {
+                throw new InvalidUsernameException();
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
+            {
+                throw new InvalidPasswordException();
+            }
+
+            AuthDTO authDTO = new AuthDTO()
+            {
+                Token = _authUtility.CreateToken(user.Id, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
+                VerificationStatus = user.VerificationStatus.ToString().Trim(),
+                IsVerified = user.IsVerified
+            };
+
+            return authDTO;
         }
 
         public async Task<DisplayUserDTO> CreateUser(NewUserDTO newUserDTO)
@@ -40,6 +67,12 @@ namespace Service
 
             User user = _mapper.Map<User>(newUserDTO); 
             user.Password = BCrypt.Net.BCrypt.HashPassword(newUserDTO.Password, BCrypt.Net.BCrypt.GenerateSalt());
+
+            if (Enum.Equals(UserType.RENTEE, user.Role))
+            {
+                user.VerificationStatus = VerificationStatus.EXEMPT;
+                user.IsVerified = true;
+            }
 
             await _unitOfWork.Users.Add(user);
             await _unitOfWork.Save();

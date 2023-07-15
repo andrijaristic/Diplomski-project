@@ -12,6 +12,6 @@ namespace Domain.Models.AppSettings
         public int MinUsernameLength { get; set; }
         public int MinPasswordLength { get; set; }
         public string TokenIssuer { get; set; }
-        public string TokenDuration { get; set; }
+        public int TokenDuration { get; set; }
     }
 }

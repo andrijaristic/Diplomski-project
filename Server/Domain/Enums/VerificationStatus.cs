@@ -9,6 +9,7 @@ namespace Domain.Enums
     public enum VerificationStatus
     {
         PENDING,
+        EXEMPT,
         ACCEPTED,
         REJECTED
     }

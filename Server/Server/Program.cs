@@ -1,10 +1,17 @@
+using AutoMapper;
 using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
+using Domain.Interfaces.Utilities;
+using Domain.Models.AppSettings;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Service;
+using Service.Mapping;
+using Service.Utilities;
 using System.Text;
 
 string _cors = "cors";
@@ -80,6 +87,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.AddOptions();
+
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IAuthUtility, AuthUtility>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
@@ -91,6 +105,11 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
         builder.Configuration.GetConnectionString("BookingDatabase"),
         b => b.MigrationsAssembly("Web.API"))
     );
+
+builder.Services.AddSingleton(new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new UserMappingProfile());
+}).CreateMapper());
 
 var app = builder.Build();
 
