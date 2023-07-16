@@ -23,6 +23,17 @@ namespace Service
             _mapper = mapper;
         }
 
+        public async Task<DisplayPropertyDTO> GetById(Guid id)
+        {
+            Property property = await _unitOfWork.Properties.Find(id);
+            if (property == null)
+            {
+                throw new PropertyNotFoundException(id);
+            }
+
+            return _mapper.Map<DisplayPropertyDTO>(property);   
+        }
+
         // TODO: Implement image handling
         public async Task<DisplayPropertyDTO> CreateProperty(NewPropertyDTO newPropertyDTO, string username)
         {

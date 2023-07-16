@@ -3,6 +3,7 @@ using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Web.API.Controllers
 {
@@ -17,13 +18,20 @@ namespace Web.API.Controllers
             _propertyService = propertyService;
         }
 
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            DisplayPropertyDTO displayPropertyDTO = await _propertyService.GetById(id);
+            return Ok(displayPropertyDTO);
+        }
+
         [HttpPost]
         [Authorize(Roles = "propertyowner")]
         public async Task<IActionResult> Post([FromBody] NewPropertyDTO newPropertyDTO)
         {
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.CreateProperty(newPropertyDTO, User.Identity.Name);
-            return Ok(displayPropertyDTO);
-            //return CreatedAtAction(nameof(Get), new { id = displayPropertyDTO.Id }, displayPropertyDTO);
+            return CreatedAtAction(nameof(Get), new { id = displayPropertyDTO.Id }, displayPropertyDTO);
         }
 
         [HttpPut("{id}")]
@@ -35,7 +43,7 @@ namespace Web.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "propertyowner")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _propertyService.DeleteProperty(id, User.Identity.Name);
