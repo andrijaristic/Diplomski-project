@@ -18,12 +18,20 @@ namespace Web.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "propertyowner")]
         public async Task<IActionResult> Post([FromBody] NewPropertyDTO newPropertyDTO)
         {
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.CreateProperty(newPropertyDTO, User.Identity.Name);
             return Ok(displayPropertyDTO);
             //return CreatedAtAction(nameof(Get), new { id = displayPropertyDTO.Id }, displayPropertyDTO);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "propertyowner")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdatePropertyDTO updatePropertyDTO)
+        {
+            DisplayPropertyDTO displayPropertyDTO = await _propertyService.UpdateProperty(id, updatePropertyDTO, User.Identity.Name);
+            return Ok(displayPropertyDTO);
         }
     }
 }

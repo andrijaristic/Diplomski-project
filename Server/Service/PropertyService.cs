@@ -23,6 +23,7 @@ namespace Service
             _mapper = mapper;
         }
 
+        // TODO: Implement image handling
         public async Task<DisplayPropertyDTO> CreateProperty(NewPropertyDTO newPropertyDTO, string username)
         {
             ValidateNewProperty(newPropertyDTO);
@@ -33,9 +34,14 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            if (user.Id != newPropertyDTO.Id)
+            if (user.Id != newPropertyDTO.UserId)
             {
-                throw new InvalidUserInformationException();
+                throw new InvalidUserIdInNewPropertyException();
+            }
+
+            if (user.Role != Domain.Enums.UserType.PROPERTYOWNER)
+            {
+                throw new InvalidPropertyUserRoleException();
             }
 
             Property property = _mapper.Map<Property>(newPropertyDTO);
@@ -46,11 +52,48 @@ namespace Service
             return _mapper.Map<DisplayPropertyDTO>(property); 
         }
 
+        public async Task<DisplayPropertyDTO> UpdateProperty(Guid id, UpdatePropertyDTO updatePropertyDTO, string username)
+        {
+            ValidateUpdateProperty(updatePropertyDTO);
+
+            Property property = await _unitOfWork.Properties.Find(id);
+            if (property == null)
+            {
+                throw new PropertyNotFoundException(id);
+            }
+
+            User user = await _unitOfWork.Users.FindByUsername(username);
+            if (user == null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (user.Id != updatePropertyDTO.UserId) 
+            { 
+                throw new InvalidUserInPropertyException();
+            }
+
+            property.Name = updatePropertyDTO.Name.Trim();
+            property.Description = updatePropertyDTO.Description.Trim();
+
+            await _unitOfWork.Save();
+
+            return _mapper.Map<DisplayPropertyDTO>(property);
+        }
+
         // Validations
+        // TODO: Add validations for images
+
         private void ValidateNewProperty(NewPropertyDTO newPropertyDTO)
         {
             ValidateName(newPropertyDTO.Name);
             ValidateDescription(newPropertyDTO.Description);
+        }
+
+        private void ValidateUpdateProperty(UpdatePropertyDTO updatePropertyDTO)
+        {
+            ValidateName(updatePropertyDTO.Name);
+            ValidateDescription(updatePropertyDTO.Description);
         }
 
         private void ValidateName(string name)
