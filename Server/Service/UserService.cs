@@ -7,17 +7,7 @@ using Domain.Interfaces.Services;
 using Domain.Interfaces.Utilities;
 using Domain.Models;
 using Domain.Models.AppSettings;
-using Microsoft.AspNetCore.Connections.Features;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {

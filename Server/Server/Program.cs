@@ -91,6 +91,7 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 builder.Services.AddOptions();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPropertyService, PropertyService>();
 
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
 
@@ -109,6 +110,7 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
 builder.Services.AddSingleton(new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserMappingProfile());
+    mc.AddProfile(new PropertyMappingProfile());
 }).CreateMapper());
 
 var app = builder.Build();
