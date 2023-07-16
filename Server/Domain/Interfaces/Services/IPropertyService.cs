@@ -11,5 +11,6 @@ namespace Domain.Interfaces.Services
     {
         Task<DisplayPropertyDTO> CreateProperty(NewPropertyDTO newPropertyDTO, string username);
         Task<DisplayPropertyDTO> UpdateProperty(Guid id, UpdatePropertyDTO updatePropertyDTO, string username);
+        Task DeleteProperty(Guid id, string username);
     }
 }

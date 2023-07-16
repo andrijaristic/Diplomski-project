@@ -81,6 +81,30 @@ namespace Service
             return _mapper.Map<DisplayPropertyDTO>(property);
         }
 
+        public async Task DeleteProperty(Guid id, string username)
+        {
+            Property property = await _unitOfWork.Properties.Find(id);
+            if (property == null)
+            {
+                throw new PropertyNotFoundException(id);
+            }
+
+            User user = await _unitOfWork.Users.FindByUsername(username);
+            if (user == null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (user.Id != property.UserId)
+            {
+                throw new InvalidUserInPropertyException();
+            }
+
+            // TODO?: Implement logical deletion
+            _unitOfWork.Properties.Remove(property);
+            await _unitOfWork.Save();
+        }
+
         // Validations
         // TODO: Add validations for images
 

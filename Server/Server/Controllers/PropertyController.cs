@@ -33,5 +33,13 @@ namespace Web.API.Controllers
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.UpdateProperty(id, updatePropertyDTO, User.Identity.Name);
             return Ok(displayPropertyDTO);
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _propertyService.DeleteProperty(id, User.Identity.Name);
+            return NoContent();
+        }
     }
 }
