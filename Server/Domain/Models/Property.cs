@@ -13,6 +13,9 @@ namespace Domain.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public double AverageGrade { get; set; }
+        public bool IsVerified { get; set; }
+        public VerificationStatus VerificationStatus { get; set; }
+        public List<Image> Images { get; set; }
         public Guid UserId { get; set; }    
         public User User { get; set; }  
         public List<Comment> Comments { get; set; }

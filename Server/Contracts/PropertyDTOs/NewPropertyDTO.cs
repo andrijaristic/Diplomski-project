@@ -1,4 +1,5 @@
 ﻿using Contracts.RoomDTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace Contracts.PropertyDTOs
         public Guid UserId { get; set; }
         public double AverageGrade { get; set; }
         public int StartingPrice { get; set; }
+        public List<IFormFile> Images { get; set; }
     }
 }

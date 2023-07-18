@@ -13,5 +13,6 @@ namespace Domain.Interfaces.Services
         Task<DisplayPropertyDTO> UpdateProperty(Guid id, UpdatePropertyDTO updatePropertyDTO, string username);
         Task DeleteProperty(Guid id, string username);
         Task<DisplayPropertyDTO> GetById(Guid id);
+        Task<DisplayPropertyDTO> VerifyProperty(Guid id, bool isAccepted);
     }
 }

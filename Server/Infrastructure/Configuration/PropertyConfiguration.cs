@@ -26,6 +26,12 @@ namespace Infrastructure.Configuration
 
             builder.Property(x => x.AverageGrade).HasPrecision(1, 2);
 
+            builder.Property(x => x.VerificationStatus)
+                   .HasConversion(
+                            x => x.ToString(),
+                            x => Enum.Parse<VerificationStatus>(x)
+                    );
+
             builder.HasOne(x => x.User)
                    .WithMany(x => x.Properties)
                    .OnDelete(DeleteBehavior.NoAction);

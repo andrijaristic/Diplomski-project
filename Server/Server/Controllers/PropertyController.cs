@@ -28,7 +28,7 @@ namespace Web.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Post([FromBody] NewPropertyDTO newPropertyDTO)
+        public async Task<IActionResult> Post([FromForm] NewPropertyDTO newPropertyDTO)
         {
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.CreateProperty(newPropertyDTO, User.Identity.Name);
             return CreatedAtAction(nameof(Get), new { id = displayPropertyDTO.Id }, displayPropertyDTO);
@@ -36,7 +36,7 @@ namespace Web.API.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] UpdatePropertyDTO updatePropertyDTO)
+        public async Task<IActionResult> Put(Guid id, [FromForm] UpdatePropertyDTO updatePropertyDTO)
         {
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.UpdateProperty(id, updatePropertyDTO, User.Identity.Name);
             return Ok(displayPropertyDTO);
@@ -48,6 +48,14 @@ namespace Web.API.Controllers
         {
             await _propertyService.DeleteProperty(id, User.Identity.Name);
             return NoContent();
+        }
+
+        [HttpPut("{id}/verify")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Verify(Guid id, [FromBody] VerifyPropertyDTO verifyPropertyDTO)
+        {
+            DisplayPropertyDTO displayPropertyDTO = await _propertyService.VerifyProperty(id, verifyPropertyDTO.IsAccepted);
+            return Ok(displayPropertyDTO);
         }
     }
 }
