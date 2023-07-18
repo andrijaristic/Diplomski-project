@@ -13,6 +13,7 @@ using Service;
 using Service.Mapping;
 using Service.Utilities;
 using System.Text;
+using Web.API.Middleware;
 
 string _cors = "cors";
 var builder = WebApplication.CreateBuilder(args);
@@ -90,6 +91,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddOptions();
 
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 
@@ -121,6 +124,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
