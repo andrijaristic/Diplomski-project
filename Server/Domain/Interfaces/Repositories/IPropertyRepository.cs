@@ -9,5 +9,6 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IPropertyRepository : IGenericRepository<Property>
     {
+        Task<Property> GetPropertyWithOwner(Guid id);
     }
 }

@@ -9,5 +9,6 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IRoomTypeRepository : IGenericRepository<RoomType>
     {
+        Task<RoomType> FindDetailedRoomType(Guid id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Interfaces.Repositories;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,13 @@ namespace Infrastructure.Repositories
     public class RoomTypeRepository : GenericRepository<RoomType>, IRoomTypeRepository
     {
         public RoomTypeRepository(ProjectDbContext _dbContext) : base(_dbContext) { }
+
+        public async Task<RoomType> FindDetailedRoomType(Guid id)
+        {
+            RoomType roomType = await _dbContext.RoomTypes.Where(rt => rt.Id == id)
+                                                          .Include(sp => sp.SeasonalPricing)
+                                                          .FirstOrDefaultAsync();
+            return roomType;
+        }
     }
 }

@@ -27,9 +27,10 @@ namespace Web.API.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Put([FromBody] UpdateRoomTypeDTO updateRoomTypeDTO)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateRoomTypeDTO updateRoomTypeDTO)
         {
-
+            DisplayRoomTypeDTO displayRoomTypeDTO = await _roomTypeService.UpdateRoomType(id, updateRoomTypeDTO, User.Identity.Name);
+            return Ok(displayRoomTypeDTO);
         }
     }
 }

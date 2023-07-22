@@ -43,14 +43,46 @@ namespace Service
             return _mapper.Map<DisplayRoomTypeDTO>(roomType);
         }
 
+        public async Task<DisplayRoomTypeDTO> UpdateRoomType(Guid id,UpdateRoomTypeDTO updateRoomTypeDTO, string username)
+        {
+            RoomType roomType = await _unitOfWork.RoomTypes.FindDetailedRoomType(id);
+            if (roomType == null)
+            {
+                throw new RoomTypeNotFoundException(id);
+            }
+
+            Property property = await _unitOfWork.Properties.GetPropertyWithOwner(roomType.PropertyId);
+            if (property == null)
+            {
+                throw new PropertyNotFoundException(roomType.PropertyId);
+            }
+
+            if (!String.Equals(property.User.Username, username))
+            {
+                throw new InvalidRoomTypePermissionsException();
+            }
+
+            ValidateSeasonalPricingsUpdate(updateRoomTypeDTO.SeasonalPrices);
+            for (int i = 0; i < roomType.SeasonalPricing.Count; i++)
+            {
+                if (roomType.SeasonalPricing[i].Id == updateRoomTypeDTO.SeasonalPrices[i].Id)
+                {
+                    roomType.SeasonalPricing[i].Price = updateRoomTypeDTO.SeasonalPrices[i].Price;
+                }
+            }
+
+            return _mapper.Map<DisplayRoomTypeDTO>(roomType);
+        }
+
         // Validations
-        private void ValidateNewRoomType(NewRoomTypeDTO newRoomTypeDTO)
+        private static void ValidateNewRoomType(NewRoomTypeDTO newRoomTypeDTO)
         {
             ValidateAmountOfRooms(newRoomTypeDTO.AmountOfRooms);
             ValidateAmountOfPeople(newRoomTypeDTO.Adults, newRoomTypeDTO.Children);
             ValidateSeasonalPricings(newRoomTypeDTO.SeasonalPricing);
         }
-        private void ValidateAmountOfRooms(int rooms)
+
+        private static void ValidateAmountOfRooms(int rooms)
         {
             if (rooms <= 0) 
             {
@@ -58,7 +90,7 @@ namespace Service
             }
         }
 
-        private void ValidateAmountOfPeople(int adults, int children)
+        private static void ValidateAmountOfPeople(int adults, int children)
         {
             if (adults < 0)
             {
@@ -76,7 +108,23 @@ namespace Service
             }
         }
 
-        private void ValidateSeasonalPricings(List<NewSeasonalPricingDTO> pricings)
+        private static void ValidateSeasonalPricingsUpdate(List<UpdateSeasonalPricingDTO> pricings)
+        {
+            if (pricings.Count != 12)
+            {
+                throw new InvalidMonthAmountException();
+            }
+
+            foreach (var price in pricings)
+            {
+                if (price.Price <= 0)
+                {
+                    throw new InvalidMonthPriceException();
+                }
+            }
+        }
+
+        private static void ValidateSeasonalPricings(List<NewSeasonalPricingDTO> pricings)
         {
             if (pricings.Count != 12)
             {
