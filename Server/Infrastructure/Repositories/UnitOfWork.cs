@@ -14,14 +14,21 @@ namespace Infrastructure.Repositories
         public IPropertyRepository Properties { get; set; }
         public IReservationRepository Reservations { get; set; }
         public IRoomRepository Rooms { get; set; }
+        public IRoomTypeRepository RoomTypes { get; set; }
 
-        public UnitOfWork(ProjectDbContext dbContext, IUserRepository users, IPropertyRepository properties, IReservationRepository reservations, IRoomRepository rooms)
+        public UnitOfWork(ProjectDbContext dbContext,
+                          IUserRepository users,
+                          IPropertyRepository properties,
+                          IReservationRepository reservations,
+                          IRoomRepository rooms,
+                          IRoomTypeRepository roomTypes)
         {
             _dbContext = dbContext;
             Users = users;
             Properties = properties;
             Reservations = reservations;
             Rooms = rooms;
+            RoomTypes = roomTypes;
         }
 
         public async Task Save()

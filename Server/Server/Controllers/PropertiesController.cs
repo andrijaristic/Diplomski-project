@@ -7,13 +7,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Web.API.Controllers
 {
-    [Route("api/property")]
+    [Route("api/properties")]
     [ApiController]
-    public class PropertyController : ControllerBase
+    public class PropertiesController : ControllerBase
     {
         private readonly IPropertyService _propertyService;
 
-        public PropertyController(IPropertyService propertyService) 
+        public PropertiesController(IPropertyService propertyService) 
         {
             _propertyService = propertyService;
         }

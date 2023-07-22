@@ -12,6 +12,7 @@ namespace Domain.Interfaces.Repositories
         public IPropertyRepository Properties { get; }
         public IReservationRepository Reservations { get; }
         public IRoomRepository Rooms { get; }
+        public IRoomTypeRepository RoomTypes { get; }
         Task Save();
     }
 }

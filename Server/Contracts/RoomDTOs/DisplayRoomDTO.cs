@@ -2,10 +2,9 @@
 
 namespace Contracts.RoomDTOs
 {
-    public class NewRoomDTO
+    public class DisplayRoomDTO
     {
         public Guid Id { get; set; }
-        public Guid PropertyId { get; set; }
-        public Guid RoomTypeId { get; set; }
+        public DisplayRoomTypeDTO RoomType { get; set; }
     }
 }
