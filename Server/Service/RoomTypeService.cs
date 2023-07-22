@@ -51,13 +51,12 @@ namespace Service
                 throw new RoomTypeNotFoundException(id);
             }
 
-            Property property = await _unitOfWork.Properties.GetPropertyWithOwner(roomType.PropertyId);
-            if (property == null)
+            if (roomType.Property == null)
             {
                 throw new PropertyNotFoundException(roomType.PropertyId);
             }
 
-            if (!String.Equals(property.User.Username, username))
+            if (!String.Equals(roomType.Property.User.Username, username))
             {
                 throw new InvalidRoomTypePermissionsException();
             }
@@ -72,6 +71,28 @@ namespace Service
             }
 
             return _mapper.Map<DisplayRoomTypeDTO>(roomType);
+        }
+
+        public async Task DeleteRoomType(Guid id, string username)
+        {
+            RoomType roomType = await _unitOfWork.RoomTypes.FindDetailedRoomType(id);
+            if (roomType == null)
+            {
+                throw new RoomTypeNotFoundException(id);
+            }
+
+            if (roomType.Property == null)
+            {
+                throw new PropertyNotFoundException(roomType.PropertyId);
+            }
+
+            if (!String.Equals(roomType.Property.User.Username, username))
+            {
+                throw new InvalidRoomTypePermissionsException();
+            }
+
+            _unitOfWork.RoomTypes.Remove(roomType);
+            await _unitOfWork.Save();
         }
 
         // Validations

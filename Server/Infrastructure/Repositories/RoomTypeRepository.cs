@@ -17,6 +17,8 @@ namespace Infrastructure.Repositories
         {
             RoomType roomType = await _dbContext.RoomTypes.Where(rt => rt.Id == id)
                                                           .Include(sp => sp.SeasonalPricing)
+                                                          .Include(r => r.Rooms)
+                                                          .Include(p => p.Property)
                                                           .FirstOrDefaultAsync();
             return roomType;
         }

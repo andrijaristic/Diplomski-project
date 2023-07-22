@@ -6,5 +6,6 @@ namespace Domain.Interfaces.Services
     {
         Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO);
         Task<DisplayRoomTypeDTO> UpdateRoomType(Guid id, UpdateRoomTypeDTO updateRoomTypeDTO, string username);
+        Task DeleteRoomType(Guid id, string username);
     }
 }
