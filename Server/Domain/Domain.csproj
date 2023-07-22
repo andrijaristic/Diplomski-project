@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\RoomExceptions\" />
+  </ItemGroup>
+
 </Project>

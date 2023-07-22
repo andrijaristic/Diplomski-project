@@ -114,6 +114,8 @@ builder.Services.AddSingleton(new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserMappingProfile());
     mc.AddProfile(new PropertyMappingProfile());
+    mc.AddProfile(new RoomMappingProfile());
+    mc.AddProfile(new RoomTypeMappingProfile());
 }).CreateMapper());
 
 var app = builder.Build();

@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using Contracts.RoomDTOs;
-using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Contracts.RoomDTOs;
+using Domain.Interfaces.Services;
+using Domain.Interfaces.Repositories;
+using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.RoomTypeExceptions;
 
 namespace Service
 {
@@ -27,13 +24,13 @@ namespace Service
             Property property = await _unitOfWork.Properties.Find(newRoomDTO.PropertyId);
             if (property == null)
             {
-                throw new Exception();
+                throw new PropertyNotFoundException(newRoomDTO.PropertyId);
             }
 
             RoomType roomType = await _unitOfWork.RoomTypes.Find(newRoomDTO.RoomTypeId);
             if (roomType == null)
             {
-                throw new Exception();
+                throw new RoomTypeNotFoundException(newRoomDTO.RoomTypeId);
             }
 
             Room room = _mapper.Map<Room>(newRoomDTO);
