@@ -65,6 +65,13 @@ namespace Service
             newReservationDTO.Price = price;
             Reservation reservation = _mapper.Map<Reservation>(newReservationDTO);
 
+            room.OccupiedDates.Add(
+                new ReservedDays()
+                {
+                    ArrivalDate = newReservationDTO.ArrivalDate,
+                    DepartureDate = newReservationDTO.DepartureDate
+                });
+
             await _unitOfWork.Reservations.Add(reservation);
             await _unitOfWork.Save();
 
