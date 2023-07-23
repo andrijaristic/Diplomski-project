@@ -42,6 +42,28 @@ namespace Service
             return _mapper.Map<DisplayRoomDTO>(room);
         }
 
+        public async Task DeleteRoom(Guid id, string username)
+        {
+            Room room = await _unitOfWork.Rooms.FindDetailedRoom(id);
+            if (room == null)
+            {
+                throw new RoomNotFoundException(id);
+            }
+
+            if (!String.Equals(room.Property.User.Username, username))
+            {
+                throw new InvalidRoomPermissionsExpection();
+            }
+
+            if (room.Reservations.Count > 0)
+            {
+                throw new RoomHasReservationsException();
+            }
+
+            _unitOfWork.Rooms.Remove(room);
+            await _unitOfWork.Save();
+        }
+
         public async Task<DisplayRoomDTO> UpdateRoom(Guid id, UpdateRoomDTO updateRoomDTO, string username)
         {
             Room room = await _unitOfWork.Rooms.FindDetailedRoom(id);

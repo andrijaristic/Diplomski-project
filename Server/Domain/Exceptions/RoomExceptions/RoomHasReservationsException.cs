@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions.RoomExceptions
 {
-    public class InvalidRoomPermissionsExpection : BadRequestException
+    public class RoomHasReservationsException : BadRequestException
     {
-        public InvalidRoomPermissionsExpection() : base("You can only edit/delete rooms of properties you own.")
-        {
-
-        }
+        public RoomHasReservationsException() : base("This room has reservations and cannot be deleted.") { }
     }
 }

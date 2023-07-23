@@ -19,6 +19,7 @@ namespace Infrastructure.Repositories
         public async Task<Room> FindDetailedRoom(Guid id)
         {
             Room room = await _dbContext.Rooms.Where(r => r.Id == id)
+                                              .Include(r => r.Reservations)
                                               .Include(p => p.Property)
                                               .ThenInclude(u => u.User)
                                               .FirstOrDefaultAsync();

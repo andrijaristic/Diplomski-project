@@ -31,5 +31,13 @@ namespace Web.API.Controllers
             DisplayRoomDTO displayRoomDTO = await _roomService.UpdateRoom(id, updateRoomDTO, User.Identity.Name);
             return Ok(displayRoomDTO);
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "propertyowner")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _roomService.DeleteRoom(id, User.Identity.Name);
+            return NoContent();
+        }
     }
 }
