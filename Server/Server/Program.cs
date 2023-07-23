@@ -95,6 +95,9 @@ builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
+builder.Services.AddScoped<IReservationsService, ReservationService>();
 
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
 
@@ -102,6 +105,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
@@ -116,6 +120,7 @@ builder.Services.AddSingleton(new MapperConfiguration(mc =>
     mc.AddProfile(new PropertyMappingProfile());
     mc.AddProfile(new RoomMappingProfile());
     mc.AddProfile(new RoomTypeMappingProfile());
+    mc.AddProfile(new ReservationMappingProfile());
 }).CreateMapper());
 
 var app = builder.Build();

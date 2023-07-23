@@ -16,6 +16,15 @@ namespace Infrastructure.Repositories
 
         }
 
+        public async Task<Room> FindByIdAndProperty(Guid roomId, Guid propertyId)
+        {
+            Room room = await _dbContext.Rooms.Where(r => r.Id == roomId && r.PropertyId == propertyId)
+                                              .Include(r => r.RoomType)
+                                              .ThenInclude(rt => rt.SeasonalPricing)
+                                              .FirstOrDefaultAsync();
+            return room;
+        }
+
         public async Task<Room> FindDetailedRoom(Guid id)
         {
             Room room = await _dbContext.Rooms.Where(r => r.Id == id)

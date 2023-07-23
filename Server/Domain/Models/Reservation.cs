@@ -11,7 +11,7 @@
         public Room Room { get; set; }
         public double Price { get; set; }   
         public DateTime ArrivalDate { get; set; }
-        public DateTime DepartureDate { get; set;}
+        public DateTime DepartureDate { get; set; }
         public bool IsPayed { get; set; }   
         public bool IsCancelled { get; set; }
     }
