@@ -1,5 +1,6 @@
 ﻿using Domain.Interfaces.Repositories;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,15 @@ namespace Infrastructure.Repositories
         public RoomRepository(ProjectDbContext _dbContext) : base(_dbContext)
         {
 
+        }
+
+        public async Task<Room> FindDetailedRoom(Guid id)
+        {
+            Room room = await _dbContext.Rooms.Where(r => r.Id == id)
+                                              .Include(p => p.Property)
+                                              .ThenInclude(u => u.User)
+                                              .FirstOrDefaultAsync();
+            return room;
         }
     }
 }

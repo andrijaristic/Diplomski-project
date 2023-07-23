@@ -5,6 +5,7 @@ using Domain.Interfaces.Services;
 using Domain.Interfaces.Repositories;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
+using Domain.Exceptions.RoomExceptions;
 
 namespace Service
 {
@@ -36,6 +37,31 @@ namespace Service
             Room room = _mapper.Map<Room>(newRoomDTO);
 
             await _unitOfWork.Rooms.Add(room);
+            await _unitOfWork.Save();
+
+            return _mapper.Map<DisplayRoomDTO>(room);
+        }
+
+        public async Task<DisplayRoomDTO> UpdateRoom(Guid id, UpdateRoomDTO updateRoomDTO, string username)
+        {
+            Room room = await _unitOfWork.Rooms.FindDetailedRoom(id);
+            if (room == null)
+            {
+                throw new RoomNotFoundException(id);
+            }
+
+            if (!String.Equals(room.Property.User.Username, username))
+            {
+                throw new InvalidRoomPermissionsExpection();
+            }
+
+            RoomType roomType = await _unitOfWork.RoomTypes.Find(updateRoomDTO.RoomTypeId);
+            if (roomType == null)
+            {
+                throw new RoomTypeNotFoundException(updateRoomDTO.RoomTypeId);
+            }
+
+            room.RoomType = roomType;
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayRoomDTO>(room);

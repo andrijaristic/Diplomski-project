@@ -23,5 +23,13 @@ namespace Web.API.Controllers
             DisplayRoomDTO displayRoomDTO = await _roomService.CreateRoom(newRoomDTO);
             return CreatedAtAction(nameof(Post), new { id = displayRoomDTO.Id }, displayRoomDTO);
         }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "propertyowner")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateRoomDTO updateRoomDTO)
+        {
+            DisplayRoomDTO displayRoomDTO = await _roomService.UpdateRoom(id, updateRoomDTO, User.Identity.Name);
+            return Ok(displayRoomDTO);
+        }
     }
 }
