@@ -23,5 +23,13 @@ namespace Web.API.Controllers
             DisplayReservationDTO displayReservationDTO = await _reservationsService.CreateReservation(newReservationDTO);
             return CreatedAtAction(nameof(Post), new { id = displayReservationDTO.Id }, displayReservationDTO);
         }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> CancelReservation(Guid id)
+        {
+            DisplayReservationDTO displayReservationDTO = await _reservationsService.CancelReservation(id, User.Identity.Name);
+            return Ok(displayReservationDTO);
+        }
     }
 }

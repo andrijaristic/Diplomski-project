@@ -9,5 +9,6 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
+        Task<Reservation> FindByIdWithUser(Guid id);
     }
 }

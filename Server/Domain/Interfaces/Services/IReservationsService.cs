@@ -10,5 +10,6 @@ namespace Domain.Interfaces.Services
     public interface IReservationsService
     {
         Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO);
+        Task<DisplayReservationDTO> CancelReservation(Guid id, string username);
     }
 }

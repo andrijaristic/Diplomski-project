@@ -71,6 +71,35 @@ namespace Service
             return _mapper.Map<DisplayReservationDTO>(reservation);
         }
 
+        public async Task<DisplayReservationDTO> CancelReservation(Guid id, string username)
+        {
+            Reservation reservation = await _unitOfWork.Reservations.FindByIdWithUser(id);
+            if (reservation == null) 
+            {
+                throw new ReservationNotFoundException(id);
+            }
+
+            if (!String.Equals(reservation.User.Username, username))
+            {
+                throw new InvalidReservationPermissions();
+            }
+
+            if (reservation.IsCancelled)
+            {
+                throw new ReservationAlreadyCancelledException();
+            }
+
+            if (reservation.IsPayed)
+            {
+                throw new ReservationIsPaidForException();
+            }
+
+            reservation.IsCancelled = true;
+            await _unitOfWork.Save();
+
+            return _mapper.Map<DisplayReservationDTO>(reservation);
+        }
+
         // Validations
         private static void ValidateDates(DateTime arrivalDate, DateTime departureDate)
         {
