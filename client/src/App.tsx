@@ -1,11 +1,15 @@
-import "./App.css";
+import { ThemeProvider } from "@mui/material/styles";
+import Navigation from "./components/UI/Navigation/Navigation";
+import { lightTheme, darkTheme } from "./styles/theme";
 
 function App() {
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card"></div>
-    </>
+    <main className="container">
+      <ThemeProvider theme={darkTheme}>
+        <Navigation />
+        <div className="card">Something</div>
+      </ThemeProvider>
+    </main>
   );
 }
 

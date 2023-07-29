@@ -1,0 +1,14 @@
+.nav {
+  margin-left: auto;
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.nav__item,
+.nav__item:visited {
+  color: white;
+  text-decoration: none;
+}
