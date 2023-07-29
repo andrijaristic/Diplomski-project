@@ -6,11 +6,6 @@
   box-sizing: border-box;
 }
 
-.card {
-  background-color: #748ae2;
-  height: 24rem;
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -18,6 +13,11 @@
   font-family: "Readex Pro", sans-serif, system-ui, Avenir, Helvetica, Arial;
   line-height: 1.5;
   font-weight: 400;
+}
+
+.light {
+  --text-color: #090f2a;
+  --link-hover-color: #748ae2;
 }
 
 :root {

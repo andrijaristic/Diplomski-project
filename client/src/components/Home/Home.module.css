@@ -1,0 +1,25 @@
+.image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 28rem;
+
+  background-attachment: fixed;
+  background-image: url("/header-background.jpg");
+  background-size: 100% 100%;
+}
+
+.image__filter {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  background-color: rgba(242, 241, 241, 0.916);
+  border-radius: 6px;
+  height: fit-content;
+  width: fit-content;
+}
+
+.card {
+  height: 100rem;
+  background-color: red;
+}

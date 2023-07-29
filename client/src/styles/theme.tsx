@@ -47,10 +47,11 @@ export const lightTheme = createTheme({
     primary: {
       main: "#748ae2",
       dark: "#243ea8",
+      contrastText: "#050505",
     },
     secondary: {
-      main: "#d5dbf6",
-      dark: "#243ea8",
+      main: "#090f2a",
+      dark: "#8195e4",
     },
     text: {
       primary: "#050505",
@@ -70,9 +71,6 @@ export const darkTheme = createTheme({
   },
   typography: {
     fontFamily: `"Readex Pro", sans-serif`,
-    allVariants: {
-      color: "#fafafa",
-    },
   },
   palette: {
     background: {
@@ -85,9 +83,6 @@ export const darkTheme = createTheme({
     secondary: {
       main: "#090f2a",
       dark: "#8195e4",
-    },
-    text: {
-      primary: "#fafafa",
     },
   },
 });

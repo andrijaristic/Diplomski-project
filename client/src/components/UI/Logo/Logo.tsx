@@ -7,7 +7,7 @@ const Logo: FC = () => {
   return (
     <div className={styles.logo}>
       <Badge>
-        <HouseIcon fontSize="large" />
+        <HouseIcon color="secondary" sx={{ fontSize: 48 }} />
       </Badge>
       <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
         Rent-A-Room

@@ -1,14 +1,19 @@
 import { ThemeProvider } from "@mui/material/styles";
 import Navigation from "./components/UI/Navigation/Navigation";
-import { lightTheme, darkTheme } from "./styles/theme";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { lightTheme } from "./styles/theme";
+import HomePage from "./pages/HomePage";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 function App() {
   return (
-    <main className="container">
-      <ThemeProvider theme={darkTheme}>
-        <Navigation />
-        <div className="card">Something</div>
-      </ThemeProvider>
+    <main className="container light">
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <ThemeProvider theme={lightTheme}>
+          <Navigation />
+          <HomePage />
+        </ThemeProvider>
+      </LocalizationProvider>
     </main>
   );
 }
