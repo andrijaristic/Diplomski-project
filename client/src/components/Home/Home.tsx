@@ -5,12 +5,56 @@ import BedIcon from "@mui/icons-material/Bed";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import styles from "./Home.module.css";
 import StyledButton from "../UI/Styled/StyledButton";
+import PropertyPreview from "../PropertyPreview/PropertyPreview";
+
+const DUMMY_DATA = [
+  {
+    id: 1,
+    name: "First property",
+    country: "Serbia",
+    area: "Trstenik",
+  },
+  {
+    id: 2,
+    name: "Second property",
+    country: "Serbia",
+    area: "Trstenik",
+  },
+  {
+    id: 3,
+    name: "Third property",
+    country: "Serbia",
+    area: "Trstenik",
+  },
+  {
+    id: 4,
+    name: "Fourth property",
+    country: "Serbia",
+    area: "Trstenik",
+  },
+  {
+    id: 5,
+    name: "Fifth property",
+    country: "Serbia",
+    area: "Trstenik",
+  },
+];
 
 const Home: FC = () => {
+  const content = DUMMY_DATA.map((item) => {
+    return (
+      <PropertyPreview
+        name={item.name}
+        country={item.country}
+        area={item.area}
+      />
+    );
+  });
+
   return (
     <Fade in>
       <div>
-        <div className={styles.image}>
+        <section className={styles.image}>
           <div className={styles.image__filter}>
             <TextField
               variant="outlined"
@@ -44,8 +88,8 @@ const Home: FC = () => {
             </div>
             <StyledButton sx={{ height: "3.5rem" }}>Search</StyledButton>
           </div>
-        </div>
-        <div className={styles.card}>Something</div>
+        </section>
+        <section className={styles.card}>{content}</section>
       </div>
     </Fade>
   );
