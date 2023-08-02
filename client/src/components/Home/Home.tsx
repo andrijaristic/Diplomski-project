@@ -3,9 +3,9 @@ import { FormHelperText, InputAdornment, TextField } from "@mui/material";
 import Fade from "@mui/material/Fade";
 import BedIcon from "@mui/icons-material/Bed";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import styles from "./Home.module.css";
 import StyledButton from "../UI/Styled/StyledButton";
 import PropertyPreview from "../PropertyPreview/PropertyPreview";
+import styles from "./Home.module.css";
 
 const DUMMY_DATA = [
   {
@@ -44,6 +44,7 @@ const Home: FC = () => {
   const content = DUMMY_DATA.map((item) => {
     return (
       <PropertyPreview
+        key={item.id}
         name={item.name}
         country={item.country}
         area={item.area}

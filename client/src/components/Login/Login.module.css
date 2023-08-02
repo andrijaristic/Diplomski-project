@@ -1,0 +1,47 @@
+.container {
+  height: 100%;
+  background: rgb(12, 19, 61);
+  background: linear-gradient(
+    42deg,
+    rgba(12, 19, 61, 1) 2%,
+    rgba(137, 208, 255, 1) 29%,
+    rgba(12, 19, 61, 1) 76%
+  );
+}
+
+.container__login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  transform: translate(0, -6%);
+}
+
+.login__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login__inner a,
+a:visited {
+  margin-left: auto;
+  text-decoration: none;
+  transition: 250ms ease-out;
+  color: var(--text-color);
+}
+
+.login__inner a:hover {
+  transition: 250ms ease-in;
+  color: var(--link-hover-color);
+}
+
+.social-media {
+  width: 100%;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: end;
+  align-items: flex-end;
+}

@@ -6,26 +6,34 @@ import Container from "@mui/material/Container";
 import { CssBaseline } from "@mui/material";
 import styles from "./Navigation.module.css";
 import Logo from "../Logo/Logo";
+import { useAppSelector } from "../../../store/hooks";
 
 interface IItem {
   name: string;
   to: string;
 }
 
-const generateNavItems = (): IItem[] | null => {
+const generateNavItems = (isLoggedIn: boolean): IItem[] | null => {
   const items: IItem[] = [];
 
-  items.push({ name: "Search properties", to: "/second-element" });
-  items.push({ name: "New property", to: "/third-element" });
-  items.push({ name: "Login/Account", to: "/fourth-element" });
+  if (isLoggedIn) {
+    items.push({ name: "Search properties", to: "/second-element" });
+    items.push({ name: "New property", to: "/third-element" });
+    items.push({ name: "Account", to: "/account" }); // User name with drop-down menu for account and logout
+  } else {
+    items.push({ name: "Search properties", to: "/second-element" });
+    items.push({ name: "New property", to: "/third-element" });
+    items.push({ name: "Login", to: "/login" });
+  }
 
   return items;
 };
 
 const Navigation: FC = () => {
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const items = useMemo(() => {
-    return generateNavItems();
-  }, []);
+    return generateNavItems(isLoggedIn);
+  }, [isLoggedIn]);
 
   const content: React.ReactNode[] | undefined = items?.map((item) => {
     return (

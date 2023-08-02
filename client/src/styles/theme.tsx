@@ -52,6 +52,7 @@ export const lightTheme = createTheme({
     secondary: {
       main: "#090f2a",
       dark: "#8195e4",
+      contrastText: "#fafafa",
     },
     text: {
       primary: "#050505",
@@ -71,6 +72,9 @@ export const darkTheme = createTheme({
   },
   typography: {
     fontFamily: `"Readex Pro", sans-serif`,
+    allVariants: {
+      color: "#050505",
+    },
   },
   palette: {
     background: {

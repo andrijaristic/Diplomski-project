@@ -13,12 +13,26 @@ const MyStyledButton = styled(Button)(({ theme }) => ({
 
 interface IProps extends React.PropsWithChildren {
   sx: SxProps<Theme> | undefined;
+  disabled?: boolean;
+  submit?: boolean;
   onClick?: () => void;
 }
 
-const StyledButton: FC<IProps> = ({ sx, children, onClick }) => {
+const StyledButton: FC<IProps> = ({
+  sx,
+  children,
+  disabled,
+  submit,
+  onClick,
+}) => {
   return (
-    <MyStyledButton variant="contained" onClick={onClick} sx={sx}>
+    <MyStyledButton
+      variant="contained"
+      disabled={disabled ? disabled : false}
+      type={submit ? "submit" : "button"}
+      onClick={onClick}
+      sx={sx}
+    >
       {children}
     </MyStyledButton>
   );
