@@ -36,7 +36,7 @@ namespace Web.API.Controllers
 
         [HttpPost("external-login")]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLogin([FromBody]ExternalLoginDTO externalLoginDTO)
+        public async Task<IActionResult> ExternalLogin([FromBody] ExternalLoginDTO externalLoginDTO)
         {
             AuthDTO authDTO = await _userService.ExternalLogin(externalLoginDTO);
             return Ok(authDTO);
