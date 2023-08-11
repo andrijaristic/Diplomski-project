@@ -17,12 +17,10 @@ const AppRoutes: FC = () => {
             <Route path="*" element={<Navigate replace to="/login" />} />
           </>
         )}
-        {isLoggedIn && (
-          <Route element={<AppLayout />}>
-            <Route path="" element={<HomePage />} />
-            <Route path="*" element={<Navigate replace to="/" />} />
-          </Route>
-        )}
+        <Route element={<AppLayout />}>
+          <Route path="" element={<HomePage />} />
+          <Route path="*" element={<Navigate replace to="/" />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
