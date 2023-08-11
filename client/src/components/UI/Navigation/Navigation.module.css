@@ -14,6 +14,15 @@
   text-decoration: none;
 }
 
+.nav__item > p {
+  text-transform: uppercase;
+}
+
+.div__bg {
+  height: 100%;
+  background-color: black;
+}
+
 @media only screen and (max-width: 926px) {
   .nav {
     width: 50%;

@@ -7,6 +7,7 @@ import {
   CardMedia,
   Grid,
   Typography,
+  styled,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StyledButton from "../UI/Styled/StyledButton";
@@ -19,24 +20,38 @@ interface IProps {
   rating: number;
 }
 
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  ...theme.typography,
+  overflow: "hidden",
+  wordBreak: "break-word",
+  textOverflow: "ellipsis",
+  display: "-webkit-box",
+  WebkitLineClamp: "2",
+  WebkitBoxOrient: "vertical",
+}));
+
 const ListingsItem: FC<IProps> = (props) => {
   return (
     <Card
       sx={{
         display: "flex",
+        justifyContent: "center",
         flexDirection: "column",
-        width: "30rem",
-        height: "auto",
+        flexBasis: "32.33%",
 
         borderRadius: 2,
         mb: 2,
         mt: 2,
-        mr: 2,
-        "@media (max-width: 846px)": {
-          width: 640,
-          m: 0,
-          p: 0,
-          mb: 4,
+        // ml: "auto",
+        // mr: "auto",
+        "@media (max-width: 1468px)": {
+          flexBasis: "32%",
+        },
+        "@media (max-width: 1148px)": {
+          flexBasis: "31.33%",
+        },
+        "@media (max-width: 786px)": {
+          flexBasis: "30%",
         },
       }}
     >
@@ -76,33 +91,13 @@ const ListingsItem: FC<IProps> = (props) => {
               whiteSpace: "nowrap",
             }}
           >
-            <Typography
-              sx={{
-                overflow: "hidden",
-                wordBreak: "break-word",
-                textOverflow: "ellipsis",
-                display: "-webkit-box",
-                WebkitLineClamp: "2",
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              {props.title}
-            </Typography>
+            <StyledTypography>{props.title}</StyledTypography>
           </Grid>
-          <Grid item sx={{ ml: 0.4, mb: 4 }}>
+          <Grid item sx={{ ml: 0.4, mb: 1 }}>
             <Box sx={{ height: 40 }}>
-              <Typography
-                sx={{
-                  overflow: "hidden",
-                  wordBreak: "break-word",
-                  textOverflow: "ellipsis",
-                  display: "-webkit-box",
-                  WebkitLineClamp: "2",
-                  WebkitBoxOrient: "vertical",
-                }}
-              >
+              <StyledTypography variant="body2">
                 {props.description}
-              </Typography>
+              </StyledTypography>
             </Box>
           </Grid>
           <Grid item sx={{ display: "flex" }}>

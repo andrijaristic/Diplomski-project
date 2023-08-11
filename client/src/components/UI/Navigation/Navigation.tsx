@@ -1,12 +1,9 @@
 import React, { FC, useMemo } from "react";
 import { NavLink } from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Container from "@mui/material/Container";
-import { CssBaseline } from "@mui/material";
-import styles from "./Navigation.module.css";
-import Logo from "../Logo/Logo";
 import { useAppSelector } from "../../../store/hooks";
+import { AppBar, Container, Toolbar, Link } from "@mui/material";
+import Logo from "../Logo/Logo";
+import styles from "./Navigation.module.css";
 
 interface IItem {
   name: string;
@@ -46,7 +43,10 @@ const Navigation: FC = () => {
   });
 
   return (
-    <AppBar position="static" sx={{ background: "background", pl: 1, pr: 1 }}>
+    <AppBar
+      position="static"
+      sx={{ background: "background", scrollbarGutter: "stable both-edges" }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Logo />
