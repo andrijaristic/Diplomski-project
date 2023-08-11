@@ -89,11 +89,11 @@ const Login: FC = () => {
 
   return (
     <Fade in>
-      <Grid container spacing={0} sx={{ height: "100vh" }}>
-        <Grid item xs={8}>
-          <div className={styles.container}>ha</div>
+      <Grid container spacing={0} sx={{ height: "100vh", width: "100%" }}>
+        <Grid item lg={8} md={6} sm={4} xs={0}>
+          <div className={styles.container}></div>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item lg={4} md={6} sm={8} xs={12}>
           <div className={styles.container__login}>
             <Logo />
             <Typography variant="h5" sx={{ mb: 6 }}>

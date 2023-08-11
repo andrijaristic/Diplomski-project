@@ -26,11 +26,18 @@
 .card {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  flex-grow: 1;
   align-items: last baseline;
 
   margin-top: 4rem;
   margin-right: 5rem;
   margin-left: 5rem;
   margin-bottom: 10rem;
+}
+
+@media only screen and (max-width: 846px) {
+  .card {
+    justify-content: center;
+    align-items: center;
+  }
 }

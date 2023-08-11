@@ -4,6 +4,7 @@ import AppLayout from "../layouts/AppLayout";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import { useAppSelector } from "../store/hooks";
+import ListingsPage from "../pages/ListingsPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -19,6 +20,7 @@ const AppRoutes: FC = () => {
         )}
         <Route element={<AppLayout />}>
           <Route path="" element={<HomePage />} />
+          <Route path="/listings" element={<ListingsPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Route>
       </Routes>

@@ -5,10 +5,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppRoutes from "./routes/AppRoutes";
 import { lightTheme } from "./styles/theme";
+import { CssBaseline } from "@mui/material";
 
 function App() {
   return (
     <main className="container light">
+      <CssBaseline />
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={lightTheme}>
           <AppRoutes />

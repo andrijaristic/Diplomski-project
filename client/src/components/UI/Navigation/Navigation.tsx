@@ -21,7 +21,7 @@ const generateNavItems = (isLoggedIn: boolean): IItem[] | null => {
     items.push({ name: "New property", to: "/third-element" });
     items.push({ name: "Account", to: "/account" }); // User name with drop-down menu for account and logout
   } else {
-    items.push({ name: "Search properties", to: "/second-element" });
+    items.push({ name: "Properties", to: "/listings" });
     items.push({ name: "New property", to: "/third-element" });
     items.push({ name: "Login", to: "/login" });
   }
@@ -46,9 +46,8 @@ const Navigation: FC = () => {
   });
 
   return (
-    <AppBar position="static" sx={{ background: "none" }}>
-      <CssBaseline />
-      <Container maxWidth="xl" sx={{ background: "none" }}>
+    <AppBar position="static" sx={{ background: "background", pl: 1, pr: 1 }}>
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Logo />
           <ul className={styles.nav}>{content}</ul>
