@@ -17,6 +17,7 @@ interface IProps {
   title: string;
   description: string;
   startingPrice: number;
+  reviewAmount: number;
   rating: number;
 }
 
@@ -40,8 +41,6 @@ const ListingsItem: FC<IProps> = (props) => {
         flexBasis: "32.33%",
 
         borderRadius: 2,
-        mb: 2,
-        mt: 2,
         // ml: "auto",
         // mr: "auto",
         "@media (max-width: 1468px)": {
@@ -81,7 +80,7 @@ const ListingsItem: FC<IProps> = (props) => {
             <StarIcon sx={{ color: "primary.main" }} />
             <Typography sx={{ ml: 1 }}>{`${props.rating.toFixed(
               1
-            )} (x reviews)`}</Typography>
+            )} (${props.reviewAmount.toFixed(0)} reviews)`}</Typography>
           </Grid>
           <Grid
             item

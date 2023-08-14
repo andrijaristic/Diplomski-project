@@ -13,13 +13,11 @@ interface IItem {
 const generateNavItems = (isLoggedIn: boolean): IItem[] | null => {
   const items: IItem[] = [];
 
+  items.push({ name: "Properties", to: "/listings" });
   if (isLoggedIn) {
-    items.push({ name: "Search properties", to: "/second-element" });
     items.push({ name: "New property", to: "/third-element" });
     items.push({ name: "Account", to: "/account" }); // User name with drop-down menu for account and logout
   } else {
-    items.push({ name: "Properties", to: "/listings" });
-    items.push({ name: "New property", to: "/third-element" });
     items.push({ name: "Login", to: "/login" });
   }
 
@@ -44,8 +42,11 @@ const Navigation: FC = () => {
 
   return (
     <AppBar
-      position="static"
-      sx={{ background: "background", scrollbarGutter: "stable both-edges" }}
+      position="sticky"
+      sx={{
+        background: "white",
+        scrollbarGutter: "stable both-edges",
+      }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>

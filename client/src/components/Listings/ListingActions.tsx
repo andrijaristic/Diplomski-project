@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import StyledButton from "../UI/Styled/StyledButton";
 import {
   Box,
@@ -7,6 +7,7 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
+import FilterModal from "../FilterModal/FilterModal";
 
 interface IProps {
   sort: string;
@@ -14,9 +15,18 @@ interface IProps {
 }
 
 const ListingActions: FC<IProps> = ({ sort, onChange }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleModalToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <>
-      <StyledButton sx={{ minWidth: "8rem", maxWidth: "fit-content" }}>
+      <StyledButton
+        sx={{ minWidth: "8rem", maxWidth: "fit-content" }}
+        onClick={handleModalToggle}
+      >
         Filters (opens modal)
       </StyledButton>
       <Box sx={{ ml: "auto", mr: 1, display: "flex", alignItems: "center" }}>
@@ -28,6 +38,7 @@ const ListingActions: FC<IProps> = ({ sort, onChange }) => {
           <MenuItem value="lowest-rating">Lowest Rating</MenuItem>
         </Select>
       </Box>
+      <FilterModal open={isOpen} onClose={handleModalToggle} />
     </>
   );
 };
