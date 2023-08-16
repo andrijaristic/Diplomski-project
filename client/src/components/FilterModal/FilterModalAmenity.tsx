@@ -24,7 +24,6 @@ const FilterModalAmenity: FC<IProps> = ({
   return (
     <Box
       sx={{
-        pt: 2,
         display: "flex",
         flexDirection: "row",
         flexBasis: "31.33%",
@@ -38,6 +37,7 @@ const FilterModalAmenity: FC<IProps> = ({
         name={id.toString()}
         checked={checked}
         onChange={handleChange}
+        sx={{ "& .MuiSvgIcon-root": { fontSize: 36 } }}
         inputProps={{ "aria-label": "controlled" }}
       />
       <Typography variant="subtitle2" sx={{ ml: -1 }}>

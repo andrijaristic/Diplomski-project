@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Fade, Grid, Pagination, SelectChangeEvent } from "@mui/material";
+import { Box, Fade, Grid, Pagination, SelectChangeEvent } from "@mui/material";
 import ListingsItem from "./ListingsItem";
 import ListingActions from "./ListingActions";
 
@@ -74,10 +74,12 @@ const Listings: FC = () => {
               item
               sx={{
                 pt: 2,
-                display: "flex",
+                pr: 2,
                 gap: 2,
+                display: "flex",
                 flexWrap: "wrap",
                 flexGrow: 1,
+                flexShrink: 1,
               }}
             >
               {content}
@@ -85,7 +87,7 @@ const Listings: FC = () => {
           </Grid>
         </Grid>
         <Grid item xs={3}>
-          {content}
+          <Box sx={{ position: "fixed" }}>{content}</Box>
         </Grid>
       </Grid>
     </Fade>

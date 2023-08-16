@@ -46,11 +46,11 @@ const ListingsItem: FC<IProps> = (props) => {
         "@media (max-width: 1468px)": {
           flexBasis: "32%",
         },
-        "@media (max-width: 1148px)": {
-          flexBasis: "31.33%",
+        "@media (max-width: 1260px)": {
+          flexBasis: "48%",
         },
-        "@media (max-width: 786px)": {
-          flexBasis: "30%",
+        "@media (max-width: 846px)": {
+          flexBasis: "98%",
         },
       }}
     >

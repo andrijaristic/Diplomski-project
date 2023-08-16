@@ -21,20 +21,21 @@ import {
   maxPrice as max,
   defaultGuests,
 } from "../../constants/Constants";
+import StyledButton from "../UI/Styled/StyledButton";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
+  display: "flex",
+  flexDirection: "column",
+  height: "82%",
+  minHeight: "10%",
+  maxHeight: "82%",
   transform: "translate(-50%, -50%)",
-  width: 600,
-  minHeight: 805,
-  maxHeight: 805,
-  overflow: "auto",
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
-  p: 4,
 };
 
 interface IProps {
@@ -159,180 +160,205 @@ const FilterModal: FC<IProps> = (props) => {
     >
       <Fade in={props.open}>
         <Box sx={style}>
-          <Grid container direction="column">
-            <Grid
-              item
-              sx={{
-                pb: 2,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <FilterModalSectionHeader
-                title="Select a date"
-                body="When do you want to travel?"
-              />
-              <Box
+          <Box
+            sx={{
+              p: 4,
+              width: 600,
+              minHeight: 105,
+              maxHeight: 705,
+              overflow: "auto",
+            }}
+          >
+            <Grid container direction="column">
+              <Grid
+                item
                 sx={{
-                  pt: 2,
+                  pb: 2,
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Box>
-                  <FormHelperText>Arrival Date</FormHelperText>
-                  <DatePicker
-                    disablePast
-                    sx={{ width: "11rem", mr: 1 }}
-                    value={checkinDate}
-                    onChange={(newValue) => setCheckinDate(newValue)}
-                  />
+                <FilterModalSectionHeader
+                  title="Select a date"
+                  body="When do you want to travel?"
+                />
+                <Box
+                  sx={{
+                    pt: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Box>
+                    <FormHelperText>Arrival Date</FormHelperText>
+                    <DatePicker
+                      disablePast
+                      sx={{ width: "11rem", mr: 1 }}
+                      value={checkinDate}
+                      onChange={(newValue) => setCheckinDate(newValue)}
+                    />
+                  </Box>
+                  <Box>
+                    {/* minDate for min. selectable date => Arrival Date will be that date  */}
+                    <FormHelperText>Departure Date</FormHelperText>
+                    <DatePicker
+                      disablePast
+                      minDate={checkinDate}
+                      sx={{ width: "11rem", mr: 1 }}
+                      defaultValue={checkoutDate}
+                      onChange={(newValue) => setCheckoutDate(newValue)}
+                    />
+                  </Box>
                 </Box>
-                <Box>
-                  {/* minDate for min. selectable date => Arrival Date will be that date  */}
-                  <FormHelperText>Departure Date</FormHelperText>
-                  <DatePicker
-                    disablePast
-                    minDate={checkinDate}
-                    sx={{ width: "11rem", mr: 1 }}
-                    defaultValue={checkoutDate}
-                    onChange={(newValue) => setCheckoutDate(newValue)}
-                  />
+              </Grid>
+              <Divider />
+              <Grid item sx={{ pt: 2, pb: 2 }}>
+                <FilterModalSectionHeader title="Guests" />
+                <Box
+                  sx={{
+                    display: "flex",
+                    pt: 1,
+                    pr: 0,
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography sx={{ pr: 1 }}>Adults</Typography>
+
+                    <ButtonGroup sx={{ display: "flex", alignItems: "center" }}>
+                      <Button
+                        variant="contained"
+                        onClick={handleAdultDecrement}
+                      >
+                        -
+                      </Button>
+                      <Typography sx={{ pl: 2, pr: 2 }}>{adults}</Typography>
+                      <Button
+                        variant="contained"
+                        onClick={handleAdultIncrement}
+                      >
+                        +
+                      </Button>
+                    </ButtonGroup>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      ml: "auto",
+                      pr: 1,
+                    }}
+                  >
+                    <Typography sx={{ pr: 1 }}>Children</Typography>
+
+                    <ButtonGroup sx={{ display: "flex", alignItems: "center" }}>
+                      <Button
+                        variant="contained"
+                        onClick={handleChildrenDecrement}
+                      >
+                        -
+                      </Button>
+                      <Typography sx={{ pl: 2, pr: 2 }}>{children}</Typography>
+                      <Button
+                        variant="contained"
+                        onClick={handleChildrenIncrement}
+                      >
+                        +
+                      </Button>
+                    </ButtonGroup>
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
-            <Divider />
-            <Grid item sx={{ pt: 2, pb: 2 }}>
-              <FilterModalSectionHeader title="Guests" />
-              <Box
+              </Grid>
+              <Divider />
+              <Grid item sx={{ pt: 2, pb: 2 }}>
+                <FilterModalSectionHeader
+                  title="Price range"
+                  body="Select an average nightly price"
+                />
+                <Slider
+                  value={priceRange}
+                  onChange={handlePriceRangeChange}
+                  min={min}
+                  max={max}
+                />
+                <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
+                  <Box
+                    sx={{
+                      p: 4,
+                      pt: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="h5">Min. price</Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <AttachMoneyIcon />
+                      {priceRange[0]}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      p: 4,
+                      pt: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="h5">Max. price</Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <AttachMoneyIcon />
+                      {priceRange[1]}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              <Divider />
+              <Grid
+                item
                 sx={{
+                  pt: 2,
+                  pb: 2,
                   display: "flex",
-                  pt: 1,
-                  pr: 0,
+                  flexDirection: "column",
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography sx={{ pr: 1 }}>Adults</Typography>
-
-                  <ButtonGroup sx={{ display: "flex", alignItems: "center" }}>
-                    <Button variant="contained" onClick={handleAdultDecrement}>
-                      -
-                    </Button>
-                    <Typography sx={{ pl: 2, pr: 2 }}>{adults}</Typography>
-                    <Button variant="contained" onClick={handleAdultIncrement}>
-                      +
-                    </Button>
-                  </ButtonGroup>
-                </Box>
+                <FilterModalSectionHeader
+                  title="Amenities"
+                  body="Choose the amenities that are most important"
+                />
                 <Box
                   sx={{
                     display: "flex",
-                    alignItems: "center",
-                    ml: "auto",
-                    pr: 1,
+                    flexWrap: "wrap",
+                    flexGrow: 1,
                   }}
                 >
-                  <Typography sx={{ pr: 1 }}>Children</Typography>
-
-                  <ButtonGroup sx={{ display: "flex", alignItems: "center" }}>
-                    <Button
-                      variant="contained"
-                      onClick={handleChildrenDecrement}
-                    >
-                      -
-                    </Button>
-                    <Typography sx={{ pl: 2, pr: 2 }}>{children}</Typography>
-                    <Button
-                      variant="contained"
-                      onClick={handleChildrenIncrement}
-                    >
-                      +
-                    </Button>
-                  </ButtonGroup>
+                  {amenities}
                 </Box>
-              </Box>
+              </Grid>
             </Grid>
-            <Divider />
-            <Grid item sx={{ pt: 2, pb: 2 }}>
-              <FilterModalSectionHeader
-                title="Price range"
-                body="Select an average nightly price"
-              />
-              <Slider
-                value={priceRange}
-                onChange={handlePriceRangeChange}
-                min={min}
-                max={max}
-              />
-              <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
-                <Box
-                  sx={{
-                    p: 4,
-                    pt: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="h5">Min. price</Typography>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <AttachMoneyIcon />
-                    {priceRange[0]}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    p: 4,
-                    pt: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="h5">Max. price</Typography>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <AttachMoneyIcon />
-                    {priceRange[1]}
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Divider />
-            <Grid
-              item
-              sx={{
-                pt: 2,
-                pb: 2,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <FilterModalSectionHeader
-                title="Amenities"
-                body="Choose the amenities that are most important"
-              />
-              <Box
-                sx={{ gap: 1, display: "flex", flexWrap: "wrap", flexGrow: 1 }}
-              >
-                {amenities}
-              </Box>
-            </Grid>
-          </Grid>
+          </Box>
+          <Box sx={{ p: 2, display: "flex", minHeight: 100, maxHeight: 100 }}>
+            <StyledButton sx={{ ml: "auto", width: "8rem", fontSize: 20 }}>
+              Search
+            </StyledButton>
+          </Box>
         </Box>
       </Fade>
     </Modal>
