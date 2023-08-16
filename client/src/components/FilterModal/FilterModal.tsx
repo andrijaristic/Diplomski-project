@@ -14,12 +14,13 @@ import {
 } from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { DatePicker } from "@mui/x-date-pickers";
+import FilterModalSectionHeader from "./FilterModalSection";
+import FilterModalAmenity from "./FilterModalAmenity";
 import {
   minPrice as min,
   maxPrice as max,
   defaultGuests,
 } from "../../constants/Constants";
-import FilterModalSectionHeader from "./FilterModalSection";
 
 const style = {
   position: "absolute",
@@ -41,12 +42,56 @@ interface IProps {
   onClose: () => void;
 }
 
+const DUMMY_AMENTIES = [
+  {
+    id: 1,
+    name: "Dummy amenity",
+  },
+  {
+    id: 2,
+    name: "Dummy amenity",
+  },
+  {
+    id: 3,
+    name: "Dummy amenity",
+  },
+  {
+    id: 4,
+    name: "Dummy amenity",
+  },
+  {
+    id: 5,
+    name: "Dummy amenity",
+  },
+  {
+    id: 6,
+    name: "Dummy amenity",
+  },
+  {
+    id: 7,
+    name: "Dummy amenity",
+  },
+  {
+    id: 8,
+    name: "Dummy amenity",
+  },
+  {
+    id: 9,
+    name: "Dummy amenity",
+  },
+  {
+    id: 10,
+    name: "Dummy amenity",
+  },
+];
+
 const FilterModal: FC<IProps> = (props) => {
   const [priceRange, setPriceRange] = useState<number[]>([min, max]);
   const [checkinDate, setCheckinDate] = useState<Date | null>(null);
   const [checkoutDate, setCheckoutDate] = useState<Date | null>(null);
   const [adults, setAdults] = useState<number>(defaultGuests);
   const [children, setChildren] = useState<number>(defaultGuests);
+  const [checkedAmenities, setCheckedAmenities] = useState<number[]>([]);
 
   const handlePriceRangeChange = (
     event: Event,
@@ -72,6 +117,32 @@ const FilterModal: FC<IProps> = (props) => {
       prevChildren === 0 ? prevChildren : --prevChildren
     );
   };
+
+  const handleAmenitiesCheckChange = (id: number) => () => {
+    const exists: boolean =
+      checkedAmenities.find((amenityId) => amenityId === id) !== undefined;
+
+    if (exists)
+      setCheckedAmenities((prevAmenities) =>
+        prevAmenities.filter((amenityId) => amenityId !== id)
+      );
+    else
+      setCheckedAmenities((prevAmenities) => {
+        return [...prevAmenities, id];
+      });
+  };
+
+  const amenities = DUMMY_AMENTIES.map((amenity) => (
+    <FilterModalAmenity
+      initialState={
+        checkedAmenities.find((checked) => checked === amenity.id) !== undefined
+      }
+      id={amenity.id}
+      key={amenity.id}
+      name={amenity.name}
+      onChange={handleAmenitiesCheckChange(amenity.id)}
+    />
+  ));
 
   return (
     <Modal
@@ -242,11 +313,24 @@ const FilterModal: FC<IProps> = (props) => {
               </Box>
             </Grid>
             <Divider />
-            <Grid item sx={{ pt: 2, pb: 2 }}>
+            <Grid
+              item
+              sx={{
+                pt: 2,
+                pb: 2,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <FilterModalSectionHeader
                 title="Amenities"
                 body="Choose the amenities that are most important"
               />
+              <Box
+                sx={{ gap: 1, display: "flex", flexWrap: "wrap", flexGrow: 1 }}
+              >
+                {amenities}
+              </Box>
             </Grid>
           </Grid>
         </Box>
