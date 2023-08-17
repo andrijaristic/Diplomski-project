@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   ButtonBase,
@@ -32,6 +33,13 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 }));
 
 const ListingsItem: FC<IProps> = (props) => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const handleNavigationClick = () => {
+    navigate(`${pathname}/1`);
+  };
+
   return (
     <Card
       sx={{
@@ -100,7 +108,9 @@ const ListingsItem: FC<IProps> = (props) => {
             </Box>
           </Grid>
           <Grid item sx={{ display: "flex" }}>
-            <StyledButton sx={{ ml: "auto" }}>View Availability</StyledButton>
+            <StyledButton onClick={handleNavigationClick} sx={{ ml: "auto" }}>
+              View Availability
+            </StyledButton>
           </Grid>
         </Grid>
       </CardContent>
