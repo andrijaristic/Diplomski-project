@@ -23,6 +23,15 @@ const PropertyPreview: FC<IProps> = ({ name, country, area }) => {
         sx={{
           width: 320,
           borderRadius: 2,
+          mb: 2,
+          mt: 2,
+          ml: 2,
+          "@media (max-width: 846px)": {
+            width: 640,
+            m: 0,
+            p: 0,
+            mb: 4,
+          },
         }}
       >
         <ButtonBase
@@ -55,7 +64,13 @@ const PropertyPreview: FC<IProps> = ({ name, country, area }) => {
             </FormHelperText>
           </div>
           <div className={styles.container__price}>
-            <Typography>Starting price</Typography>
+            <Typography
+              sx={{
+                ml: "auto",
+              }}
+            >
+              Starting price
+            </Typography>
             <Typography sx={{ ml: "auto" }}>$100</Typography>
           </div>
         </CardContent>

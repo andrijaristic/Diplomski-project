@@ -7,3 +7,11 @@ export const minPasswordLength: number = 4;
 export const minUsernameLength: number = 4;
 
 export const defaultErrorMessage: string = "Something went wrong";
+
+export const minPrice: number = 2;
+
+export const maxPrice: number = 1000;
+
+export const defaultGuests: number = 0;
+
+export const defaultSortOption: string = "";

@@ -12,7 +12,7 @@ const MyStyledButton = styled(Button)(({ theme }) => ({
 }));
 
 interface IProps extends React.PropsWithChildren {
-  sx: SxProps<Theme> | undefined;
+  sx?: SxProps<Theme> | undefined;
   disabled?: boolean;
   submit?: boolean;
   onClick?: () => void;

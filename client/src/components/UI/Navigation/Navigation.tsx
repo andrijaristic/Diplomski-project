@@ -1,12 +1,9 @@
 import React, { FC, useMemo } from "react";
 import { NavLink } from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Container from "@mui/material/Container";
-import { CssBaseline } from "@mui/material";
-import styles from "./Navigation.module.css";
-import Logo from "../Logo/Logo";
 import { useAppSelector } from "../../../store/hooks";
+import { AppBar, Container, Toolbar, Link } from "@mui/material";
+import Logo from "../Logo/Logo";
+import styles from "./Navigation.module.css";
 
 interface IItem {
   name: string;
@@ -16,13 +13,11 @@ interface IItem {
 const generateNavItems = (isLoggedIn: boolean): IItem[] | null => {
   const items: IItem[] = [];
 
+  items.push({ name: "Properties", to: "/listings" });
   if (isLoggedIn) {
-    items.push({ name: "Search properties", to: "/second-element" });
     items.push({ name: "New property", to: "/third-element" });
     items.push({ name: "Account", to: "/account" }); // User name with drop-down menu for account and logout
   } else {
-    items.push({ name: "Search properties", to: "/second-element" });
-    items.push({ name: "New property", to: "/third-element" });
     items.push({ name: "Login", to: "/login" });
   }
 
@@ -46,9 +41,14 @@ const Navigation: FC = () => {
   });
 
   return (
-    <AppBar position="static" sx={{ background: "none" }}>
-      <CssBaseline />
-      <Container maxWidth="xl" sx={{ background: "none" }}>
+    <AppBar
+      position="sticky"
+      sx={{
+        background: "white",
+        scrollbarGutter: "stable both-edges",
+      }}
+    >
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Logo />
           <ul className={styles.nav}>{content}</ul>
