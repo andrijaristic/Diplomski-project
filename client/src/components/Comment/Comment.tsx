@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { Box, Divider, Grid, Rating, Typography } from "@mui/material";
-import { CommentLocation } from "../../shared/types/enumerations";
 
 interface IProps {
   name?: string;
@@ -21,9 +20,9 @@ const Comment: FC<IProps> = (props) => {
       <Grid item sx={{ pt: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
           {!props.flag && <Typography variant="h6">Andrija Ristic</Typography>}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Typography variant="subtitle1">4</Typography>
-            <Rating value={4} size="small" readOnly />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="subtitle1">4.6</Typography>
+            <Rating value={4.6} precision={0.5} size="small" readOnly />
           </Box>
         </Box>
       </Grid>

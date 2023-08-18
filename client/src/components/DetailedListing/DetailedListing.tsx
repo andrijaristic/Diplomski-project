@@ -8,6 +8,7 @@ import DetailedListingAmenity from "./DetailedListingAmenity";
 import DetailedListingSearchAction from "./DetailedListingSearchAction";
 import StyledButton from "../UI/Styled/StyledButton";
 import Comment from "../Comment/Comment";
+import NewCommentForm from "../Comment/NewCommentForm";
 
 const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
 
@@ -37,8 +38,6 @@ const noAmenitiesMessage: JSX.Element = (
 
 const DetailedListing: FC = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [originalPathname, setOriginalPathname] = useState<string>(pathname);
   const [rating, setRating] = useState<number>(4.2);
 
   const handleBookingSectionNavigation = () => {
@@ -124,6 +123,7 @@ const DetailedListing: FC = () => {
                 <Typography id="reviews" variant="h5">
                   Comments
                 </Typography>
+                <NewCommentForm />
                 <Box
                   sx={{
                     pt: 2,
@@ -162,7 +162,12 @@ const DetailedListing: FC = () => {
                 alignItems: "center",
               }}
             >
-              <Rating value={rating} readOnly sx={{ ml: "auto" }} />
+              <Rating
+                value={rating}
+                precision={0.5}
+                readOnly
+                sx={{ ml: "auto" }}
+              />
               <Typography variant="body1" sx={{ pl: 1, pr: 1 }}>
                 {rating}
               </Typography>
