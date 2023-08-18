@@ -7,6 +7,7 @@ import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
 import DetailedListingAmenity from "./DetailedListingAmenity";
 import DetailedListingSearchAction from "./DetailedListingSearchAction";
 import StyledButton from "../UI/Styled/StyledButton";
+import Comment from "../Comment/Comment";
 
 const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
 
@@ -111,6 +112,19 @@ const DetailedListing: FC = () => {
             <Grid item sx={{ pt: 4 }}>
               <Box>
                 <Typography variant="h5">Comments</Typography>
+                <Box
+                  sx={{
+                    pt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  <Comment />
+                  <Comment />
+                  <Comment />
+                  <Comment />
+                </Box>
               </Box>
             </Grid>
           </Grid>
