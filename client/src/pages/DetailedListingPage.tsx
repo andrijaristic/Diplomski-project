@@ -4,8 +4,6 @@ import DetailedListing from "../components/DetailedListing/DetailedListing";
 
 const DetailedListingPage: FC = () => {
   const { id } = useParams();
-
-  console.log(id);
   return <DetailedListing />;
 };
 
