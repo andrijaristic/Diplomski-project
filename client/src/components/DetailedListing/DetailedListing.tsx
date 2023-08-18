@@ -43,11 +43,11 @@ const DetailedListing: FC = () => {
 
   const handleBookingSectionNavigation = () => {
     // navigate(`${originalPathname}/#bookings`);
-    scrollToSection();
+    scrollToSection("bookings")();
   };
 
-  const scrollToSection = () => {
-    const element: HTMLElement | null = document.getElementById("bookings");
+  const scrollToSection = (id: string) => () => {
+    const element: HTMLElement | null = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -55,10 +55,20 @@ const DetailedListing: FC = () => {
     <Fade in>
       <Grid container sx={{ pt: 8, pl: "5%", pr: "5%", pb: "5%" }}>
         <Grid item xs={9}>
-          <Grid container direction="column" sx={{ width: "94%" }}>
+          <Grid container direction="column" sx={{ width: "94%", pt: 2 }}>
             {/* Images, Description, Availability & Prices, Comments */}
             <Grid item sx={{ p: 1 }}>
-              <Box sx={{ height: "100%" }}>Bar for tping through page</Box>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <StyledButton onClick={scrollToSection("description")}>
+                  Description
+                </StyledButton>
+                <StyledButton onClick={scrollToSection("bookings")}>
+                  Prices & Booking
+                </StyledButton>
+                <StyledButton onClick={scrollToSection("reviews")}>
+                  Reviews
+                </StyledButton>
+              </Box>
             </Grid>
             <Grid item sx={{ p: 1 }}>
               <Box>
@@ -75,7 +85,7 @@ const DetailedListing: FC = () => {
               </Box>
             </Grid>
             <Grid item sx={{ p: 1, pt: 2 }}>
-              <Typography variant="h5" sx={{ pb: 1 }}>
+              <Typography id="description" variant="h5" sx={{ pb: 1 }}>
                 Our description
               </Typography>
               <Box
@@ -111,7 +121,9 @@ const DetailedListing: FC = () => {
             </Grid>
             <Grid item sx={{ pt: 4 }}>
               <Box>
-                <Typography variant="h5">Comments</Typography>
+                <Typography id="reviews" variant="h5">
+                  Comments
+                </Typography>
                 <Box
                   sx={{
                     pt: 2,
