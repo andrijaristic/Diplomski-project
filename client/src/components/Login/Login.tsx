@@ -141,7 +141,7 @@ const Login: FC = () => {
             }}
             sx={{ width: "24rem", mb: 2, backgroundColor: grey[100] }}
           />
-          <NavLink to="/">Don't have an account? Register</NavLink>
+          <NavLink to="/registration">Don't have an account? Register</NavLink>
           <StyledButton
             submit
             disabled={!isUsernameValid || !isPasswordValid}

@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import {
   Box,
+  Fade,
   Grid,
   IconButton,
   InputAdornment,
@@ -169,281 +170,279 @@ const Registration: FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        height: "100%",
-      }}
-    >
-      <Grid container direction="column">
-        <Grid
-          item
-          xs={2}
-          sx={{
-            pt: "20%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Logo />
-          <Typography variant="h5" sx={{ mb: 6 }}>
-            USER REGISTRATION
-          </Typography>
-        </Grid>
-        <Grid item xs={10}>
-          <Box
+    <Fade in>
+      <Box
+        sx={{
+          height: "100%",
+        }}
+      >
+        <Grid container direction="column">
+          <Grid
+            item
+            xs={2}
             sx={{
-              width: "100%",
-            }}
-          >
-            <Stepper activeStep={activeStep} alternativeLabel>
-              <Step>
-                <StepLabel />
-              </Step>
-              <Step>
-                <StepLabel />
-              </Step>
-            </Stepper>
-          </Box>
-          {/* Step 1 */}
-          <Box
-            sx={{
-              pt: 4,
-              display: activeStep === 0 ? "flex" : "none",
+              pt: "20%",
+              display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
               alignItems: "center",
-              gap: 4,
             }}
           >
-            <TextField
-              required
-              variant="outlined"
-              label="Username"
-              name="username"
-              id="username"
-              error={!isUsernameValid && isUsernameTouched}
-              onChange={handleUsernameChange}
-              onBlur={handleUsernameBlur}
-              autoComplete="username"
-              placeholder="Enter username"
-              sx={{
-                width: "80%",
-              }}
-            />
-            <TextField
-              required
-              variant="outlined"
-              label="Email address"
-              name="email"
-              id="email"
-              error={!isEmailValid && isEmailTouched}
-              onChange={handleEmailChange}
-              onBlur={handleEmailBlur}
-              autoComplete="email"
-              placeholder="Enter email"
-              sx={{
-                width: "80%",
-              }}
-            />
-            <TextField
-              required
-              type="password"
-              variant="outlined"
-              label="Password"
-              name="password"
-              id="password"
-              error={!isPasswordValid && isPasswordTouched}
-              onChange={handlePasswordChange}
-              onBlur={handlePasswordBlur}
-              autoComplete="password"
-              placeholder="Enter password"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                width: "80%",
-              }}
-            />
-            <TextField
-              required
-              type="password"
-              variant="outlined"
-              label="Confirm password"
-              name="confirmPassword"
-              id="confirmPassword"
-              error={!isConfirmPasswordValid && isConfirmPasswordTouched}
-              onChange={handleConfirmPasswordChange}
-              onBlur={handleConfirmPasswordBlur}
-              autoComplete="password"
-              placeholder="Confirm password"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                width: "80%",
-              }}
-            />
-            <Box sx={{ display: "flex", width: "80%" }}>
-              <StyledButton
-                sx={{ ml: "auto", width: "42%" }}
-                onClick={handleNextStep}
-              >
-                Next
-              </StyledButton>
-            </Box>
-          </Box>
-          {/* Step 2 */}
-          <Box
-            sx={{
-              pt: 4,
-              display: activeStep === 1 ? "flex" : "none",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "row", gap: 4 }}>
-              <TextField
-                required
-                variant="outlined"
-                label="First name"
-                name="firstName"
-                id="firstName"
-                error={!isFirstNameValid && isFirstNameTouched}
-                onChange={handleFirstNameChange}
-                onBlur={handleFirstNameBlur}
-                autoComplete="name"
-                placeholder="Enter first name"
-              />
-              <TextField
-                required
-                variant="outlined"
-                label="Last name"
-                name="lastName"
-                id="lastName"
-                error={!isLastNameValid && isLastNameTouched}
-                onChange={handleLastNameChange}
-                onBlur={handleLastNameBlur}
-                autoComplete="name"
-                placeholder="Enter last name"
-              />
-            </Box>
+            <Logo />
+            <Typography variant="h5" sx={{ mb: 6 }}>
+              USER REGISTRATION
+            </Typography>
+          </Grid>
+          <Grid item xs={10}>
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "80%",
+                width: "100%",
+              }}
+            >
+              <Stepper activeStep={activeStep} alternativeLabel>
+                <Step>
+                  <StepLabel />
+                </Step>
+                <Step>
+                  <StepLabel />
+                </Step>
+              </Stepper>
+            </Box>
+            {/* Step 1 */}
+            <Box
+              sx={{
+                pt: 4,
+                display: activeStep === 0 ? "flex" : "none",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
                 gap: 4,
               }}
             >
               <TextField
                 required
-                type="text"
                 variant="outlined"
-                label="Country"
-                name="country"
-                id="country"
-                error={!isCountryValid && isCountryTouched}
-                onChange={handleCountryChange}
-                onBlur={handleCountryBlur}
-                autoComplete="country"
-                placeholder="Enter country name"
+                label="Username"
+                name="username"
+                id="username"
+                error={!isUsernameValid && isUsernameTouched}
+                onChange={handleUsernameChange}
+                onBlur={handleUsernameBlur}
+                autoComplete="username"
+                placeholder="Enter username"
+                sx={{
+                  width: "80%",
+                }}
               />
+              <TextField
+                required
+                variant="outlined"
+                label="Email address"
+                name="email"
+                id="email"
+                error={!isEmailValid && isEmailTouched}
+                onChange={handleEmailChange}
+                onBlur={handleEmailBlur}
+                autoComplete="email"
+                placeholder="Enter email"
+                sx={{
+                  width: "80%",
+                }}
+              />
+              <TextField
+                required
+                type="password"
+                variant="outlined"
+                label="Password"
+                name="password"
+                id="password"
+                error={!isPasswordValid && isPasswordTouched}
+                onChange={handlePasswordChange}
+                onBlur={handlePasswordBlur}
+                autoComplete="password"
+                placeholder="Enter password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  width: "80%",
+                }}
+              />
+              <TextField
+                required
+                type="password"
+                variant="outlined"
+                label="Confirm password"
+                name="confirmPassword"
+                id="confirmPassword"
+                error={!isConfirmPasswordValid && isConfirmPasswordTouched}
+                onChange={handleConfirmPasswordChange}
+                onBlur={handleConfirmPasswordBlur}
+                autoComplete="password"
+                placeholder="Confirm password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  width: "80%",
+                }}
+              />
+              <Box sx={{ display: "flex", width: "80%" }}>
+                <StyledButton
+                  sx={{ ml: "auto", width: "42%" }}
+                  onClick={handleNextStep}
+                >
+                  Next
+                </StyledButton>
+              </Box>
+            </Box>
+            {/* Step 2 */}
+            <Box
+              sx={{
+                pt: 4,
+                display: activeStep === 1 ? "flex" : "none",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <Box sx={{ display: "flex", flexDirection: "row", gap: 4 }}>
+                <TextField
+                  required
+                  variant="outlined"
+                  label="First name"
+                  name="firstName"
+                  id="firstName"
+                  error={!isFirstNameValid && isFirstNameTouched}
+                  onChange={handleFirstNameChange}
+                  onBlur={handleFirstNameBlur}
+                  autoComplete="name"
+                  placeholder="Enter first name"
+                />
+                <TextField
+                  required
+                  variant="outlined"
+                  label="Last name"
+                  name="lastName"
+                  id="lastName"
+                  error={!isLastNameValid && isLastNameTouched}
+                  onChange={handleLastNameChange}
+                  onBlur={handleLastNameBlur}
+                  autoComplete="name"
+                  placeholder="Enter last name"
+                />
+              </Box>
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "row",
-                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "80%",
+                  gap: 4,
                 }}
               >
-                <InputLabel sx={{ pr: 2 }}>Role:</InputLabel>
-                <Select
-                  label="Role"
-                  id="role"
-                  value={role}
-                  onChange={handleRoleChange}
-                  sx={{ width: "max-content", mr: "auto" }}
+                <TextField
+                  required
+                  type="text"
+                  variant="outlined"
+                  label="Country"
+                  name="country"
+                  id="country"
+                  error={!isCountryValid && isCountryTouched}
+                  onChange={handleCountryChange}
+                  onBlur={handleCountryBlur}
+                  autoComplete="country"
+                  placeholder="Enter country name"
+                />
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
                 >
-                  <MenuItem value={0}>Rentee</MenuItem>
-                  <MenuItem value={1}>Property owner</MenuItem>
-                </Select>
+                  <InputLabel sx={{ pr: 2 }}>Role:</InputLabel>
+                  <Select
+                    label="Role"
+                    id="role"
+                    value={role}
+                    onChange={handleRoleChange}
+                    sx={{ width: "max-content", mr: "auto" }}
+                  >
+                    <MenuItem value={0}>Rentee</MenuItem>
+                    <MenuItem value={1}>Property owner</MenuItem>
+                  </Select>
+                </Box>
+              </Box>
+              <TextField
+                required
+                type="tel"
+                variant="outlined"
+                label="Phone number"
+                name="phoneNumber"
+                id="phoneNumber"
+                error={!isPhoneNumberValid && isPhoneNumberTouched}
+                onChange={handlePhoneNumberChange}
+                onBlur={handlePhoneNumberBlur}
+                autoComplete="telephone"
+                placeholder="Enter phone number"
+                sx={{
+                  width: "80%",
+                }}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "80%",
+                }}
+              >
+                <StyledButton sx={{ width: "42%" }} onClick={handleBackStep}>
+                  Back
+                </StyledButton>
+                <StyledButton
+                  disabled={
+                    !isUsernameValid ||
+                    !isPasswordValid ||
+                    !isConfirmPasswordValid ||
+                    !isEmailValid ||
+                    !isFirstNameValid ||
+                    !isLastNameValid ||
+                    !isCountryValid ||
+                    !isPhoneNumberValid
+                  }
+                  sx={{ width: "42%" }}
+                  onClick={handleNextStep}
+                >
+                  Submit
+                </StyledButton>
               </Box>
             </Box>
-            <TextField
-              required
-              type="tel"
-              variant="outlined"
-              label="Phone number"
-              name="phoneNumber"
-              id="phoneNumber"
-              error={!isPhoneNumberValid && isPhoneNumberTouched}
-              onChange={handlePhoneNumberChange}
-              onBlur={handlePhoneNumberBlur}
-              autoComplete="telephone"
-              placeholder="Enter phone number"
-              sx={{
-                width: "80%",
-              }}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "80%",
-              }}
-            >
-              <StyledButton sx={{ width: "42%" }} onClick={handleBackStep}>
-                Back
-              </StyledButton>
-              <StyledButton
-                disabled={
-                  !isUsernameValid ||
-                  !isPasswordValid ||
-                  !isConfirmPasswordValid ||
-                  !isEmailValid ||
-                  !isFirstNameValid ||
-                  !isLastNameValid ||
-                  !isCountryValid ||
-                  !isPhoneNumberValid
-                }
-                sx={{ width: "42%" }}
-                onClick={handleNextStep}
-              >
-                Submit
-              </StyledButton>
-            </Box>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </Fade>
   );
 };
 
 export default Registration;
-
-/*                 
-
-                   */
