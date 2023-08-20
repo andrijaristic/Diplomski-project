@@ -1,7 +1,8 @@
-import { FC, PropsWithChildren } from "react";
+import { FC } from "react";
 import { Box, Fade, Grid } from "@mui/material";
+import { Outlet } from "react-router-dom";
 
-const UserForm: FC<PropsWithChildren> = ({ children }) => {
+const UserFormLayout: FC = () => {
   return (
     <Fade in>
       <Grid container sx={{ height: "100vh", width: "100%" }}>
@@ -20,11 +21,11 @@ const UserForm: FC<PropsWithChildren> = ({ children }) => {
           />
         </Grid>
         <Grid item lg={4} md={6} sm={8} xs={12}>
-          {children}
+          <Outlet />
         </Grid>
       </Grid>
     </Fade>
   );
 };
 
-export default UserForm;
+export default UserFormLayout;
