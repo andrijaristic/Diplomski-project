@@ -1,7 +1,8 @@
 import { FC } from "react";
+import Registration from "../components/Registration/Registration";
 
 const RegistrationPage: FC = () => {
-  return <h1>Registration page</h1>;
+  return <Registration />;
 };
 
 export default RegistrationPage;
