@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import {
   Box,
   Grid,
@@ -17,12 +17,140 @@ import {
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import Logo from "../UI/Logo/Logo";
 import StyledButton from "../UI/Styled/StyledButton";
+import {
+  emailRegex,
+  minCountryNameLength,
+  minPasswordLength,
+  minTextInputLength,
+  minUsernameLength,
+  phoneNumberRegex,
+} from "../../constants/Constants";
 
 const Registration: FC = () => {
-  const [role, setRole] = useState<string>("0");
-
   const [activeStep, setActiveStep] = useState<number>(0);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const [isUsernameValid, setIsUsernameValid] = useState<boolean>(false);
+  const [isUsernameTouched, setIsUsernameTouched] = useState<boolean>(false);
+
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
+  const [isPasswordTouched, setIsPasswordTouched] = useState<boolean>(false);
+
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] =
+    useState<boolean>(false);
+  const [isConfirmPasswordTouched, setIsConfirmPasswordTouched] =
+    useState<boolean>(false);
+
+  const [isEmailValid, setIsEmailValid] = useState<boolean>(false);
+  const [isEmailTouched, setIsEmailTouched] = useState<boolean>(false);
+
+  const [isFirstNameValid, setIsFirstNameValid] = useState<boolean>(false);
+  const [isFirstNameTouched, setIsFirstNameTouched] = useState<boolean>(false);
+
+  const [isLastNameValid, setIsLastNameValid] = useState<boolean>(false);
+  const [isLastNameTouched, setIsLastNameTouched] = useState<boolean>(false);
+
+  const [isCountryValid, setIsCountryValid] = useState<boolean>(false);
+  const [isCountryTouched, setIsCountryTouched] = useState<boolean>(false);
+
+  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState<boolean>(false);
+  const [isPhoneNumberTouched, setIsPhoneNumberTouched] =
+    useState<boolean>(false);
+
+  const [role, setRole] = useState<string>("0");
+
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUsernameValid(
+      event.target.value !== null &&
+        event.target.value.trim().length >= minUsernameLength
+    );
+  };
+
+  const handleUsernameBlur = () => {
+    setIsUsernameTouched(true);
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsPasswordValid(
+      event.target.value !== null &&
+        event.target.value.trim().length >= minPasswordLength
+    );
+  };
+
+  const handlePasswordBlur = () => {
+    setIsPasswordTouched(true);
+  };
+
+  const handleConfirmPasswordChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsConfirmPasswordValid(
+      event.target.value !== null &&
+        event.target.value.trim().length >= minPasswordLength
+    );
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    setIsConfirmPasswordTouched(true);
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsEmailValid(
+      event.target.value !== null && emailRegex.test(event.target.value.trim())
+    );
+  };
+
+  const handleEmailBlur = () => {
+    setIsEmailTouched(true);
+  };
+
+  const handleFirstNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsFirstNameValid(
+      event.target.value !== null &&
+        event.target.value.trim().length > minTextInputLength
+    );
+  };
+
+  const handleFirstNameBlur = () => {
+    setIsFirstNameTouched(true);
+  };
+
+  const handleLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsLastNameValid(
+      event.target.value !== null &&
+        event.target.value.trim().length > minTextInputLength
+    );
+  };
+
+  const handleLastNameBlur = () => {
+    setIsLastNameTouched(true);
+  };
+
+  const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCountryValid(
+      event.target.value !== null &&
+        event.target.value.trim().length >= minCountryNameLength
+    );
+  };
+
+  const handleCountryBlur = () => {
+    setIsCountryTouched(true);
+  };
+
+  const handlePhoneNumberChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsPhoneNumberValid(
+      event.target.value !== null &&
+        phoneNumberRegex.test(event.target.value.trim())
+    );
+  };
+
+  const handlePhoneNumberBlur = () => {
+    setIsPhoneNumberTouched(true);
+  };
 
   const handleRoleChange = (event: SelectChangeEvent) => {
     setRole(event.target.value as string);
@@ -94,6 +222,9 @@ const Registration: FC = () => {
               label="Username"
               name="username"
               id="username"
+              error={!isUsernameValid && isUsernameTouched}
+              onChange={handleUsernameChange}
+              onBlur={handleUsernameBlur}
               autoComplete="username"
               placeholder="Enter username"
               sx={{
@@ -106,6 +237,9 @@ const Registration: FC = () => {
               label="Email address"
               name="email"
               id="email"
+              error={!isEmailValid && isEmailTouched}
+              onChange={handleEmailChange}
+              onBlur={handleEmailBlur}
               autoComplete="email"
               placeholder="Enter email"
               sx={{
@@ -119,6 +253,9 @@ const Registration: FC = () => {
               label="Password"
               name="password"
               id="password"
+              error={!isPasswordValid && isPasswordTouched}
+              onChange={handlePasswordChange}
+              onBlur={handlePasswordBlur}
               autoComplete="password"
               placeholder="Enter password"
               InputProps={{
@@ -145,6 +282,9 @@ const Registration: FC = () => {
               label="Confirm password"
               name="confirmPassword"
               id="confirmPassword"
+              error={!isConfirmPasswordValid && isConfirmPasswordTouched}
+              onChange={handleConfirmPasswordChange}
+              onBlur={handleConfirmPasswordBlur}
               autoComplete="password"
               placeholder="Confirm password"
               InputProps={{
@@ -191,6 +331,9 @@ const Registration: FC = () => {
                 label="First name"
                 name="firstName"
                 id="firstName"
+                error={!isFirstNameValid && isFirstNameTouched}
+                onChange={handleFirstNameChange}
+                onBlur={handleFirstNameBlur}
                 autoComplete="name"
                 placeholder="Enter first name"
               />
@@ -200,6 +343,9 @@ const Registration: FC = () => {
                 label="Last name"
                 name="lastName"
                 id="lastName"
+                error={!isLastNameValid && isLastNameTouched}
+                onChange={handleLastNameChange}
+                onBlur={handleLastNameBlur}
                 autoComplete="name"
                 placeholder="Enter last name"
               />
@@ -220,6 +366,9 @@ const Registration: FC = () => {
                 label="Country"
                 name="country"
                 id="country"
+                error={!isCountryValid && isCountryTouched}
+                onChange={handleCountryChange}
+                onBlur={handleCountryBlur}
                 autoComplete="country"
                 placeholder="Enter country name"
               />
@@ -250,6 +399,9 @@ const Registration: FC = () => {
               label="Phone number"
               name="phoneNumber"
               id="phoneNumber"
+              error={!isPhoneNumberValid && isPhoneNumberTouched}
+              onChange={handlePhoneNumberChange}
+              onBlur={handlePhoneNumberBlur}
               autoComplete="telephone"
               placeholder="Enter phone number"
               sx={{
@@ -266,7 +418,20 @@ const Registration: FC = () => {
               <StyledButton sx={{ width: "42%" }} onClick={handleBackStep}>
                 Back
               </StyledButton>
-              <StyledButton sx={{ width: "42%" }} onClick={handleNextStep}>
+              <StyledButton
+                disabled={
+                  !isUsernameValid ||
+                  !isPasswordValid ||
+                  !isConfirmPasswordValid ||
+                  !isEmailValid ||
+                  !isFirstNameValid ||
+                  !isLastNameValid ||
+                  !isCountryValid ||
+                  !isPhoneNumberValid
+                }
+                sx={{ width: "42%" }}
+                onClick={handleNextStep}
+              >
                 Submit
               </StyledButton>
             </Box>
