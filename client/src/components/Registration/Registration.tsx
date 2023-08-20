@@ -26,6 +26,8 @@ import {
   minUsernameLength,
   phoneNumberRegex,
 } from "../../constants/Constants";
+import { IUserRegistration } from "../../shared/interfaces/userInterfaces";
+import { UserType } from "../../shared/types/enumerations";
 
 const Registration: FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -169,9 +171,59 @@ const Registration: FC = () => {
     setShowPassword((show) => !show);
   };
 
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const data = new FormData(event.currentTarget);
+    const username = data.get("username");
+    const password = data.get("password");
+    const confirmPassword = data.get("confirmPassword");
+    const firstName = data.get("firstName");
+    const lastName = data.get("lastName");
+    const country = data.get("country");
+    const email = data.get("email");
+    const phoneNumber = data.get("phoneNumber");
+
+    if (
+      !username ||
+      !password ||
+      !firstName ||
+      !lastName ||
+      !email ||
+      !country ||
+      !phoneNumber
+    ) {
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setIsPasswordValid(false);
+      setIsConfirmPasswordValid(false);
+      setActiveStep(0);
+
+      return;
+    }
+
+    const userRegistration: IUserRegistration = {
+      username: username.toString().trim(),
+      password: password.toString().trim(),
+      firstName: firstName.toString().trim(),
+      lastName: lastName.toString().trim(),
+      country: country.toString().trim(),
+      email: email.toString().trim(),
+      phoneNumber: phoneNumber.toString().trim(),
+      role: UserType[parseInt(role)].toString().trim(),
+    };
+
+    console.log(userRegistration);
+    // dispatch(registerAction(userRegistration));
+  };
+
   return (
     <Fade in>
       <Box
+        component="form"
+        onSubmit={handleFormSubmit}
         sx={{
           height: "100%",
         }}
@@ -432,7 +484,7 @@ const Registration: FC = () => {
                     !isPhoneNumberValid
                   }
                   sx={{ width: "42%" }}
-                  onClick={handleNextStep}
+                  submit
                 >
                   Submit
                 </StyledButton>
