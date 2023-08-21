@@ -2,6 +2,14 @@ import { FC, useState } from "react";
 import { Box, Fade, Grid, Pagination, SelectChangeEvent } from "@mui/material";
 import ListingsItem from "./ListingsItem";
 import ListingActions from "./ListingActions";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 const DUMMY_OBJECT = {
   src: "header-background.jpg", // image src
@@ -31,6 +39,22 @@ const Listings: FC = () => {
       />
     );
   }
+
+  // lat - lon
+  const position = [51.505, -0.09];
+
+  // gets lat-lon on click
+  const MapEvents = () => {
+    useMapEvents({
+      click(e) {
+        // setState your coords here
+        // coords exist in "e.latlng.lat" and "e.latlng.lng"
+        console.log(e.latlng.lat);
+        console.log(e.latlng.lng);
+      },
+    });
+    return false;
+  };
 
   return (
     <Fade in>
@@ -87,7 +111,24 @@ const Listings: FC = () => {
           </Grid>
         </Grid>
         <Grid item xs={3}>
-          <Box sx={{ position: "fixed" }}>{content}</Box>
+          <Box sx={{ position: "fixed", height: "100%", width: "25%" }}>
+            <MapContainer
+              center={position}
+              zoom={13}
+              style={{ height: "100vh", width: "100wh" }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <MapEvents />
+              <Marker position={position}>
+                <Popup>
+                  A pretty CSS3 popup. <br /> Easily customizable.
+                </Popup>
+              </Marker>
+            </MapContainer>
+          </Box>
         </Grid>
       </Grid>
     </Fade>
