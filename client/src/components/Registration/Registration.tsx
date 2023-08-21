@@ -302,7 +302,7 @@ const Registration: FC = () => {
               />
               <TextField
                 required
-                type="password"
+                type={showPassword ? "text" : "password"}
                 variant="outlined"
                 label="Password"
                 name="password"
@@ -331,7 +331,7 @@ const Registration: FC = () => {
               />
               <TextField
                 required
-                type="password"
+                type={showPassword ? "text" : "password"}
                 variant="outlined"
                 label="Confirm password"
                 name="confirmPassword"
