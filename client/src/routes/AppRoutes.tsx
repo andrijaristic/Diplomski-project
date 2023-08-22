@@ -1,13 +1,14 @@
 import { FC } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAppSelector } from "../store/hooks";
 import AppLayout from "../layouts/AppLayout";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
-import { useAppSelector } from "../store/hooks";
 import ListingsPage from "../pages/ListingsPage";
 import DetailedListingPage from "../pages/DetailedListingPage";
 import RegistrationPage from "../pages/RegistrationPage";
 import UserFormLayout from "../components/UI/UserFormLayout/UserFormLayout";
+import AccountPage from "../pages/AccountPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -26,6 +27,7 @@ const AppRoutes: FC = () => {
           <Route path="" element={<HomePage />} />
           <Route path="/listings" element={<ListingsPage />} />
           <Route path="/listings/:id" element={<DetailedListingPage />} />
+          <Route path="/account" element={<AccountPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Route>
       </Routes>
