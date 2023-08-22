@@ -1,17 +1,15 @@
 import { FC, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import Fade from "@mui/material/Fade";
-import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { grey } from "@mui/material/colors";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import StyledButton from "../UI/Styled/StyledButton";
 import Logo from "../UI/Logo/Logo";
 import { useAppDispatch } from "../../store/hooks";
@@ -88,90 +86,81 @@ const Login: FC = () => {
   };
 
   return (
-    <Fade in>
-      <Grid container spacing={0} sx={{ height: "100vh", width: "100%" }}>
-        <Grid item lg={8} md={6} sm={4} xs={0}>
-          <div className={styles.container}></div>
-        </Grid>
-        <Grid item lg={4} md={6} sm={8} xs={12}>
-          <div className={styles.container__login}>
-            <Logo />
-            <Typography variant="h5" sx={{ mb: 6 }}>
-              USER LOGIN
-            </Typography>
-            <div className={styles.login__inner}>
-              <Box
-                noValidate
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{ display: "flex", flexDirection: "column" }}
-              >
-                <TextField
-                  required
-                  variant="outlined"
-                  label="Username"
-                  name="username"
-                  id="username"
-                  error={!isUsernameValid && isUsernameTouched}
-                  autoComplete="username"
-                  placeholder="Input username"
-                  onChange={handleUsernameChange}
-                  onBlur={handleUsernameBlur}
-                  sx={{
-                    width: "24rem",
-                    mb: 6,
-                    backgroundColor: grey[100],
-                  }}
-                />
-                <TextField
-                  required
-                  variant="outlined"
-                  label="Password"
-                  name="password"
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  error={!isPasswordValid && isPasswordTouched}
-                  placeholder="Input password"
-                  onChange={handlePasswordChange}
-                  onBlur={handlePasswordBlur}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ width: "24rem", mb: 2, backgroundColor: grey[100] }}
-                />
-                <NavLink to="/">Don't have an account? Register</NavLink>
-                <StyledButton
-                  submit
-                  disabled={!isUsernameValid || !isPasswordValid}
-                  sx={{ height: "2.4rem", mt: 2, width: "100%" }}
-                >
-                  Sign in
-                </StyledButton>
-              </Box>
-              <Divider variant="middle" sx={{ mt: 2, width: "100%" }}>
-                Or sign in with
-              </Divider>
-              <div className={styles["social-media"]}>
-                <GoogleLogin
-                  onSuccess={handleGoogleLogin}
-                  onError={handleGoogleLoginError}
-                />
-              </div>
-            </div>
-          </div>
-        </Grid>
-      </Grid>
-    </Fade>
+    <div className={styles.container__login}>
+      <Logo />
+      <Typography variant="h5" sx={{ mb: 6 }}>
+        USER LOGIN
+      </Typography>
+      <div className={styles.login__inner}>
+        <Box
+          noValidate
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: "flex", flexDirection: "column" }}
+        >
+          <TextField
+            required
+            variant="outlined"
+            label="Username"
+            name="username"
+            id="username"
+            error={!isUsernameValid && isUsernameTouched}
+            autoComplete="username"
+            placeholder="Input username"
+            onChange={handleUsernameChange}
+            onBlur={handleUsernameBlur}
+            sx={{
+              width: "24rem",
+              mb: 6,
+              backgroundColor: grey[100],
+            }}
+          />
+          <TextField
+            required
+            variant="outlined"
+            label="Password"
+            name="password"
+            id="password"
+            type={showPassword ? "text" : "password"}
+            error={!isPasswordValid && isPasswordTouched}
+            placeholder="Input password"
+            onChange={handlePasswordChange}
+            onBlur={handlePasswordBlur}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{ width: "24rem", mb: 2, backgroundColor: grey[100] }}
+          />
+          <NavLink to="/registration">Don't have an account? Register</NavLink>
+          <StyledButton
+            submit
+            disabled={!isUsernameValid || !isPasswordValid}
+            sx={{ height: "2.4rem", mt: 2, width: "100%" }}
+          >
+            Sign in
+          </StyledButton>
+        </Box>
+        <Divider variant="middle" sx={{ mt: 2, width: "100%" }}>
+          Or sign in with
+        </Divider>
+        <div className={styles["social-media"]}>
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={handleGoogleLoginError}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

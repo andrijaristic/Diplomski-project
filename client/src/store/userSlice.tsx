@@ -4,10 +4,14 @@ import {
   IAuth,
   IExternalLogin,
   IUserLogin,
+  IUserRegistration,
 } from "../shared/interfaces/userInterfaces";
-import { externalLogin, login } from "../services/UserService";
+import { externalLogin, login, register } from "../services/UserService";
 import { defaultErrorMessage } from "../constants/Constants";
-import { errorNotification } from "../utils/toastNotificationUtil";
+import {
+  errorNotification,
+  successNotification,
+} from "../utils/toastNotificationUtil";
 
 export interface UserState {
   token: string | null;
@@ -38,6 +42,18 @@ export const externalLoginAction = createAsyncThunk(
   async (loginData: IExternalLogin, thunkApi) => {
     try {
       const response = await externalLogin(loginData);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const registerAction = createAsyncThunk(
+  "user/register",
+  async (userRegistration: IUserRegistration, thunkApi) => {
+    try {
+      const response = await register(userRegistration);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -94,6 +110,24 @@ const userSlice = createSlice({
       localStorage.setItem("token", token);
     });
     builder.addCase(externalLoginAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // REGISTER
+    builder.addCase(registerAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(registerAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("You have successfully registered!");
+    });
+    builder.addCase(registerAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;

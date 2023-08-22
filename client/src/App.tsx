@@ -14,7 +14,7 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={lightTheme}>
           <AppRoutes />
-          <ToastContainer theme="dark" />
+          <ToastContainer theme="dark" limit={2} newestOnTop />
         </ThemeProvider>
       </LocalizationProvider>
     </main>
