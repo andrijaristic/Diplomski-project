@@ -1,27 +1,30 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
-import { Box, Grid } from "@mui/material";
+import { Box, Fade, Grid } from "@mui/material";
 import AccountNavigation from "./AccountNavigation";
 
 const Account: FC = () => {
   return (
-    <Box
-      sx={{
-        width: "100%",
-        pt: 8,
-        pr: "20%",
-        pl: "20%",
-      }}
-    >
-      <Grid container sx={{ height: "100%" }}>
-        <Grid item xs={3}>
-          <AccountNavigation />
+    <Fade in>
+      <Box
+        sx={{
+          width: "100%",
+          minWidth: "fit-content",
+          pt: 8,
+          pr: "8%",
+          pl: "8%",
+        }}
+      >
+        <Grid container spacing={2} sx={{ height: "100%" }}>
+          <Grid item xs={3}>
+            <AccountNavigation />
+          </Grid>
+          <Grid item xs={9}>
+            <Outlet />
+          </Grid>
         </Grid>
-        <Grid item xs={9}>
-          <Outlet />
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </Fade>
   );
 };
 

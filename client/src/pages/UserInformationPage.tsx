@@ -1,10 +1,8 @@
 import { FC } from "react";
-import { useParams } from "react-router-dom";
+import UserInformation from "../components/UserInformation/UserInformation";
 
 const UserInformationPage: FC = () => {
-  const { password } = useParams();
-  console.log(`${password} HELLO`);
-  return <h1>UserInformationPage</h1>;
+  return <UserInformation />;
 };
 
 export default UserInformationPage;
