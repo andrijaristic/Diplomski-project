@@ -9,6 +9,7 @@ import DetailedListingPage from "../pages/DetailedListingPage";
 import RegistrationPage from "../pages/RegistrationPage";
 import UserFormLayout from "../components/UI/UserFormLayout/UserFormLayout";
 import AccountPage from "../pages/AccountPage";
+import UserInformationPage from "../pages/UserInformationPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -27,8 +28,11 @@ const AppRoutes: FC = () => {
           <Route path="" element={<HomePage />} />
           <Route path="/listings" element={<ListingsPage />} />
           <Route path="/listings/:id" element={<DetailedListingPage />} />
-          <Route path="/account" element={<AccountPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
+          <Route path="/:id" element={<AccountPage />}>
+            <Route index element={<UserInformationPage />} />
+            <Route path="change-password" element={<UserInformationPage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
