@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
-import { Box, Fade, Grid } from "@mui/material";
+import { Box, Fade, Grid, Paper } from "@mui/material";
 import AccountNavigation from "./AccountNavigation";
 
 const Account: FC = () => {
@@ -20,7 +20,9 @@ const Account: FC = () => {
             <AccountNavigation />
           </Grid>
           <Grid item xs={9}>
-            <Outlet />
+            <Paper sx={{ height: "38rem", overflow: "auto" }}>
+              <Outlet />
+            </Paper>
           </Grid>
         </Grid>
       </Box>

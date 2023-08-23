@@ -5,6 +5,7 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import UserInformationField from "./UserInformationField";
 import StyledButton from "../UI/Styled/StyledButton";
 import {
+  defaultFormErrorMessage,
   emailRegex,
   minTextInputLength,
   phoneNumberRegex,
@@ -49,7 +50,7 @@ const UserInformation: FC = () => {
       !role ||
       !email
     ) {
-      errorNotification("Please fill all fields");
+      errorNotification(defaultFormErrorMessage);
       return;
     }
 
@@ -57,108 +58,106 @@ const UserInformation: FC = () => {
   };
 
   return (
-    <Paper sx={{ height: "38rem", overflow: "auto" }}>
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Button
-          variant="outlined"
-          startIcon={<ModeEditIcon />}
-          onClick={handleEditToggle}
-          sx={{
-            backgroundColor:
-              edit === false ? "background.main" : "secondary.main",
-          }}
-        >
-          Edit information
-        </Button>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Button
+        variant="outlined"
+        startIcon={<ModeEditIcon />}
+        onClick={handleEditToggle}
+        sx={{
+          backgroundColor:
+            edit === false ? "background.main" : "secondary.main",
+        }}
+      >
+        Edit information
+      </Button>
 
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          width: "80%",
+        }}
+      >
+        <Button
+          type="reset"
+          startIcon={<RestoreIcon />}
+          sx={{ width: "fit-content", pl: 2 }}
+        >
+          Revert all changes
+        </Button>
         <Box
-          component="form"
-          onSubmit={handleSubmit}
           sx={{
-            width: "80%",
+            p: 4,
+            pb: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
           }}
         >
-          <Button
-            type="reset"
-            startIcon={<RestoreIcon />}
-            sx={{ width: "fit-content", pl: 2 }}
-          >
-            Revert all changes
-          </Button>
-          <Box
-            sx={{
-              p: 4,
-              pb: 0,
-              display: "flex",
-              flexDirection: "column",
-              gap: 3,
-            }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-              <UserInformationField
-                label="First name"
-                id="firstName"
-                defaultValue={DUMMY_USER.firstName}
-                disabled={edit}
-                type={HookTypes.TEXT}
-                minChars={minTextInputLength}
-              />
-              <UserInformationField
-                label="Last name"
-                id="lastName"
-                defaultValue={DUMMY_USER.lastName}
-                disabled={edit}
-                type={HookTypes.TEXT}
-                minChars={minTextInputLength}
-              />
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-              <UserInformationField
-                label="Country"
-                id="country"
-                defaultValue={DUMMY_USER.country}
-                disabled={edit}
-                type={HookTypes.TEXT}
-                minChars={minTextInputLength}
-              />
-              <UserInformationField
-                label="Phone number"
-                id="phoneNumber"
-                defaultValue={DUMMY_USER.phoneNumber}
-                disabled={edit}
-                type={HookTypes.REGEX}
-                regex={phoneNumberRegex}
-              />
-              <UserInformationField
-                label="Role"
-                id="role"
-                defaultValue={DUMMY_USER.role}
-                type={HookTypes.TEXT}
-              />
-            </Box>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
             <UserInformationField
-              label="Address"
-              id="address"
-              defaultValue={DUMMY_USER.address}
+              label="First name"
+              id="firstName"
+              defaultValue={DUMMY_USER.firstName}
               disabled={edit}
               type={HookTypes.TEXT}
               minChars={minTextInputLength}
             />
             <UserInformationField
-              label="Email addres"
-              id="email"
-              defaultValue={DUMMY_USER.email}
+              label="Last name"
+              id="lastName"
+              defaultValue={DUMMY_USER.lastName}
+              disabled={edit}
+              type={HookTypes.TEXT}
+              minChars={minTextInputLength}
+            />
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+            <UserInformationField
+              label="Country"
+              id="country"
+              defaultValue={DUMMY_USER.country}
+              disabled={edit}
+              type={HookTypes.TEXT}
+              minChars={minTextInputLength}
+            />
+            <UserInformationField
+              label="Phone number"
+              id="phoneNumber"
+              defaultValue={DUMMY_USER.phoneNumber}
               disabled={edit}
               type={HookTypes.REGEX}
-              regex={emailRegex}
+              regex={phoneNumberRegex}
             />
-            <StyledButton submit disabled={!edit}>
-              Submit
-            </StyledButton>
+            <UserInformationField
+              label="Role"
+              id="role"
+              defaultValue={DUMMY_USER.role}
+              type={HookTypes.TEXT}
+            />
           </Box>
+          <UserInformationField
+            label="Address"
+            id="address"
+            defaultValue={DUMMY_USER.address}
+            disabled={edit}
+            type={HookTypes.TEXT}
+            minChars={minTextInputLength}
+          />
+          <UserInformationField
+            label="Email addres"
+            id="email"
+            defaultValue={DUMMY_USER.email}
+            disabled={edit}
+            type={HookTypes.REGEX}
+            regex={emailRegex}
+          />
+          <StyledButton submit disabled={!edit}>
+            Submit
+          </StyledButton>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 
