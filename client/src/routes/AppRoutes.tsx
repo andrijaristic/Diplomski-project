@@ -2,15 +2,16 @@ import { FC } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import AppLayout from "../layouts/AppLayout";
+import UserFormLayout from "../components/UI/UserFormLayout/UserFormLayout";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import ListingsPage from "../pages/ListingsPage";
 import DetailedListingPage from "../pages/DetailedListingPage";
 import RegistrationPage from "../pages/RegistrationPage";
-import UserFormLayout from "../components/UI/UserFormLayout/UserFormLayout";
 import AccountPage from "../pages/AccountPage";
 import UserInformationPage from "../pages/UserInformationPage";
 import PasswordChangePage from "../pages/PasswordChangePage";
+import CommentsPage from "../pages/CommentsPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -33,6 +34,7 @@ const AppRoutes: FC = () => {
           <Route path="/:id" element={<AccountPage />}>
             <Route index element={<UserInformationPage />} />
             <Route path="change-password" element={<PasswordChangePage />} />
+            <Route path="comments" element={<CommentsPage />} />
           </Route>
         </Route>
       </Routes>
