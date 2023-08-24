@@ -12,6 +12,7 @@ import AccountPage from "../pages/AccountPage";
 import UserInformationPage from "../pages/UserInformationPage";
 import PasswordChangePage from "../pages/PasswordChangePage";
 import CommentsPage from "../pages/CommentsPage";
+import ReservationsPage from "../pages/ReservationsPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -35,6 +36,7 @@ const AppRoutes: FC = () => {
             <Route index element={<UserInformationPage />} />
             <Route path="change-password" element={<PasswordChangePage />} />
             <Route path="comments" element={<CommentsPage />} />
+            <Route path="reservations" element={<ReservationsPage />} />
           </Route>
         </Route>
       </Routes>
