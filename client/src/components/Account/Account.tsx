@@ -20,7 +20,7 @@ const Account: FC = () => {
             <AccountNavigation />
           </Grid>
           <Grid item xs={9}>
-            <Paper sx={{ height: "38rem", overflow: "auto" }}>
+            <Paper sx={{ height: "42rem", overflow: "auto" }}>
               <Outlet />
             </Paper>
           </Grid>

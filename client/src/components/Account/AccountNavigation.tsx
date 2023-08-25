@@ -18,9 +18,10 @@ const generateNavigationItems = (
   items.push({ title: "change password", to: `/${id}/change-password` });
   items.push({ title: "comments", to: `/${id}/comments` });
   items.push({ title: "reservations", to: `/${id}/reservations` });
+  items.push({ title: "my listings", to: `/${id}/my-listings` });
 
   if (isPropertyOwner) {
-    items.push({ title: "listings", to: `/${id}/listings` });
+    items.push({ title: "my listings", to: `/${id}/my-listings` });
   }
 
   return items;
