@@ -8,6 +8,7 @@ interface IProps {
   label: string;
   defaultValue?: string;
   disabled?: boolean;
+  minRows?: number;
   type: HookTypes;
   minChars?: number;
   regex?: RegExp;
@@ -26,10 +27,12 @@ const UserInformationField: FC<IProps> = (props) => {
       <InputLabel sx={{ fontSize: "1.2rem" }}>{props.label}</InputLabel>
       <TextField
         required
+        multiline={props.minRows !== undefined}
         disabled={!props.disabled}
         placeholder={`Enter ${props.label.toLowerCase()}`}
         id={props.id}
         defaultValue={props?.defaultValue}
+        minRows={props?.minRows}
         name={props.id}
         error={!valid && touched}
         onChange={onChange}

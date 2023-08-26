@@ -14,6 +14,7 @@ import PasswordChangePage from "../pages/PasswordChangePage";
 import CommentsPage from "../pages/CommentsPage";
 import ReservationsPage from "../pages/ReservationsPage";
 import MyListingsPage from "../pages/MyListingsPage";
+import EditListingPage from "../pages/EditListingPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -30,9 +31,11 @@ const AppRoutes: FC = () => {
         )}
         <Route element={<AppLayout />}>
           <Route path="" element={<HomePage />} />
-          <Route path="/listings" element={<ListingsPage />} />
-          <Route path="/listings/:id" element={<DetailedListingPage />} />
-          <Route path="*" element={<Navigate replace to="/" />} />
+          <Route path="/listings">
+            <Route index element={<ListingsPage />} />
+            <Route path=":id" element={<DetailedListingPage />} />
+            <Route path=":id/edit" element={<EditListingPage />} />
+          </Route>
           <Route path="/:id" element={<AccountPage />}>
             <Route index element={<UserInformationPage />} />
             <Route path="change-password" element={<PasswordChangePage />} />
@@ -40,6 +43,7 @@ const AppRoutes: FC = () => {
             <Route path="reservations" element={<ReservationsPage />} />
             <Route path="my-listings" element={<MyListingsPage />} />
           </Route>
+          <Route path="*" element={<Navigate replace to="/" />} />
         </Route>
       </Routes>
     </BrowserRouter>
