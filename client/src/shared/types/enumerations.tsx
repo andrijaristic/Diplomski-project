@@ -13,3 +13,8 @@ export enum UserType {
   RENTEE,
   PROPERTYOWNER,
 }
+
+export enum HookTypes {
+  TEXT,
+  REGEX,
+}

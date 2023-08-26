@@ -25,6 +25,8 @@ export const defaultErrorMessage: string = "Something went wrong";
 export const defaultNoAmenitiesForListingMessage: string =
   "This listing does not provide any amenities";
 
+export const defaultFormErrorMessage: string = "Please fill in all fields";
+
 // Default values
 export const minPrice: number = 2;
 

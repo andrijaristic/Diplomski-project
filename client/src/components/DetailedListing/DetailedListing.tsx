@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Box, Divider, Fade, Grid, Rating, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";

@@ -1,13 +1,20 @@
 import { FC } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAppSelector } from "../store/hooks";
 import AppLayout from "../layouts/AppLayout";
+import UserFormLayout from "../components/UI/UserFormLayout/UserFormLayout";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
-import { useAppSelector } from "../store/hooks";
 import ListingsPage from "../pages/ListingsPage";
 import DetailedListingPage from "../pages/DetailedListingPage";
 import RegistrationPage from "../pages/RegistrationPage";
-import UserFormLayout from "../components/UI/UserFormLayout/UserFormLayout";
+import AccountPage from "../pages/AccountPage";
+import UserInformationPage from "../pages/UserInformationPage";
+import PasswordChangePage from "../pages/PasswordChangePage";
+import CommentsPage from "../pages/CommentsPage";
+import ReservationsPage from "../pages/ReservationsPage";
+import MyListingsPage from "../pages/MyListingsPage";
+import EditListingPage from "../pages/EditListingPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -24,8 +31,18 @@ const AppRoutes: FC = () => {
         )}
         <Route element={<AppLayout />}>
           <Route path="" element={<HomePage />} />
-          <Route path="/listings" element={<ListingsPage />} />
-          <Route path="/listings/:id" element={<DetailedListingPage />} />
+          <Route path="/listings">
+            <Route index element={<ListingsPage />} />
+            <Route path=":id" element={<DetailedListingPage />} />
+            <Route path=":id/edit" element={<EditListingPage />} />
+          </Route>
+          <Route path="/:id" element={<AccountPage />}>
+            <Route index element={<UserInformationPage />} />
+            <Route path="change-password" element={<PasswordChangePage />} />
+            <Route path="comments" element={<CommentsPage />} />
+            <Route path="reservations" element={<ReservationsPage />} />
+            <Route path="my-listings" element={<MyListingsPage />} />
+          </Route>
           <Route path="*" element={<Navigate replace to="/" />} />
         </Route>
       </Routes>

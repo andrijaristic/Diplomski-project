@@ -22,9 +22,15 @@ const NewCommentForm: FC = () => {
         }}
       >
         <Typography variant="h5">Leave a review</Typography>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "fit-content",
+          }}
+        >
           <FormLabel sx={{ fontSize: 22 }}>Rate your experience</FormLabel>
-          <Rating precision={0.5} size="large" />
+          <Rating precision={0.5} size="large" sx={{ width: "50%" }} />
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
           <FormLabel sx={{ fontSize: 22 }}>Title</FormLabel>
