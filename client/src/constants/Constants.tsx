@@ -27,6 +27,9 @@ export const defaultNoAmenitiesForListingMessage: string =
 
 export const defaultFormErrorMessage: string = "Please fill in all fields";
 
+export const defaultCoordinateErrorMessage: string =
+  "Please pick a location on the map";
+
 // Default values
 export const minPrice: number = 2;
 
@@ -35,3 +38,7 @@ export const maxPrice: number = 1000;
 export const defaultGuests: number = 0;
 
 export const defaultSortOption: string = "";
+
+export const defaultLat = 51.505;
+
+export const defaultLng = -0.09;

@@ -3,30 +3,30 @@ import { Box, Avatar, Input, Button, Paper } from "@mui/material";
 
 interface IProps {
   image: string | undefined;
+  header: boolean;
   avatarClickHandler: () => void;
   imageInput: React.RefObject<HTMLInputElement>;
   uploadHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onAdd: () => void;
 }
 
 const AddImagePicker: FC<IProps> = (props) => {
   return (
     <Box sx={{ pt: 2, ml: "auto" }}>
-      <Paper
-        square
-        elevation={0}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          height: 50,
-          pl: 2,
-          bgcolor: "background.default",
-        }}
-      >
-        <Button onClick={props.onAdd} sx={{ ml: "auto" }}>
-          Add image to property showcase
-        </Button>
-      </Paper>
+      {props.header && (
+        <Paper
+          square
+          elevation={0}
+          sx={{
+            pl: 2,
+            display: "flex",
+            alignItems: "center",
+            height: 50,
+            bgcolor: "background.default",
+          }}
+        >
+          <Button sx={{ ml: "auto" }}>Add image to property showcase</Button>
+        </Paper>
+      )}
       <Button onClick={props.avatarClickHandler}>
         <Avatar
           alt="property-image"

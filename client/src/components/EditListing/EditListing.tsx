@@ -179,6 +179,7 @@ const EditListingPage: FC = () => {
         <Grid item sx={{ display: "flex" }}>
           <ImageDisplay edit />
           <AddImagePicker
+            header
             image={displayImage}
             imageInput={imageInput}
             uploadHandler={imageChangeHandler}
