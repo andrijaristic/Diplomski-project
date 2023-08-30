@@ -25,6 +25,7 @@ import StyledButton from "../UI/Styled/StyledButton";
 import Search from "./MapSearchBox";
 import { errorNotification } from "../../utils/toastNotificationUtil";
 import { INewProperty } from "../../shared/interfaces/propertyInterfaces";
+import NewListingRoomsForm from "./NewListingRoomsForm";
 
 const NewListing: FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -303,6 +304,15 @@ const NewListing: FC = () => {
                 </MapContainer>
               </Box>
             </Box>
+          </Box>
+          {/* Step 3 - Adding rooms */}
+          <Box
+            sx={{
+              display: activeStep === 2 ? "flex" : "none",
+              width: "100%",
+            }}
+          >
+            <NewListingRoomsForm />
           </Box>
         </Grid>
       </Grid>
