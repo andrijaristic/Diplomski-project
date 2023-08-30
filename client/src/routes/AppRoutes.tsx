@@ -15,6 +15,7 @@ import CommentsPage from "../pages/CommentsPage";
 import ReservationsPage from "../pages/ReservationsPage";
 import MyListingsPage from "../pages/MyListingsPage";
 import EditListingPage from "../pages/EditListingPage";
+import NewListingPage from "../pages/NewListingPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -35,7 +36,9 @@ const AppRoutes: FC = () => {
             <Route index element={<ListingsPage />} />
             <Route path=":id" element={<DetailedListingPage />} />
             <Route path=":id/edit" element={<EditListingPage />} />
+            <Route path="new" element={<NewListingPage />} />
           </Route>
+
           <Route path="/:id" element={<AccountPage />}>
             <Route index element={<UserInformationPage />} />
             <Route path="change-password" element={<PasswordChangePage />} />

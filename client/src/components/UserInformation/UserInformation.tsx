@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Paper, Box, Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import RestoreIcon from "@mui/icons-material/Restore";
 import UserInformationField from "./UserInformationField";
