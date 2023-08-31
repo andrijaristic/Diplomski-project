@@ -3,6 +3,17 @@ export interface IUserLogin {
   password: string;
 }
 
+export interface IDisplayUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  country: string;
+  role: string;
+  verificationStatus: string;
+  isVerified: boolean;
+}
+
 export interface IExternalLogin {
   token: string | undefined;
   service: string;
@@ -26,4 +37,6 @@ export interface IAuth {
 
 export interface IJwt {
   id: string;
+  firstName: string;
+  lastName: string;
 }

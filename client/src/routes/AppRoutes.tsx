@@ -30,22 +30,35 @@ const AppRoutes: FC = () => {
             <Route path="*" element={<Navigate replace to="/login" />} />
           </Route>
         )}
+
         <Route element={<AppLayout />}>
           <Route path="" element={<HomePage />} />
           <Route path="/listings">
             <Route index element={<ListingsPage />} />
             <Route path=":id" element={<DetailedListingPage />} />
-            <Route path=":id/edit" element={<EditListingPage />} />
-            <Route path="new" element={<NewListingPage />} />
+            {isLoggedIn && (
+              <>
+                <Route path=":id/edit" element={<EditListingPage />} />
+                <Route path="new" element={<NewListingPage />} />
+              </>
+            )}
           </Route>
 
-          <Route path="/:id" element={<AccountPage />}>
-            <Route index element={<UserInformationPage />} />
-            <Route path="change-password" element={<PasswordChangePage />} />
-            <Route path="comments" element={<CommentsPage />} />
-            <Route path="reservations" element={<ReservationsPage />} />
-            <Route path="my-listings" element={<MyListingsPage />} />
-          </Route>
+          {isLoggedIn && (
+            <>
+              <Route path="/account" element={<AccountPage />}>
+                <Route index element={<UserInformationPage />} />
+                <Route
+                  path="change-password"
+                  element={<PasswordChangePage />}
+                />
+                <Route path="comments" element={<CommentsPage />} />
+                <Route path="reservations" element={<ReservationsPage />} />
+                <Route path="my-listings" element={<MyListingsPage />} />
+                <Route path="*" element={<Navigate replace to="/" />} />
+              </Route>
+            </>
+          )}
           <Route path="*" element={<Navigate replace to="/" />} />
         </Route>
       </Routes>

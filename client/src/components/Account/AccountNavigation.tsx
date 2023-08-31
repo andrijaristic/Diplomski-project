@@ -14,14 +14,17 @@ const generateNavigationItems = (
 ) => {
   const items: NavItem[] = [];
 
-  items.push({ title: "account", to: `/${id}` });
-  items.push({ title: "change password", to: `/${id}/change-password` });
-  items.push({ title: "comments", to: `/${id}/comments` });
-  items.push({ title: "reservations", to: `/${id}/reservations` });
-  items.push({ title: "my listings", to: `/${id}/my-listings` });
+  items.push({ title: "account", to: `/account` });
+  items.push({
+    title: "change password",
+    to: `/account/change-password`,
+  });
+  items.push({ title: "comments", to: `/account/comments` });
+  items.push({ title: "reservations", to: `/account/reservations` });
+  items.push({ title: "my listings", to: `/account/my-listings` });
 
   if (isPropertyOwner) {
-    items.push({ title: "my listings", to: `/${id}/my-listings` });
+    items.push({ title: "my listings", to: `/account/my-listings` });
   }
 
   return items;

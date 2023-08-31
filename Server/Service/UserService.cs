@@ -52,7 +52,15 @@ namespace Service
 
             AuthDTO authDTO = new AuthDTO()
             {
-                Token = _authUtility.CreateToken(user.Id, user.Username, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
+                Token = _authUtility.CreateToken(user.Id,
+                                                 user.Username,
+                                                 user.FirstName,
+                                                 user.LastName,
+                                                 user.Role,
+                                                 _settings.Value.SecretKey,
+                                                 _settings.Value.TokenIssuer,
+                                                 _settings.Value.TokenDuration),
+
                 VerificationStatus = user.VerificationStatus.ToString().Trim(),
                 IsVerified = user.IsVerified
             };
@@ -102,7 +110,7 @@ namespace Service
 
             AuthDTO authDTO = new AuthDTO()
             {
-                Token = _authUtility.CreateToken(user.Id, user.Username, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
+                Token = _authUtility.CreateToken(user.Id, user.Username, user.FirstName, user.LastName, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
                 IsVerified = user.IsVerified,
                 VerificationStatus = user.VerificationStatus.ToString()
             };

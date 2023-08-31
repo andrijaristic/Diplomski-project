@@ -2,25 +2,34 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ApiCallState } from "../shared/types/enumerations";
 import {
   IAuth,
+  IDisplayUser,
   IExternalLogin,
   IUserLogin,
   IUserRegistration,
 } from "../shared/interfaces/userInterfaces";
-import { externalLogin, login, register } from "../services/UserService";
+import {
+  externalLogin,
+  getUserById,
+  login,
+  register,
+} from "../services/UserService";
 import { defaultErrorMessage } from "../constants/Constants";
 import {
   errorNotification,
   successNotification,
 } from "../utils/toastNotificationUtil";
+import { localStorageJsonParse } from "../utils/localStorageFetchUtil";
 
 export interface UserState {
   token: string | null;
+  user: IDisplayUser | null;
   isLoggedIn: boolean;
   apiState: ApiCallState;
 }
 
 const initialState: UserState = {
   token: localStorage.getItem("token"),
+  user: localStorageJsonParse("user"),
   isLoggedIn: localStorage.getItem("token") !== null,
   apiState: ApiCallState.COMPLETED,
 };
@@ -61,6 +70,18 @@ export const registerAction = createAsyncThunk(
   }
 );
 
+export const getUserByIdAction = createAsyncThunk(
+  "user/getById",
+  async (id: string, thunkApi) => {
+    try {
+      const response = await getUserById(id);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -69,6 +90,14 @@ const userSlice = createSlice({
       state.token = action.payload;
       state.isLoggedIn = true;
       localStorage.setToken("token", action.payload);
+    },
+    logout(state) {
+      state.token = null;
+      state.isLoggedIn = false;
+      state.user = null;
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -136,8 +165,28 @@ const userSlice = createSlice({
       }
       errorNotification(error);
     });
+
+    // GET USER BY ID
+    builder.addCase(getUserByIdAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(getUserByIdAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+
+      state.user = { ...action.payload };
+      localStorage.setItem("user", JSON.stringify(action.payload));
+    });
+    builder.addCase(getUserByIdAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
   },
 });
 
-export const { receivedToken } = userSlice.actions;
+export const { receivedToken, logout } = userSlice.actions;
 export default userSlice.reducer;

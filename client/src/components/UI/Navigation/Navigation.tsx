@@ -1,9 +1,17 @@
 import React, { FC, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../../store/hooks";
-import { AppBar, Container, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  Container,
+  Divider,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import Logo from "../Logo/Logo";
 import styles from "./Navigation.module.css";
+import AvatarWithOptions from "../Avatar/AvatarWithOptions";
 
 interface IItem {
   name: string;
@@ -16,7 +24,6 @@ const generateNavItems = (isLoggedIn: boolean): IItem[] | null => {
   items.push({ name: "Properties", to: "/listings" });
   if (isLoggedIn) {
     items.push({ name: "New property", to: "/third-element" });
-    items.push({ name: "Account", to: "/account" }); // User name with drop-down menu for account and logout
   } else {
     items.push({ name: "Login", to: "/login" });
   }
@@ -52,6 +59,7 @@ const Navigation: FC = () => {
         <Toolbar disableGutters>
           <Logo />
           <ul className={styles.nav}>{content}</ul>
+          {isLoggedIn && <AvatarWithOptions />}
         </Toolbar>
       </Container>
     </AppBar>

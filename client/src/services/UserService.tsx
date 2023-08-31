@@ -17,3 +17,7 @@ export const externalLogin = async (externalLogin: IExternalLogin) => {
 export const register = async (userRegister: IUserRegistration) => {
   return await axiosClient.post(`${API}/users/register`, userRegister);
 };
+
+export const getUserById = async (id: string) => {
+  return await axiosClient.get(`${API}/users/${id}`);
+};

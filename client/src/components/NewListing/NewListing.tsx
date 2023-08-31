@@ -1,4 +1,5 @@
 import { FC, useEffect, useRef, useState } from "react";
+import jwtDecode from "jwt-decode";
 import {
   Stepper,
   Step,
@@ -11,7 +12,9 @@ import {
 import { MapContainer, TileLayer, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
+import Search from "./MapSearchBox";
 import UserInformationField from "../UserInformation/UserInformationField";
+import NewListingRoomsForm from "./NewListingRoomsForm";
 import { ApiCallState, HookTypes } from "../../shared/types/enumerations";
 import {
   defaultCoordinateErrorMessage,
@@ -22,12 +25,15 @@ import {
 } from "../../constants/Constants";
 import AddImagePicker from "../EditListing/AddImagePicker";
 import StyledButton from "../UI/Styled/StyledButton";
-import Search from "./MapSearchBox";
+import { useAppSelector } from "../../store/hooks";
 import { errorNotification } from "../../utils/toastNotificationUtil";
+import { IJwt } from "../../shared/interfaces/userInterfaces";
 import { INewProperty } from "../../shared/interfaces/propertyInterfaces";
-import NewListingRoomsForm from "./NewListingRoomsForm";
 
 const NewListing: FC = () => {
+  const token = useAppSelector((state) => state.user.token);
+  const { id } = jwtDecode<IJwt>(token ? token : "");
+
   const [activeStep, setActiveStep] = useState<number>(0);
   const [dummyApiState, setDummyApiState] = useState<ApiCallState>(
     ApiCallState.PENDING
@@ -96,14 +102,11 @@ const NewListing: FC = () => {
 
     // appropriate type
     const newProperty: INewProperty = {
-      userId: 1,
+      userId: parseInt(id),
       name: name.toString().trim(),
       description: description.toString().trim(),
+      thumbnailImage: uploadedImage,
     };
-
-    if (uploadedImage) {
-      newProperty.thumbnail = uploadedImage;
-    }
 
     console.log(newProperty);
     setDummyApiState(ApiCallState.COMPLETED);

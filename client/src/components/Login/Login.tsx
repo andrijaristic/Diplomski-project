@@ -1,5 +1,5 @@
-import { FC, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -12,7 +12,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { grey } from "@mui/material/colors";
 import StyledButton from "../UI/Styled/StyledButton";
 import Logo from "../UI/Logo/Logo";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { externalLoginAction, loginAction } from "../../store/userSlice";
 import { IUserLogin } from "../../shared/interfaces/userInterfaces";
 import {
