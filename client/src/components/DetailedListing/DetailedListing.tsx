@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Box, Divider, Fade, Grid, Rating, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
 import DetailedListingAmenity from "./DetailedListingAmenity";
 import DetailedListingSearchAction from "./DetailedListingSearchAction";
-import StyledButton from "../UI/Styled/StyledButton";
 import Comment from "../Comment/Comment";
 import NewCommentForm from "../Comment/NewCommentForm";
+import StyledButton from "../UI/Styled/StyledButton";
+import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
 
@@ -22,11 +23,6 @@ Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non
 
 Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non dapibus neque. Donec tellus ligula, tristique at eleifend in, euismod eget ante. Praesent eget elementum sapien. Nullam leo lacus, venenatis id elit et, sagittis accumsan felis. Duis ut odio luctus lorem maximus aliquam. Phasellus vel finibus massa. Fusce consectetur velit quis ex scelerisque malesuada.`;
 
-const DUMMY_AMENITIES: JSX.Element[] = [];
-for (let i = 0; i < 10; i++) {
-  DUMMY_AMENITIES.push(<DetailedListingAmenity key={Math.random() * 100} />);
-}
-
 const noAmenitiesMessage: JSX.Element = (
   <Box sx={{ display: "flex", alignItems: "center" }}>
     <ErrorIcon color="error" />
@@ -38,6 +34,20 @@ const noAmenitiesMessage: JSX.Element = (
 
 const DetailedListing: FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const detailedAccommodation = useAppSelector(
+    (state) => state.accommodations.detailedAccommodation
+  );
+  const accommodationComments = useAppSelector(
+    (state) => state.comments.accommodationComments
+  );
+
+  const utilities: JSX.Element[] | undefined =
+    detailedAccommodation?.utilities.map((utility) => (
+      <DetailedListingAmenity key={utility.id} name={utility.name} />
+    ));
+
   const [rating, setRating] = useState<number>(4.2);
 
   const handleBookingSectionNavigation = () => {
@@ -49,6 +59,21 @@ const DetailedListing: FC = () => {
     const element: HTMLElement | null = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const comm = {
+    id: "1",
+    propertyId: "1",
+    propertyName: "Property name",
+    userFullName: "Andrija Ristic",
+    grade: 4.2,
+    header: "This is a title",
+    content: "This is a description",
+    creationDate: new Date(),
+  };
+
+  const content = accommodationComments?.map((comment) => (
+    <Comment flag comment={comment} />
+  ));
 
   return (
     <Fade in>
@@ -97,7 +122,7 @@ const DetailedListing: FC = () => {
                     variant="body1"
                     sx={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
                   >
-                    {DUMMY_DESCRIPTION}
+                    {detailedAccommodation?.description || DUMMY_DESCRIPTION}
                   </Typography>
                 </Box>
                 <Box sx={{ pt: 4 }}>
@@ -105,7 +130,7 @@ const DetailedListing: FC = () => {
                   <Box
                     sx={{ display: "flex", flexWrap: "wrap", gap: 2, pt: 2 }}
                   >
-                    {DUMMY_AMENITIES ?? noAmenitiesMessage}
+                    {utilities || noAmenitiesMessage}
                   </Box>
                 </Box>
               </Box>
@@ -123,7 +148,7 @@ const DetailedListing: FC = () => {
                 <Typography id="reviews" variant="h5">
                   Comments
                 </Typography>
-                <NewCommentForm />
+                {isLoggedIn && <NewCommentForm />}
                 <Box
                   sx={{
                     pt: 2,
@@ -132,10 +157,10 @@ const DetailedListing: FC = () => {
                     gap: 1,
                   }}
                 >
-                  <Comment />
-                  <Comment />
-                  <Comment />
-                  <Comment />
+                  {content.length > 0 && content}
+                  <Comment comment={comm} />
+                  <Comment comment={comm} />
+                  <Comment comment={comm} />
                 </Box>
               </Box>
             </Grid>

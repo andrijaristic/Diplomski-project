@@ -5,7 +5,7 @@ import StyledButton from "../UI/Styled/StyledButton";
 import { IComment } from "../../shared/interfaces/commentInterfaces";
 
 interface IProps {
-  flag: boolean;
+  flag?: boolean;
   comment: IComment;
 }
 

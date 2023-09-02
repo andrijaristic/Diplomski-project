@@ -18,12 +18,16 @@ interface IItem {
   to: string;
 }
 
-const generateNavItems = (isLoggedIn: boolean): IItem[] | null => {
+const generateNavItems = (
+  isLoggedIn: boolean,
+  isPropertyOwner: boolean
+): IItem[] | null => {
   const items: IItem[] = [];
 
   items.push({ name: "Properties", to: "/listings" });
   if (isLoggedIn) {
-    items.push({ name: "New property", to: "/third-element" });
+    isPropertyOwner &&
+      items.push({ name: "New property", to: "/listings/new" });
   } else {
     items.push({ name: "Login", to: "/login" });
   }
@@ -33,9 +37,12 @@ const generateNavItems = (isLoggedIn: boolean): IItem[] | null => {
 
 const Navigation: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const user = useAppSelector((state) => state.user.user);
+  const isAccommodationOwner = user?.role === "PROPERTYOWNER" || false;
+
   const items = useMemo(() => {
-    return generateNavItems(isLoggedIn);
-  }, [isLoggedIn]);
+    return generateNavItems(isLoggedIn, isAccommodationOwner);
+  }, [isLoggedIn, isAccommodationOwner]);
 
   const content: React.ReactNode[] | undefined = items?.map((item) => {
     return (

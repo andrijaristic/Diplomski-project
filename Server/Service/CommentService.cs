@@ -3,6 +3,7 @@ using Contracts.CommentDTOs;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Repositories;
 using AutoMapper;
+using Domain.Exceptions.PropertyExceptions;
 
 namespace Service
 {
@@ -27,10 +28,18 @@ namespace Service
             List<Comment> comments = await _unitOfWork.Comments.GetUserComments(userId);
             List<DisplayCommentDTO> displayCommentDTOs =_mapper.Map<List<DisplayCommentDTO>>(comments);
 
-            foreach (DisplayCommentDTO comment in displayCommentDTOs)
+            foreach (var displayCommentDTO in displayCommentDTOs)
             {
+                Property property = await _unitOfWork.Properties.Find(displayCommentDTO.PropertyId);
+                if (property == null)
+                {
+                    throw new PropertyNotFoundException(displayCommentDTO.PropertyId);
+                }
 
+                displayCommentDTO.PropertyName = property.Name;
             }
+
+            return displayCommentDTOs;
         }
     }
 }
