@@ -16,6 +16,14 @@ namespace Web.API.Controllers
             _reservationsService = reservationsService;
         }
 
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetUserReservations(Guid id)
+        {
+            List<DisplayReservationDTO> displayReservationDTOs = await _reservationsService.GetReservations(id);
+            return Ok(displayReservationDTOs);
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Post([FromBody] NewReservationDTO newReservationDTO)

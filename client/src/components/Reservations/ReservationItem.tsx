@@ -1,11 +1,17 @@
 import { FC } from "react";
 import { Box, Divider, Grid, Typography } from "@mui/material";
+import { IReservationDisplay } from "../../shared/interfaces/reservationInterface";
+
 interface IProps {
-  propertyName: string;
-  price: number;
+  reservation: IReservationDisplay;
 }
 
-const ReservationItem: FC<IProps> = (props) => {
+const ReservationItem: FC<IProps> = ({ reservation }) => {
+  const days =
+    (new Date(reservation?.departureDate).getTime() -
+      new Date(reservation?.arrivalDate).getTime()) /
+    (1000 * 3600 * 24);
+
   return (
     <Grid container direction="column" sx={{ display: "flex" }}>
       <Grid item sx={{ pt: 1 }}>
@@ -15,7 +21,7 @@ const ReservationItem: FC<IProps> = (props) => {
             flexDirection: "column",
           }}
         >
-          <Typography variant="h6">{props.propertyName}</Typography>
+          <Typography variant="h6">{reservation?.propertyName}</Typography>
           <Box
             sx={{
               display: "flex",
@@ -25,11 +31,11 @@ const ReservationItem: FC<IProps> = (props) => {
             }}
           >
             <Typography variant="subtitle2">
-              {new Date().toLocaleString().split(",")[0]}
-            </Typography>
-            {"-"}
-            <Typography variant="subtitle2">
-              {new Date().toLocaleString().split(",")[0]}
+              {`${new Date(
+                reservation?.arrivalDate
+              ).toLocaleDateString()} - ${new Date(
+                reservation?.departureDate
+              ).toLocaleDateString()}`}
             </Typography>
           </Box>
         </Box>
@@ -50,10 +56,10 @@ const ReservationItem: FC<IProps> = (props) => {
             <Typography variant="h6" sx={{ pr: 1 }}>
               Price:
             </Typography>
-            <Typography variant="h6">{props.price}</Typography>
+            <Typography variant="h6">{reservation?.price}</Typography>
           </Box>
           <Typography variant="caption">
-            (average price per day: price / days)
+            (average price per day: {reservation?.price / days} / {days})
           </Typography>
         </Box>
       </Grid>

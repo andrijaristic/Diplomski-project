@@ -6,6 +6,7 @@ using Domain.Exceptions.ReservationExceptions;
 using Domain.Exceptions.RoomExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Contracts.CommentDTOs;
 
 namespace Service
 {
@@ -18,6 +19,25 @@ namespace Service
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<List<DisplayReservationDTO>> GetReservations(Guid id)
+        {
+            List<Reservation> reservations = await _unitOfWork.Reservations.FindUserReservations(id);
+            List<DisplayReservationDTO> displayReservationDTOs = _mapper.Map<List<DisplayReservationDTO>>(reservations);
+
+            foreach (var displayReservationDTO in displayReservationDTOs)
+            {
+                Property property = await _unitOfWork.Properties.Find(displayReservationDTO.PropertyId);
+                if (property == null)
+                {
+                    throw new PropertyNotFoundException(displayReservationDTO.PropertyId);
+                }
+
+                displayReservationDTO.PropertyName = property.Name;
+            }
+
+            return displayReservationDTOs;
         }
 
         public async Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO)

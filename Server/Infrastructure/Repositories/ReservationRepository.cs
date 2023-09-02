@@ -1,11 +1,6 @@
-﻿using Domain.Interfaces.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Domain.Interfaces.Repositories;
 using Domain.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -18,8 +13,21 @@ namespace Infrastructure.Repositories
 
         public async Task<Reservation> FindByIdWithUser(Guid id)
         {
-            Reservation reservation = await _dbContext.Reservations.Where(r => r.Id == id).Include(u => u.User).FirstOrDefaultAsync();
+            Reservation reservation = await _dbContext
+                                                .Reservations
+                                                .Where(r => r.Id == id)
+                                                .Include(u => u.User)
+                                                .FirstOrDefaultAsync();
             return reservation;
+        }
+
+        public async Task<List<Reservation>> FindUserReservations(Guid userId)
+        {
+            List<Reservation> reservations = await _dbContext
+                                                        .Reservations
+                                                        .Where(r => r.UserId == userId)
+                                                        .ToListAsync();
+            return reservations;
         }
     }
 }
