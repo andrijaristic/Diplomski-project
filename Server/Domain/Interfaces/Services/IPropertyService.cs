@@ -1,4 +1,5 @@
-﻿using Contracts.PropertyDTOs;
+﻿using Contracts.Common;
+using Contracts.PropertyDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Domain.Interfaces.Services
 {
     public interface IPropertyService
     {
+        Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO);
         Task<DisplayPropertyDTO> CreateProperty(NewPropertyDTO newPropertyDTO, string username);
         Task<DisplayPropertyDTO> UpdateProperty(Guid id, UpdatePropertyDTO updatePropertyDTO, string username);
         Task DeleteProperty(Guid id, string username);

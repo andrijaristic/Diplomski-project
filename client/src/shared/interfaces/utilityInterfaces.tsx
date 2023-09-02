@@ -1,4 +1,4 @@
-export interface IAmenity {
+export interface IUtility {
   id: number;
   name: string;
 }

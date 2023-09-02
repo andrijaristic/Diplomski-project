@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Contracts.Common;
 using Contracts.PropertyDTOs;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
+using Domain.Models.AppSettings;
+using Microsoft.Extensions.Options;
+using Service.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +21,26 @@ namespace Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public PropertyService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IOptions<AppSettings> _settings;
+        public PropertyService(IUnitOfWork unitOfWork, IMapper mapper, IOptions<AppSettings> settings)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _settings = settings;
+        }
+
+        public async Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO)
+        {
+            IEnumerable<Property> accommodations = await _unitOfWork.Properties.GetFilteredAcccommodations(searchParamsDTO);
+            if (accommodations == null)
+            {
+                throw new InvalidSearchParamsException();
+            }
+
+            return PaginationHelper<Property, DisplayPropertyDTO>.CreatePagedListDTO(accommodations,
+                                                                                     searchParamsDTO.Page,
+                                                                                     _settings.Value.AccommodationsPageSize,
+                                                                                     _mapper);
         }
 
         public async Task<DisplayPropertyDTO> GetById(Guid id)

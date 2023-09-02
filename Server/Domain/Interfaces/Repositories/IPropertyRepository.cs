@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Contracts.Common;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IPropertyRepository : IGenericRepository<Property>
     {
+        Task<List<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO);
         Task<Property> GetPropertyWithOwner(Guid id);
     }
 }

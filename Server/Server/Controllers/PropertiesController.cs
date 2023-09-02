@@ -1,4 +1,5 @@
-﻿using Contracts.PropertyDTOs;
+﻿using Contracts.Common;
+using Contracts.PropertyDTOs;
 using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,14 @@ namespace Web.API.Controllers
         public PropertiesController(IPropertyService propertyService) 
         {
             _propertyService = propertyService;
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAcccommodations([FromQuery] SearchParamsDTO searchParamsDTO)
+        {
+            PagedListDTO<DisplayPropertyDTO> pagedAccommodations = await _propertyService.GetAccommodations(searchParamsDTO);
+            return Ok(pagedAccommodations);
         }
 
         [HttpGet("{id}")]

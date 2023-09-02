@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Backdrop,
   Box,
@@ -22,6 +23,9 @@ import {
   defaultGuests,
 } from "../../constants/Constants";
 import StyledButton from "../UI/Styled/StyledButton";
+import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { getAccommodationsAction } from "../../store/accommodationSlice";
 
 const style = {
   position: "absolute",
@@ -87,6 +91,10 @@ const DUMMY_AMENTIES = [
 ];
 
 const FilterModal: FC<IProps> = (props) => {
+  const dispatch = useAppDispatch();
+  const page = useAppSelector((state) => state.accommodations.page);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [priceRange, setPriceRange] = useState<number[]>([min, max]);
   const [checkinDate, setCheckinDate] = useState<Date | null>(null);
   const [checkoutDate, setCheckoutDate] = useState<Date | null>(null);
@@ -131,6 +139,23 @@ const FilterModal: FC<IProps> = (props) => {
       setCheckedAmenities((prevAmenities) => {
         return [...prevAmenities, id];
       });
+  };
+
+  const handleFilter = () => {
+    const searchParams: ISearchParams = {
+      arrivalDate: checkinDate?.toString() || "",
+      departureDate: checkoutDate?.toString() || "",
+      minPrice: priceRange[0].toString(),
+      maxPrice: priceRange[1].toString(),
+      adults: adults !== defaultGuests ? adults.toString() : "",
+      children: children !== defaultGuests ? children.toString() : "",
+      utilities: checkedAmenities,
+      page: page,
+    };
+
+    console.log(searchParams);
+    setSearchParams(searchParams);
+    dispatch(getAccommodationsAction(searchParams));
   };
 
   const amenities = DUMMY_AMENTIES.map((amenity) => (
@@ -355,8 +380,11 @@ const FilterModal: FC<IProps> = (props) => {
             </Grid>
           </Box>
           <Box sx={{ p: 2, display: "flex", minHeight: 100, maxHeight: 100 }}>
-            <StyledButton sx={{ ml: "auto", width: "8rem", fontSize: 20 }}>
-              Search
+            <StyledButton
+              sx={{ ml: "auto", width: "8rem", fontSize: 20 }}
+              onClick={handleFilter}
+            >
+              Filter
             </StyledButton>
           </Box>
         </Box>

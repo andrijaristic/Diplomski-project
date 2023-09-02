@@ -20,6 +20,7 @@ namespace Domain.Models.AppSettings
         public string PhoneNumberRegex { get; set; }
         public int MinUsernameLength { get; set; }
         public int MinPasswordLength { get; set; }
+        public int AccommodationsPageSize { get; set; }
         public string TokenIssuer { get; set; }
         public int TokenDuration { get; set; }
     }

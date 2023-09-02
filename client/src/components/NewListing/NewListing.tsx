@@ -28,7 +28,7 @@ import StyledButton from "../UI/Styled/StyledButton";
 import { useAppSelector } from "../../store/hooks";
 import { errorNotification } from "../../utils/toastNotificationUtil";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
-import { INewProperty } from "../../shared/interfaces/propertyInterfaces";
+import { INewAccommodation } from "../../shared/interfaces/accommodationInterfaces";
 
 const NewListing: FC = () => {
   const token = useAppSelector((state) => state.user.token);
@@ -101,7 +101,7 @@ const NewListing: FC = () => {
     }
 
     // appropriate type
-    const newProperty: INewProperty = {
+    const newProperty: INewAccommodation = {
       userId: parseInt(id),
       name: name.toString().trim(),
       description: description.toString().trim(),
