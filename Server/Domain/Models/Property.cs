@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,12 @@ namespace Domain.Models
         public double AverageGrade { get; set; }
         public bool IsVerified { get; set; }
         public VerificationStatus VerificationStatus { get; set; }
+        public Image ThumbnailImage { get; set; }
         public List<Image> Images { get; set; }
         public Guid UserId { get; set; }    
         public User User { get; set; }  
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public List<Comment> Comments { get; set; }
         public List<Room> Rooms { get; set; }
         public List<RoomType> RoomTypes { get; set; }
