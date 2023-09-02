@@ -24,7 +24,7 @@ namespace Service.Utilities.DataInitializers
 
         public void InitializeData()
         {
-            string defaultUsername = "admin";
+            string defaultUsername = $"{_settings.Value.AdminFirstName.ToLower()}.{_settings.Value.AdminLastName.ToLower()}";
             Task<User> task = _unitOfWork.Users.FindByUsername(defaultUsername);
             task.Wait();
 
@@ -37,7 +37,7 @@ namespace Service.Utilities.DataInitializers
             {
                 FirstName = _settings.Value.AdminFirstName,
                 LastName = _settings.Value.AdminLastName,
-                Username = $"{_settings.Value.AdminFirstName.ToLower()}.{_settings.Value.AdminLastName.ToLower()}",
+                Username = defaultUsername,
                 Email = _settings.Value.AdminEmail,
                 Role = Domain.Enums.UserType.ADMIN,
                 Country = _settings.Value.DefaultCountry,

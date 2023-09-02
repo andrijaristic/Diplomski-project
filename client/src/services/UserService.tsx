@@ -4,6 +4,7 @@ import {
   IExternalLogin,
   IUserLogin,
   IUserRegistration,
+  IUserUpdate,
 } from "../shared/interfaces/userInterfaces";
 
 export const login = async (userLogin: IUserLogin) => {
@@ -16,6 +17,10 @@ export const externalLogin = async (externalLogin: IExternalLogin) => {
 
 export const register = async (userRegister: IUserRegistration) => {
   return await axiosClient.post(`${API}/users/register`, userRegister);
+};
+
+export const update = async (userUpdate: IUserUpdate) => {
+  return await axiosClient.put(`${API}/users`, userUpdate);
 };
 
 export const getUserById = async (id: string) => {

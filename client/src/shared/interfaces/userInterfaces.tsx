@@ -31,6 +31,15 @@ export interface IUserRegistration {
   role: string;
 }
 
+export interface IUserUpdate {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  country: string;
+  phoneNumber: string;
+}
+
 export interface IAuth {
   token: string;
 }

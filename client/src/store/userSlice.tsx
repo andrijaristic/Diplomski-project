@@ -6,12 +6,14 @@ import {
   IExternalLogin,
   IUserLogin,
   IUserRegistration,
+  IUserUpdate,
 } from "../shared/interfaces/userInterfaces";
 import {
   externalLogin,
   getUserById,
   login,
   register,
+  update,
 } from "../services/UserService";
 import { defaultErrorMessage } from "../constants/Constants";
 import {
@@ -63,6 +65,18 @@ export const registerAction = createAsyncThunk(
   async (userRegistration: IUserRegistration, thunkApi) => {
     try {
       const response = await register(userRegistration);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const updateAction = createAsyncThunk(
+  "user/update",
+  async (userUpdate: IUserUpdate, thunkApi) => {
+    try {
+      const response = await update(userUpdate);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -157,6 +171,27 @@ const userSlice = createSlice({
       successNotification("You have successfully registered!");
     });
     builder.addCase(registerAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // UPDATE
+    builder.addCase(updateAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(updateAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("You have successfully updated your information!");
+
+      state.user = { ...action.payload };
+      localStorage.setItem("user", JSON.stringify(action.payload));
+    });
+    builder.addCase(updateAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;
