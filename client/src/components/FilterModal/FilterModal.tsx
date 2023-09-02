@@ -95,12 +95,37 @@ const FilterModal: FC<IProps> = (props) => {
   const page = useAppSelector((state) => state.accommodations.page);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [priceRange, setPriceRange] = useState<number[]>([min, max]);
-  const [checkinDate, setCheckinDate] = useState<Date | null>(null);
-  const [checkoutDate, setCheckoutDate] = useState<Date | null>(null);
-  const [adults, setAdults] = useState<number>(defaultGuests);
-  const [children, setChildren] = useState<number>(defaultGuests);
-  const [checkedAmenities, setCheckedAmenities] = useState<number[]>([]);
+  const [priceRange, setPriceRange] = useState<number[]>([
+    searchParams.get("minPrice") !== null
+      ? parseInt(searchParams.get("minPrice"))
+      : min,
+    searchParams.get("maxPrice") !== null
+      ? parseInt(searchParams.get("maxPrice"))
+      : max,
+  ]);
+  const [checkinDate, setCheckinDate] = useState<Date | null>(
+    searchParams.get("arrivalDate")
+      ? new Date(searchParams.get("arrivalDate"))
+      : null
+  );
+  const [checkoutDate, setCheckoutDate] = useState<Date | null>(
+    searchParams.get("arrivalDate")
+      ? new Date(searchParams.get("departureDate"))
+      : null
+  );
+  const [adults, setAdults] = useState<number>(
+    searchParams.get("adults")
+      ? parseInt(searchParams.get("adults"))
+      : defaultGuests
+  );
+  const [children, setChildren] = useState<number>(
+    searchParams.get("adults")
+      ? parseInt(searchParams.get("children"))
+      : defaultGuests
+  );
+  const [checkedAmenities, setCheckedAmenities] = useState<number[]>(
+    searchParams.getAll("utilities").map(Number)
+  );
 
   const handlePriceRangeChange = (
     event: Event,
@@ -143,8 +168,8 @@ const FilterModal: FC<IProps> = (props) => {
 
   const handleFilter = () => {
     const searchParams: ISearchParams = {
-      arrivalDate: checkinDate?.toString() || "",
-      departureDate: checkoutDate?.toString() || "",
+      arrivalDate: checkinDate?.toISOString() || "",
+      departureDate: checkoutDate?.toISOString() || "",
       minPrice: priceRange[0].toString(),
       maxPrice: priceRange[1].toString(),
       adults: adults !== defaultGuests ? adults.toString() : "",

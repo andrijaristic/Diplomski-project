@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Box, Fade, Grid, Pagination, SelectChangeEvent } from "@mui/material";
 import ListingsItem from "./ListingsItem";
 import ListingActions from "./ListingActions";
@@ -10,6 +10,10 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useSearchParams } from "react-router-dom";
+import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
+import { getAccommodationsAction } from "../../store/accommodationSlice";
 
 const DUMMY_OBJECT = {
   src: "header-background.jpg", // image src
@@ -19,7 +23,27 @@ const DUMMY_OBJECT = {
 };
 
 const Listings: FC = () => {
+  const dispatch = useAppDispatch();
+  const page = useAppSelector((state) => state.accommodations.page);
+  const totalPages = useAppSelector((state) => state.accommodations.totalPages);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [sortOption, setSortOption] = useState<string>("highest-price");
+
+  useEffect(() => {
+    const searchParamsData: ISearchParams = {
+      arrivalDate: searchParams.get("arrivalDate")?.toString() || "",
+      departureDate: searchParams.get("departureDate")?.toString() || "",
+      minPrice: searchParams.get("minPrice")?.toString() || "",
+      maxPrice: searchParams.get("maxPrice")?.toString() || "",
+      adults: searchParams.get("adults")?.toString() || "",
+      children: searchParams.get("children")?.toString() || "",
+      utilities: searchParams.getAll("utilities").map(Number),
+      page: page,
+    };
+
+    dispatch(getAccommodationsAction(searchParamsData));
+  }, []);
 
   const handleSortingChange = (event: SelectChangeEvent) => {
     setSortOption(event.target.value);
@@ -56,6 +80,25 @@ const Listings: FC = () => {
     return false;
   };
 
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    const searchParamsData: ISearchParams = {
+      arrivalDate: searchParams.get("arrivalDate")?.toString() || "",
+      departureDate: searchParams.get("departureDate")?.toString() || "",
+      minPrice: searchParams.get("minPrice")?.toString() || "",
+      maxPrice: searchParams.get("maxPrice")?.toString() || "",
+      adults: searchParams.get("adults")?.toString() || "",
+      children: searchParams.get("children")?.toString() || "",
+      utilities: searchParams.get("utilities")?.map(Number) || [],
+      page: value,
+    };
+
+    setSearchParams(searchParamsData);
+    dispatch(getAccommodationsAction(searchParamsData));
+  };
+
   return (
     <Fade in>
       <Grid container>
@@ -87,11 +130,13 @@ const Listings: FC = () => {
               }}
             >
               <Pagination
-                count={10} // Max pages
+                count={totalPages} // Max pages
+                page={page}
                 shape="rounded"
                 variant="outlined"
                 size="large"
                 color="secondary"
+                onChange={handlePageChange}
               />
             </Grid>
             <Grid

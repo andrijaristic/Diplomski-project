@@ -24,7 +24,7 @@ const initialState: AccommodationState = {
   ownerAccommodations: [],
   detailedAccommodation: null,
   page: 1,
-  totalPages: 0,
+  totalPages: 10,
   apiState: ApiCallState.COMPLETED,
 };
 
