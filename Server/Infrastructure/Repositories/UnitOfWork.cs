@@ -15,13 +15,15 @@ namespace Infrastructure.Repositories
         public IReservationRepository Reservations { get; set; }
         public IRoomRepository Rooms { get; set; }
         public IRoomTypeRepository RoomTypes { get; set; }
+        public ICommentRepository Comments { get; }
 
         public UnitOfWork(ProjectDbContext dbContext,
                           IUserRepository users,
                           IPropertyRepository properties,
                           IReservationRepository reservations,
                           IRoomRepository rooms,
-                          IRoomTypeRepository roomTypes)
+                          IRoomTypeRepository roomTypes,
+                          ICommentRepository comments)
         {
             _dbContext = dbContext;
             Users = users;
@@ -29,6 +31,7 @@ namespace Infrastructure.Repositories
             Reservations = reservations;
             Rooms = rooms;
             RoomTypes = roomTypes;
+            Comments = comments;
         }
 
         public async Task Save()

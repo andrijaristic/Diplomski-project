@@ -1,17 +1,14 @@
 import { FC, useMemo } from "react";
 import { Paper } from "@mui/material";
-import { useParams } from "react-router-dom";
 import AccountNavigationItem from "./AccountNavigationItem";
+import { useAppSelector } from "../../store/hooks";
 
 type NavItem = {
   title: string;
   to: string;
 };
 
-const generateNavigationItems = (
-  id: string | undefined,
-  isPropertyOwner: boolean = false
-) => {
+const generateNavigationItems = (userType: string) => {
   const items: NavItem[] = [];
 
   items.push({ title: "account", to: `/account` });
@@ -21,9 +18,8 @@ const generateNavigationItems = (
   });
   items.push({ title: "comments", to: `/account/comments` });
   items.push({ title: "reservations", to: `/account/reservations` });
-  items.push({ title: "my listings", to: `/account/my-listings` });
 
-  if (isPropertyOwner) {
+  if (userType === "PROPERTYOWNER") {
     items.push({ title: "my listings", to: `/account/my-listings` });
   }
 
@@ -31,10 +27,11 @@ const generateNavigationItems = (
 };
 
 const AccountNavigation: FC = () => {
-  const { id: path } = useParams();
+  const user = useAppSelector((state) => state.user.user);
   const items: NavItem[] = useMemo(() => {
-    return generateNavigationItems(path);
-  }, [path]);
+    return generateNavigationItems(user?.role || "");
+  }, [user?.role]);
+
   const content: JSX.Element[] = items?.map((item) => (
     <AccountNavigationItem key={item.to} title={item.title} to={item.to} />
   ));
