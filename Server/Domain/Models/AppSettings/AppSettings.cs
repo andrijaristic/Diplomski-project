@@ -13,6 +13,11 @@ namespace Domain.Models.AppSettings
         public string DefaultPassword { get; set; }
         public string DefaultPhoneNumber { get; set; }
         public string DefaultCountry { get; set; }
+        public string AdminFirstName { get; set; }
+        public string AdminLastName { get; set; }
+        public string AdminEmail { get; set; }
+        public string EmailRegex { get; set; }
+        public string PhoneNumberRegex { get; set; }
         public int MinUsernameLength { get; set; }
         public int MinPasswordLength { get; set; }
         public string TokenIssuer { get; set; }

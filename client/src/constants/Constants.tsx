@@ -4,7 +4,7 @@ export const API: string | undefined = import.meta.env.VITE_API_ENDPOINT;
 export const GoogleClientId: string = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 // Validations
-export const emailRegex: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+export const emailRegex: RegExp = /^([\w.-]+)@([\w-]+)((\.(\w){2,})+)$/i;
 
 export const minPasswordLength: number = 4;
 

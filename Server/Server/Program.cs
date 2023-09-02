@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Service;
 using Service.Mapping;
 using Service.Utilities;
+using Service.Utilities.DataInitializers;
 using System.Text;
 using Web.API.Middleware;
 
@@ -100,6 +101,7 @@ builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
 builder.Services.AddScoped<IReservationsService, ReservationService>();
 
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
+builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
@@ -124,6 +126,14 @@ builder.Services.AddSingleton(new MapperConfiguration(mc =>
 }).CreateMapper());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    // apply new migrations on startup
+    var context = scope.ServiceProvider.GetRequiredService<ProjectDbContext>();
+    context.Database.EnsureCreated();
+    scope.ServiceProvider.GetRequiredService<IUserDataInitializer>().InitializeData();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

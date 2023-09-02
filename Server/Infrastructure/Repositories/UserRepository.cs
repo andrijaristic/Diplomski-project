@@ -1,5 +1,6 @@
 ﻿using Domain.Interfaces.Repositories;
 using Domain.Models;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Infrastructure.Repositories
 
         public async Task<User> FindByUsername(string username)
         {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(x => String.Equals(x.Username, username));
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username.Equals(username));
             return user;
         }
     }

@@ -8,6 +8,7 @@ using Domain.Interfaces.Utilities;
 using Domain.Models;
 using Domain.Models.AppSettings;
 using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 namespace Service
 {
@@ -212,7 +213,8 @@ namespace Service
             }
 
             user.IsVerified = true;
-            user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
+            user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED : 
+                                                   VerificationStatus.REJECTED;
 
             await _unitOfWork.Save();
 
@@ -220,7 +222,6 @@ namespace Service
         }
 
         // Validations
-        // TODO: Add proper validations for certain fields (ex. email & phone number) with regex
         private void ValidateNewUser(NewUserDTO newUserDTO)
         {
             ValidateUsername(newUserDTO.Username);
@@ -244,7 +245,8 @@ namespace Service
 
         private void ValidateUsername(string username)
         {
-            if (string.IsNullOrWhiteSpace(username) || username.Length <= _settings.Value.MinUsernameLength)
+            if (string.IsNullOrWhiteSpace(username) || 
+                username.Length <= _settings.Value.MinUsernameLength)
             {
                 throw new InvalidUsernameException();
             }
@@ -252,7 +254,8 @@ namespace Service
 
         private void ValidatePassword(string password)
         {
-            if (string.IsNullOrWhiteSpace(password) || password.Length <= _settings.Value.MinPasswordLength)
+            if (string.IsNullOrWhiteSpace(password) || 
+                password.Length <= _settings.Value.MinPasswordLength)
             {
                 throw new InvalidPasswordException();
             }
@@ -284,7 +287,11 @@ namespace Service
 
         private void ValidatePhoneNumber(string phoneNumber)
         {
-            if (string.IsNullOrWhiteSpace(phoneNumber))
+            Regex phoneNumberRegex = new Regex(_settings.Value.PhoneNumberRegex,
+                                               RegexOptions.Compiled);
+
+            if (string.IsNullOrWhiteSpace(phoneNumber) || 
+                !phoneNumberRegex.Match(phoneNumber).Success)
             {
                 throw new InvalidInputFieldException(nameof(phoneNumber).ToUpper());
             }
@@ -292,10 +299,15 @@ namespace Service
 
         private void ValidateEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
+            Regex emailRegex = new Regex(_settings.Value.EmailRegex,
+                                         RegexOptions.Compiled);
+
+            if (string.IsNullOrWhiteSpace(email) || 
+                !emailRegex.Match(email).Success)
             {
                 throw new InvalidInputFieldException(nameof(email).ToUpper());
             }
+
         }
 
         private void ValidateRole(string role)
