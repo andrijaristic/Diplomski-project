@@ -40,6 +40,16 @@ export interface IUserUpdate {
   phoneNumber: string;
 }
 
+export interface IPasswordChange {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface IPasswordChangeData {
+  id: string;
+  body: IPasswordChange;
+}
+
 export interface IAuth {
   token: string;
 }

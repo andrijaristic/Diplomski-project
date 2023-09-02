@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ApiCallState } from "../shared/types/enumerations";
 import {
   IAuth,
   IDisplayUser,
   IExternalLogin,
+  IPasswordChangeData,
   IUserLogin,
   IUserRegistration,
   IUserUpdate,
@@ -12,6 +14,7 @@ import {
   externalLogin,
   getUserById,
   login,
+  passwordChange,
   register,
   update,
 } from "../services/UserService";
@@ -77,6 +80,21 @@ export const updateAction = createAsyncThunk(
   async (userUpdate: IUserUpdate, thunkApi) => {
     try {
       const response = await update(userUpdate);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const passwordChangeAction = createAsyncThunk(
+  "user/change-password",
+  async (passwordChangeData: IPasswordChangeData, thunkApi) => {
+    try {
+      const response = await passwordChange(
+        passwordChangeData.id,
+        passwordChangeData.body
+      );
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -192,6 +210,24 @@ const userSlice = createSlice({
       localStorage.setItem("user", JSON.stringify(action.payload));
     });
     builder.addCase(updateAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // PASSWORD CHANGE
+    builder.addCase(passwordChangeAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(passwordChangeAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("You have successfully changed your password!");
+    });
+    builder.addCase(passwordChangeAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;

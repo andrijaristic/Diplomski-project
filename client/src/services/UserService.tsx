@@ -2,6 +2,7 @@ import { axiosClient } from "./axiosClient";
 import { API } from "../constants/Constants";
 import {
   IExternalLogin,
+  IPasswordChange,
   IUserLogin,
   IUserRegistration,
   IUserUpdate,
@@ -21,6 +22,16 @@ export const register = async (userRegister: IUserRegistration) => {
 
 export const update = async (userUpdate: IUserUpdate) => {
   return await axiosClient.put(`${API}/users`, userUpdate);
+};
+
+export const passwordChange = async (
+  id: string,
+  passwordChange: IPasswordChange
+) => {
+  return await axiosClient.put(
+    `${API}/users/${id}/change-password`,
+    passwordChange
+  );
 };
 
 export const getUserById = async (id: string) => {

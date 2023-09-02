@@ -1,13 +1,25 @@
 import React, { FC, useState } from "react";
+import jwtDecode from "jwt-decode";
 import { Box } from "@mui/material";
 import PasswordInputField from "./PasswordInputField";
 import StyledButton from "../UI/Styled/StyledButton";
-import { errorNotification } from "../../utils/toastNotificationUtil";
 import { defaultFormErrorMessage } from "../../constants/Constants";
+import { errorNotification } from "../../utils/toastNotificationUtil";
+import {
+  IJwt,
+  IPasswordChangeData,
+} from "../../shared/interfaces/userInterfaces";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { passwordChangeAction } from "../../store/userSlice";
 
 const PasswordChange: FC = () => {
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.user.token);
+  const { id } = jwtDecode<IJwt>(token ? token : "");
+
   const [passwordError, setPasswordError] = useState<string>("");
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
@@ -26,12 +38,19 @@ const PasswordChange: FC = () => {
     }
 
     setPasswordError("");
-    const passwordChangeData = {
-      currentPassword: currentPassword.toString().trim(),
-      newPassword: newPassword.toString().trim(),
+    const passwordChangeData: IPasswordChangeData = {
+      id: id,
+      body: {
+        currentPassword: currentPassword.toString().trim(),
+        newPassword: newPassword.toString().trim(),
+      },
     };
 
-    console.log(passwordChangeData);
+    const currentTarget = event.currentTarget;
+    const response = await dispatch(passwordChangeAction(passwordChangeData));
+    if (response.meta.requestStatus === "fulfilled") {
+      currentTarget.reset();
+    }
   };
 
   return (

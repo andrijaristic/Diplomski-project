@@ -8,7 +8,7 @@ namespace Contracts.UserDTOs
 {
     public class ChangePasswordDTO
     {
-        public string OldPassword { get; set; }
+        public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
     }
 }

@@ -180,7 +180,7 @@ namespace Service
                 throw new InvalidUserInformationException();
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(changePasswordDTO.OldPassword, user.Password))
+            if (!BCrypt.Net.BCrypt.Verify(changePasswordDTO.CurrentPassword, user.Password))
             {
                 throw new InvalidPasswordException();
             }
