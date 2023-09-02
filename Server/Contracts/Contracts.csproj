@@ -24,8 +24,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CommentDTOs\" />
-  </ItemGroup>
-
 </Project>

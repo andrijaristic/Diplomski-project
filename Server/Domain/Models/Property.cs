@@ -16,8 +16,8 @@ namespace Domain.Models
         public double AverageGrade { get; set; }
         public bool IsVerified { get; set; }
         public VerificationStatus VerificationStatus { get; set; }
-        public Image ThumbnailImage { get; set; }
-        public List<Image> Images { get; set; }
+        public AccommodationImage ThumbnailImage { get; set; }
+        public List<AccommodationImage> Images { get; set; }
         public Guid UserId { get; set; }    
         public User User { get; set; }  
         public double Latitude { get; set; }

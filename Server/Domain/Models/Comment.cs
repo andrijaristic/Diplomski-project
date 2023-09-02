@@ -17,5 +17,6 @@ namespace Domain.Models
         public string Header { get; set; }  
         public string Content { get; set; } 
         public double Grade { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

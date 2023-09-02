@@ -13,5 +13,7 @@ namespace Contracts.PropertyDTOs
         public string Description { get; set; }
         public double AverageGrade { get; set; }
         public int RatingsAmount { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
     }
 }

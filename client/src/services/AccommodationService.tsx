@@ -11,6 +11,10 @@ export const getAccommodations = async (query: ISearchParams) => {
   });
 };
 
+export const getAccommodationById = async (id: string) => {
+  return await axiosClient.get(`${API}/properties/${id}`);
+};
+
 export const createNewProperty = async (newProperty: INewAccommodation) => {
   return await axiosClient.post(`${API}/properties`, newProperty);
 };

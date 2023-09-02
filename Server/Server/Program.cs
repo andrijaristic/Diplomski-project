@@ -7,6 +7,7 @@ using Infrastructure;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service;
@@ -119,7 +120,7 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
 builder.Services.AddSingleton(new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserMappingProfile());
-    mc.AddProfile(new PropertyMappingProfile());
+    mc.AddProfile(new PropertyMappingProfile(builder.Configuration.GetSection("AppSettings")["DefaultImagePath"]));
     mc.AddProfile(new RoomMappingProfile());
     mc.AddProfile(new RoomTypeMappingProfile());
     mc.AddProfile(new ReservationMappingProfile());
@@ -143,6 +144,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "../Infrastructure/Images")),
+    RequestPath = "/Images"
+});
 
 app.UseHttpsRedirection();
 

@@ -37,7 +37,7 @@ const ListingsItem: FC<IProps> = (props) => {
   const { pathname } = useLocation();
 
   const handleNavigationClick = () => {
-    navigate(`${pathname}/1`);
+    navigate(`${pathname}/d3ba14f5-0715-432f-84a2-f1ea7bbb953d`);
   };
 
   return (

@@ -8,7 +8,10 @@ import {
 import { ApiCallState } from "../shared/types/enumerations";
 import { defaultErrorMessage } from "../constants/Constants";
 import { errorNotification } from "../utils/toastNotificationUtil";
-import { getAccommodations } from "../services/AccommodationService";
+import {
+  getAccommodationById,
+  getAccommodations,
+} from "../services/AccommodationService";
 
 export interface AccommodationState {
   accommodations: IAccommodationDisplay[];
@@ -33,6 +36,18 @@ export const getAccommodationsAction = createAsyncThunk(
   async (query: ISearchParams, thunkApi) => {
     try {
       const response = await getAccommodations(query);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const getAccommodationByIdAction = createAsyncThunk(
+  "accommodations/getAccommodationById",
+  async (id: string, thunkApi) => {
+    try {
+      const response = await getAccommodationById(id);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -77,6 +92,24 @@ const accommodationSlice = createSlice({
       state.totalPages = action.payload.totalPages;
     });
     builder.addCase(getAccommodationsAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // GET ACCOMMODATION BY ID
+    builder.addCase(getAccommodationByIdAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(getAccommodationByIdAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+      state.detailedAccommodation = action.payload;
+    });
+    builder.addCase(getAccommodationByIdAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;

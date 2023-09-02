@@ -12,5 +12,6 @@ namespace Domain.Interfaces.Repositories
     {
         Task<List<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO);
         Task<Property> GetPropertyWithOwner(Guid id);
+        Task<Property> GetFullPropertyById (Guid id);
     }
 }

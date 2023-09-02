@@ -116,6 +116,18 @@ namespace Infrastructure.Repositories
             return source.ToListAsync();
         }
 
+        public async Task<Property> GetFullPropertyById(Guid id)
+        {
+            Property property = await _dbContext
+                                            .Properties
+                                            .Where(p => p.Id == id)
+                                            .Include(p => p.Comments)
+                                            .Include(p => p.ThumbnailImage)
+                                            .Include(p => p.Images)
+                                            .FirstOrDefaultAsync();
+            return property;
+        }
+
         public async Task<Property> GetPropertyWithOwner(Guid id)
         {
             Property property = await _dbContext

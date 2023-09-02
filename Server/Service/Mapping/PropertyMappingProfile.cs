@@ -11,10 +11,16 @@ namespace Service.Mapping
 {
     public class PropertyMappingProfile : Profile
     {
-        public PropertyMappingProfile() 
+        public PropertyMappingProfile(string defaultImagePath) 
         {
             CreateMap<NewPropertyDTO, Property>().ReverseMap();
             CreateMap<DisplayPropertyDTO, Property>().ReverseMap();
+            CreateMap<DetailedPropertyDTO, Property>().ForMember(
+                dest => dest.ThumbnailImage,
+                opt => opt.MapFrom(src => src.ThumbnailImage.StartsWith("https://") ?
+                                                                    src.ThumbnailImage :
+                                                                    defaultImagePath + src.ThumbnailImage))
+            .ReverseMap();
         }
     }
 }

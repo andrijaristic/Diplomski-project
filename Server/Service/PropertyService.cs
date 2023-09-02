@@ -43,15 +43,23 @@ namespace Service
                                                                                      _mapper);
         }
 
-        public async Task<DisplayPropertyDTO> GetById(Guid id)
+        public async Task<DetailedPropertyDTO> GetById(Guid id)
         {
-            Property property = await _unitOfWork.Properties.Find(id);
+            Property property = await _unitOfWork.Properties.GetFullPropertyById(id);
             if (property == null)
             {
                 throw new PropertyNotFoundException(id);
             }
 
-            return _mapper.Map<DisplayPropertyDTO>(property);   
+            for (int i = 0; i < property.Images.Count; i++)
+            {
+                property.Images[i].ImageURL = property.Images[i].ImageURL
+                                                      .StartsWith("https://") ? 
+                                                            property.Images[i].ImageURL : 
+                                                            _settings.Value.DefaultImagePath + property.Images[i].ImageURL;
+            }
+
+            return _mapper.Map<DetailedPropertyDTO>(property);   
         }
 
         // TODO: Implement image handling

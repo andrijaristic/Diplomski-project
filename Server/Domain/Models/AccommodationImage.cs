@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class Image
+    public class AccommodationImage
     {
         public Guid Id { get; set; }
         public string ImageURL { get; set; }

@@ -31,8 +31,8 @@ namespace Web.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Get(Guid id)
         {
-            DisplayPropertyDTO displayPropertyDTO = await _propertyService.GetById(id);
-            return Ok(displayPropertyDTO);
+            DetailedPropertyDTO detailedPropertyDTO = await _propertyService.GetById(id);
+            return Ok(detailedPropertyDTO);
         }
 
         [HttpPost]
