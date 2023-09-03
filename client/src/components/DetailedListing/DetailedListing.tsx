@@ -11,6 +11,7 @@ import StyledButton from "../UI/Styled/StyledButton";
 import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import ImageDisplay from "../EditListing/ImageDisplay";
+import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
 
 const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
 
@@ -37,17 +38,16 @@ const DetailedListing: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
-  const detailedAccommodation = useAppSelector(
+  const accommodation = useAppSelector(
     (state) => state.accommodations.detailedAccommodation
   );
   const accommodationComments = useAppSelector(
     (state) => state.comments.accommodationComments
   );
 
-  const utilities: JSX.Element[] | undefined =
-    detailedAccommodation?.utilities.map((utility) => (
-      <DetailedListingAmenity key={utility.id} name={utility.name} />
-    ));
+  const utilities: JSX.Element[] | undefined = accommodation?.utilities?.map(
+    (utility) => <DetailedListingAmenity key={utility.id} name={utility.name} />
+  );
 
   const [rating, setRating] = useState<number>(4.2);
 
@@ -76,15 +76,11 @@ const DetailedListing: FC = () => {
     <Comment flag comment={comment} />
   ));
 
-  const images: string[] = [
-    detailedAccommodation?.thumbnailImage?.imageURL,
-    "/header-background.jpg",
-  ];
-  detailedAccommodation?.images?.map((image) => {
-    images.push(image?.imageURL);
-  });
-
-  console.log(images);
+  const images: IAccommodationImage[] = [];
+  if (accommodation?.thumbnailImage) {
+    images.push(accommodation?.thumbnailImage);
+    accommodation?.images.map((image) => images.push(image));
+  }
 
   return (
     <Fade in>
@@ -130,7 +126,7 @@ const DetailedListing: FC = () => {
                     variant="body1"
                     sx={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
                   >
-                    {detailedAccommodation?.description || DUMMY_DESCRIPTION}
+                    {accommodation?.description || DUMMY_DESCRIPTION}
                   </Typography>
                 </Box>
                 <Box sx={{ pt: 4 }}>
@@ -138,7 +134,7 @@ const DetailedListing: FC = () => {
                   <Box
                     sx={{ display: "flex", flexWrap: "wrap", gap: 2, pt: 2 }}
                   >
-                    {utilities || noAmenitiesMessage}
+                    {utilities?.count > 0 ? utilities : noAmenitiesMessage}
                   </Box>
                 </Box>
               </Box>

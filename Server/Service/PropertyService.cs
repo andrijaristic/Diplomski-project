@@ -72,7 +72,43 @@ namespace Service
             return _mapper.Map<DetailedPropertyDTO>(property);   
         }
 
-        // TODO: Implement image handling
+        public async Task<DetailedPropertyDTO> AddPropertyImage(Guid id, AddPropertyImageDTO addPropertyImageDTO, string username)
+        {
+            User user = await _unitOfWork.Users.FindByUsername(username);
+            if (user == null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (user.Id != addPropertyImageDTO.UserId)
+            {
+                throw new InvalidUserIdInNewPropertyException();
+            }
+
+            Property property = await _unitOfWork.Properties.GetFullPropertyById(id);
+            if (property == null)
+            {
+                throw new PropertyNotFoundException(id);
+            }
+
+            AccommodationImage image = new AccommodationImage()
+            {
+                ImageURL = addPropertyImageDTO.Image == null ?
+                                        _settings.Value.DefaultImagePath :
+                                        await ImageHelper.SaveImage(addPropertyImageDTO.Image, property.Id, _hostEnvironment.ContentRootPath)
+            };
+
+            if (property.Images.Count == 5) 
+            {
+                throw new PropertyImageAmountExceededException();
+            }
+
+            property.Images.Add(image);
+            await _unitOfWork.Save();
+
+            return _mapper.Map<DetailedPropertyDTO>(property);
+        }
+
         public async Task<DisplayPropertyDTO> CreateProperty(NewPropertyDTO newPropertyDTO, string username)
         {
             ValidateNewProperty(newPropertyDTO);
@@ -104,12 +140,14 @@ namespace Service
                                         await ImageHelper.SaveImage(newPropertyDTO.ThumbnailImage, property.Id, _hostEnvironment.ContentRootPath)
             };
 
+            property.Images.Add(property.ThumbnailImage);
+
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayPropertyDTO>(property); 
         }
 
-        public async Task<DisplayPropertyDTO> UpdateProperty(Guid id, UpdatePropertyDTO updatePropertyDTO, string username)
+        public async Task<DisplayPropertyDTO> UpdateBasicPropertyInformation(Guid id, UpdateBasicPropertyInformationDTO updatePropertyDTO, string username)
         {
             ValidateUpdateProperty(updatePropertyDTO);
 
@@ -192,7 +230,7 @@ namespace Service
             ValidateDescription(newPropertyDTO.Description);
         }
 
-        private void ValidateUpdateProperty(UpdatePropertyDTO updatePropertyDTO)
+        private void ValidateUpdateProperty(UpdateBasicPropertyInformationDTO updatePropertyDTO)
         {
             ValidateName(updatePropertyDTO.Name);
             ValidateDescription(updatePropertyDTO.Description);

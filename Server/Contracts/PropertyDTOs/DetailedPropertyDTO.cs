@@ -1,6 +1,8 @@
 ﻿using Contracts.AccommodationImageDTOs;
 using Contracts.CommentDTOs;
 using Contracts.PropertyUtilityDTOs;
+using Contracts.RoomTypeDTOs;
+using Contracts.SeasonalPricingDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,7 @@ namespace Contracts.PropertyDTOs
         public List<PropertyUtilityDTO> Utilities { get; set; }
         public List<AccommodationImageDTO> Images { get; set; }
         public List<DisplayCommentDTO> Comments { get; set; }
+        public List<DisplayRoomTypeDTO> RoomTypes { get; set; }
         public int StartingPrice { get; set; }
     }
 }

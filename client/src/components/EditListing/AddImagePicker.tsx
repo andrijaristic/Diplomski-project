@@ -7,6 +7,7 @@ interface IProps {
   avatarClickHandler: () => void;
   imageInput: React.RefObject<HTMLInputElement>;
   uploadHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onAdd: () => void;
 }
 
 const AddImagePicker: FC<IProps> = (props) => {
@@ -24,7 +25,9 @@ const AddImagePicker: FC<IProps> = (props) => {
             bgcolor: "background.default",
           }}
         >
-          <Button sx={{ ml: "auto" }}>Add image to property showcase</Button>
+          <Button sx={{ ml: "auto" }} onClick={props.onAdd}>
+            Add image to property showcase
+          </Button>
         </Paper>
       )}
       <Button onClick={props.avatarClickHandler}>

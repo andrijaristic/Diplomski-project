@@ -1,5 +1,6 @@
 import { IAccommodationImage } from "./accommodationImageInterfaces";
 import { IComment } from "./commentInterfaces";
+import { IRoomTypeDisplay } from "./roomTypeInterfaces";
 import { IUtility } from "./utilityInterfaces";
 
 export interface IAccommodationDisplay {
@@ -26,6 +27,7 @@ export interface IAccommodation {
   images: IAccommodationImage[];
   comments: IComment[];
   utilities: IUtility[];
+  roomTypes: IRoomTypeDisplay[];
 }
 
 export interface INewAccommodation {
@@ -37,6 +39,18 @@ export interface INewAccommodation {
   latitude: number;
   longitude: number;
   thumbnailImage: File;
+}
+
+export interface IAccommodationBasicInformation {
+  propertyId: string;
+  userId: string;
+  name: string;
+  description: string;
+}
+
+export interface IAddAccommodationImage {
+  propertyId: string;
+  data: FormData;
 }
 
 export interface ISearchParams {

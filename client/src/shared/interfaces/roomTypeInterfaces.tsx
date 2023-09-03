@@ -8,3 +8,10 @@ export interface INewRoomType {
   amountOfRooms: number;
   seasonalPricings: ISeasonalPricing[];
 }
+
+export interface IRoomTypeDisplay {
+  id: string;
+  adults: number;
+  children: number;
+  seasonalPricing: ISeasonalPricing[];
+}

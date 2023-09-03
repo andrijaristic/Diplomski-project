@@ -1,6 +1,10 @@
 import { axiosClient } from "./axiosClient";
 import { API } from "../constants/Constants";
-import { ISearchParams } from "../shared/interfaces/accommodationInterfaces";
+import {
+  IAccommodationBasicInformation,
+  IAddAccommodationImage,
+  ISearchParams,
+} from "../shared/interfaces/accommodationInterfaces";
 
 export const getAccommodations = async (query: ISearchParams) => {
   return await axiosClient.get(`${API}/properties`, {
@@ -18,4 +22,26 @@ export const getUserAccommodations = async (id: string) => {
 
 export const createNewAccommodation = async (newAccommodation: FormData) => {
   return await axiosClient.post(`${API}/properties`, newAccommodation);
+};
+
+export const updateBasicAccommodationInformation = async (
+  basicAccommodationInformation: IAccommodationBasicInformation
+) => {
+  return await axiosClient.put(
+    `${API}/properties/${basicAccommodationInformation.propertyId}`,
+    {
+      name: basicAccommodationInformation.name,
+      description: basicAccommodationInformation.description,
+      userId: basicAccommodationInformation.userId,
+    }
+  );
+};
+
+export const addAccommodationImage = async (
+  accommodationImage: IAddAccommodationImage
+) => {
+  return await axiosClient.post(
+    `${API}/properties/${accommodationImage.propertyId}/add-image`,
+    accommodationImage.data
+  );
 };

@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
 
 const steps = [
   {
@@ -25,10 +26,11 @@ const steps = [
 
 interface IProps {
   edit: boolean;
-  images: string[];
+  images: IAccommodationImage[];
+  onDelete: (id: string) => void;
 }
 
-const ImageDisplay: FC<IProps> = ({ edit = false, images }) => {
+const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const maxSteps = images.length;
@@ -39,6 +41,10 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images }) => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleDelete = () => {
+    onDelete(images[activeStep]?.id);
   };
 
   return (
@@ -69,7 +75,7 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images }) => {
       )}
       <Box
         component="img"
-        src={images[activeStep]}
+        src={images[activeStep]?.imageURL}
         alt="thumbnail-image"
         sx={{
           width: "100%",

@@ -53,10 +53,18 @@ namespace Web.API.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Put(Guid id, [FromForm] UpdatePropertyDTO updatePropertyDTO)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateBasicPropertyInformationDTO updatePropertyDTO)
         {
-            DisplayPropertyDTO displayPropertyDTO = await _propertyService.UpdateProperty(id, updatePropertyDTO, User.Identity.Name);
+            DisplayPropertyDTO displayPropertyDTO = await _propertyService.UpdateBasicPropertyInformation(id, updatePropertyDTO, User.Identity.Name);
             return Ok(displayPropertyDTO);
+        }
+
+        [HttpPost("{id}/add-image")]
+        [Authorize(Roles = "propertyowner")]
+        public async Task<IActionResult> AddPropertyImage(Guid id, [FromForm] AddPropertyImageDTO addPropertyImageDTO)
+        {
+            DetailedPropertyDTO detailedPropertyDTO = await _propertyService.AddPropertyImage(id, addPropertyImageDTO, User.Identity.Name);
+            return Ok(detailedPropertyDTO);
         }
 
         [HttpDelete("{id}")]

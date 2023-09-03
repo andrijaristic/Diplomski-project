@@ -13,6 +13,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import EuroSymbolIcon from "@mui/icons-material/EuroSymbol";
+import { IRoomTypeDisplay } from "../../shared/interfaces/roomTypeInterfaces";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -111,9 +112,10 @@ const DUMMY_PRICINGS = [
 
 interface IProps {
   edit: boolean;
+  roomType: IRoomTypeDisplay;
 }
 
-const PricingTable: FC<IProps> = (props) => {
+const PricingTable: FC<IProps> = ({ edit, roomType }) => {
   return (
     <TableContainer
       component={Paper}
@@ -145,12 +147,16 @@ const PricingTable: FC<IProps> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {DUMMY_PRICINGS.map((pricing) => (
+          {roomType?.seasonalPricing.map((pricing) => (
             <StyledTableRow key={pricing.id}>
-              <StyledTableCell>{pricing.startDate}</StyledTableCell>
-              <StyledTableCell>{pricing.endDate}</StyledTableCell>
               <StyledTableCell>
-                {props.edit ? (
+                {new Date(pricing?.startDate).toLocaleDateString()}
+              </StyledTableCell>
+              <StyledTableCell>
+                {new Date(pricing?.endDate).toLocaleDateString()}
+              </StyledTableCell>
+              <StyledTableCell>
+                {edit ? (
                   <TextField
                     id={pricing.id.toString()}
                     name={(Math.random() * 100).toString()}

@@ -2,7 +2,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   IAccommodation,
+  IAccommodationBasicInformation,
   IAccommodationDisplay,
+  IAddAccommodationImage,
   ISearchParams,
 } from "../shared/interfaces/accommodationInterfaces";
 import { ApiCallState } from "../shared/types/enumerations";
@@ -12,10 +14,12 @@ import {
   successNotification,
 } from "../utils/toastNotificationUtil";
 import {
+  addAccommodationImage,
   createNewAccommodation,
   getAccommodationById,
   getAccommodations,
   getUserAccommodations,
+  updateBasicAccommodationInformation,
 } from "../services/AccommodationService";
 
 export interface AccommodationState {
@@ -79,6 +83,35 @@ export const createNewAccommodationAction = createAsyncThunk(
   async (newAccommodation: FormData, thunkApi) => {
     try {
       const response = await createNewAccommodation(newAccommodation);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const updateBasicAccommodationInformationAction = createAsyncThunk(
+  "accommodations/updateBasicInformation",
+  async (
+    basicAccommodationInformation: IAccommodationBasicInformation,
+    thunkApi
+  ) => {
+    try {
+      const response = await updateBasicAccommodationInformation(
+        basicAccommodationInformation
+      );
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const addAccommodationImageAction = createAsyncThunk(
+  "accommodations/addImage",
+  async (accommodationImage: IAddAccommodationImage, thunkApi) => {
+    try {
+      const response = await addAccommodationImage(accommodationImage);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -180,6 +213,53 @@ const accommodationSlice = createSlice({
       );
     });
     builder.addCase(createNewAccommodationAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // UPDATE BASIC ACCOMMODATION INFORMATION
+    builder.addCase(
+      updateBasicAccommodationInformationAction.pending,
+      (state) => {
+        state.apiState = ApiCallState.PENDING;
+      }
+    );
+    builder.addCase(
+      updateBasicAccommodationInformationAction.fulfilled,
+      (state, action) => {
+        state.apiState = ApiCallState.COMPLETED;
+        state.detailedAccommodation = action.payload;
+        successNotification("Successfully updated basic information!");
+      }
+    );
+    builder.addCase(
+      updateBasicAccommodationInformationAction.rejected,
+      (state, action) => {
+        state.apiState = ApiCallState.REJECTED;
+
+        let error: string = defaultErrorMessage;
+        if (typeof action.payload === "string") {
+          error = action.payload;
+        }
+        errorNotification(error);
+      }
+    );
+
+    // ADD ACCOMMODATION IMAGE
+    builder.addCase(addAccommodationImageAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(addAccommodationImageAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+      state.detailedAccommodation = action.payload;
+      successNotification("Successfully added new accommodation image!");
+    });
+    builder.addCase(addAccommodationImageAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;
