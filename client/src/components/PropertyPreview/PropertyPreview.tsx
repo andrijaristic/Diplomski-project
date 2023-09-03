@@ -9,15 +9,21 @@ import {
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import styles from "./PropertyPreview.module.css";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
+  id: string;
   name: string;
   country: string;
   area: string;
   imageURL: string;
 }
 
-const PropertyPreview: FC<IProps> = ({ name, country, area, imageURL }) => {
+const PropertyPreview: FC<IProps> = ({ id, name, country, area, imageURL }) => {
+  const navigate = useNavigate();
+  const handleNavigation = () => {
+    navigate(`listings/${id}`);
+  };
   return (
     <Slide direction="left" in>
       <Card
@@ -36,6 +42,7 @@ const PropertyPreview: FC<IProps> = ({ name, country, area, imageURL }) => {
         }}
       >
         <ButtonBase
+          onClick={handleNavigation}
           sx={{
             width: "100%",
             height: "100%",

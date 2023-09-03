@@ -247,7 +247,7 @@ const FilterModal: FC<IProps> = (props) => {
                     <DatePicker
                       disablePast
                       sx={{ width: "11rem", mr: 1 }}
-                      value={checkinDate}
+                      defaultValue={checkinDate}
                       onChange={(newValue) => setCheckinDate(newValue)}
                     />
                   </Box>

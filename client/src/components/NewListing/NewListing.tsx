@@ -28,7 +28,6 @@ import StyledButton from "../UI/Styled/StyledButton";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { errorNotification } from "../../utils/toastNotificationUtil";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
-import { INewAccommodation } from "../../shared/interfaces/accommodationInterfaces";
 import { createNewAccommodationAction } from "../../store/accommodationSlice";
 
 const NewListing: FC = () => {

@@ -50,7 +50,7 @@ namespace Infrastructure.Repositories
                 source = source
                             .Where(x => x.Rooms
                             .Any(x => x.OccupiedDates
-                            .Any(x => x.ArrivalDate.Ticks > arrivalDate.Ticks)));
+                            .Any(x => x.ArrivalDate > arrivalDate && x.DepartureDate < arrivalDate)));
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.DepartureDate))
@@ -63,7 +63,21 @@ namespace Infrastructure.Repositories
                 source = source
                             .Where(x => x.Rooms
                             .Any(x => x.OccupiedDates
-                            .Any(x => x.DepartureDate.Ticks < departureDate.Ticks)));
+                            .Any(x => x.DepartureDate < departureDate && x.ArrivalDate > departureDate)));
+            }
+
+            if (!String.IsNullOrEmpty(searchParamsDTO.Country))
+            {
+                source = source
+                            .Where(x => x.Country
+                            .Equals(searchParamsDTO.Country));
+            }
+
+            if (!String.IsNullOrEmpty(searchParamsDTO.Area))
+            {
+                source = source
+                            .Where(x => x.Area
+                            .Equals(searchParamsDTO.Area));
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.Adults))

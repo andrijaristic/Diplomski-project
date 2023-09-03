@@ -26,14 +26,18 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 
 interface IProps {
   accommodation: IAccommodationDisplay;
+  onClick: (lat: number, lng: number) => void;
 }
 
-const ListingsItem: FC<IProps> = ({ accommodation }) => {
+const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
   const handleNavigationClick = () => {
     navigate(`${pathname}/${accommodation?.id}`);
+  };
+
+  const handleClick = () => {
+    onClick(accommodation.latitude, accommodation.longitude);
   };
 
   const image =
@@ -64,6 +68,7 @@ const ListingsItem: FC<IProps> = ({ accommodation }) => {
       }}
     >
       <ButtonBase
+        onClick={handleClick}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -87,9 +92,9 @@ const ListingsItem: FC<IProps> = ({ accommodation }) => {
         <Grid container direction="column" sx={{ display: "flex" }}>
           <Grid item sx={{ display: "flex" }}>
             <StarIcon sx={{ color: "primary.main" }} />
-            <Typography sx={{ ml: 1 }}>{`${accommodation?.averageGrade.toFixed(
-              1
-            )} (${accommodation?.comments.toFixed(0)} reviews)`}</Typography>
+            <Typography
+              sx={{ ml: 1 }}
+            >{`${accommodation?.averageGrade} (${accommodation?.comments} reviews)`}</Typography>
           </Grid>
           <Grid
             item
@@ -117,12 +122,6 @@ const ListingsItem: FC<IProps> = ({ accommodation }) => {
       </CardContent>
     </Card>
   );
-};
-
-ListingsItem.defaultProps = {
-  startingPrice: 0,
-  title: "Placeholder title",
-  description: "Placeholder description",
 };
 
 export default ListingsItem;

@@ -36,8 +36,8 @@ namespace Service
         public async Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO)
         {
             IEnumerable<Property> accommodations = await _unitOfWork
-                                                                .Properties
-                                                                .GetFilteredAcccommodations(searchParamsDTO);
+                                                        .Properties
+                                                        .GetFilteredAcccommodations(searchParamsDTO);
             if (accommodations == null)
             {
                 throw new InvalidSearchParamsException();

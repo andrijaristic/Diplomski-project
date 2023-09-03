@@ -14,6 +14,8 @@ namespace Contracts.Common
         public string Children { get; set; }
         public string MinPrice { get; set; }
         public string MaxPrice { get; set; }
+        public string Country { get; set; }
+        public string Area { get; set; }
         public List<Guid> Utilities { get; set; }
         public int Page { get; set; }
     }

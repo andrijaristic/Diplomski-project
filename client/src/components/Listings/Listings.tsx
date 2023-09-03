@@ -1,19 +1,22 @@
-import { FC, useEffect, useState } from "react";
-import { Box, Fade, Grid, Pagination, SelectChangeEvent } from "@mui/material";
+import { FC, useState } from "react";
+import {
+  Box,
+  Fade,
+  Grid,
+  Pagination,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import ListingsItem from "./ListingsItem";
 import ListingActions from "./ListingActions";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { useSearchParams } from "react-router-dom";
 import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
 import { getAccommodationsAction } from "../../store/accommodationSlice";
+import { LatLng } from "leaflet-geosearch/dist/providers/provider.js";
+import L from "leaflet";
 
 const Listings: FC = () => {
   const dispatch = useAppDispatch();
@@ -23,62 +26,45 @@ const Listings: FC = () => {
     (state) => state.accommodations.accommodations
   );
 
+  const [mapCenter, setMapCenter] = useState<LatLng>({
+    lat: 43.61928703546727,
+    lng: 20.997136831283573,
+  });
   const [searchParams, setSearchParams] = useSearchParams();
   const [sortOption, setSortOption] = useState<string>("highest-price");
-
-  useEffect(() => {
-    const searchParamsData: ISearchParams = {
-      arrivalDate: searchParams.get("arrivalDate")?.toString() || "",
-      departureDate: searchParams.get("departureDate")?.toString() || "",
-      minPrice: searchParams.get("minPrice")?.toString() || "",
-      maxPrice: searchParams.get("maxPrice")?.toString() || "",
-      adults: searchParams.get("adults")?.toString() || "",
-      children: searchParams.get("children")?.toString() || "",
-      utilities: searchParams.getAll("utilities").map(Number),
-      page: page,
-    };
-
-    dispatch(getAccommodationsAction(searchParamsData));
-  }, []);
 
   const handleSortingChange = (event: SelectChangeEvent) => {
     setSortOption(event.target.value);
   };
 
-  // const content: JSX.Element[] = [];
-  // for (let i = 0; i < 10; i++) {
-  //   content.push(
-  //     <ListingsItem
-  //       key={Math.random() * 1000}
-  //       src={DUMMY_OBJECT.src}
-  //       title={DUMMY_OBJECT.title}
-  //       description={DUMMY_OBJECT.description}
-  //       startingPrice={Math.random() * 1000}
-  //       reviewAmount={Math.random() * 500}
-  //       rating={Math.random() * 5}
-  //     />
-  //   );
-  // }
+  const handleMapCenter = (lat: number, lng: number) => {
+    setMapCenter({ lat: lat, lng: lng });
+  };
+
+  const ChangeView = ({ center }: { center: LatLng }) => {
+    const map = useMap();
+    map.setView(center, 16);
+    return null;
+  };
 
   const content: JSX.Element[] = accommodations?.map((accommodation) => (
-    <ListingsItem key={accommodation.id} accommodation={accommodation} />
+    <ListingsItem
+      key={accommodation.id}
+      accommodation={accommodation}
+      onClick={handleMapCenter}
+    />
   ));
 
-  // lat - lon
-  const position = [51.505, -0.09];
-
-  // gets lat-lon on click
-  const MapEvents = () => {
-    useMapEvents({
-      click(e) {
-        // setState your coords here
-        // coords exist in "e.latlng.lat" and "e.latlng.lng"
-        console.log(e.latlng.lat);
-        console.log(e.latlng.lng);
-      },
-    });
-    return false;
-  };
+  const markers = accommodations?.map((accommodation) => {
+    return (
+      <Marker
+        key={accommodation?.id}
+        position={[accommodation?.latitude, accommodation?.longitude]}
+      >
+        <Popup>{accommodation?.name}</Popup>
+      </Marker>
+    );
+  });
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -151,27 +137,31 @@ const Listings: FC = () => {
                 flexShrink: 1,
               }}
             >
-              {content}
+              {content.length > 0 ? (
+                content
+              ) : (
+                <Typography variant="h5">
+                  There are no listings with the provided filter parameters. Try
+                  something else!
+                </Typography>
+              )}
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={3}>
           <Box sx={{ position: "fixed", height: "100%", width: "25%" }}>
             <MapContainer
-              center={position}
-              zoom={13}
+              id="map"
+              center={mapCenter}
+              zoom={16}
               style={{ height: "100vh", width: "100wh" }}
             >
+              <ChangeView center={mapCenter} />
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <MapEvents />
-              <Marker position={position}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker>
+              {markers.length > 0 && markers}
             </MapContainer>
           </Box>
         </Grid>

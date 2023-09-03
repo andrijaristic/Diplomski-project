@@ -9,8 +9,10 @@ export interface IAccommodationDisplay {
   description: string;
   averageGrade: number;
   comments: number;
-  country: string;
-  area: string;
+  latitude: number;
+  longitude: number;
+  country?: string;
+  area?: string;
   thumbnailImage: IAccommodationImage;
 }
 
@@ -63,6 +65,8 @@ export interface ISearchParams {
   children?: string;
   minPrice?: string;
   maxPrice?: string;
+  country?: string;
+  area?: string;
   utilities?: number[];
   page: number;
 }
