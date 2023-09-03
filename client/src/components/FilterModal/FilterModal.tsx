@@ -183,6 +183,20 @@ const FilterModal: FC<IProps> = (props) => {
     dispatch(getAccommodationsAction(searchParams));
   };
 
+  const handleReset = () => {
+    const searchParams: ISearchParams = {
+      arrivalDate: "",
+      departureDate: "",
+      adults: "",
+      children: "",
+      page: 1,
+    };
+
+    console.log(searchParams);
+    setSearchParams(searchParams);
+    dispatch(getAccommodationsAction(searchParams));
+  };
+
   const amenities = DUMMY_AMENTIES.map((amenity) => (
     <FilterModalAmenity
       initialState={
@@ -405,6 +419,12 @@ const FilterModal: FC<IProps> = (props) => {
             </Grid>
           </Box>
           <Box sx={{ p: 2, display: "flex", minHeight: 100, maxHeight: 100 }}>
+            <Button
+              sx={{ mr: "auto", width: "8rem", fontSize: 20 }}
+              onClick={handleReset}
+            >
+              Reset
+            </Button>
             <StyledButton
               sx={{ ml: "auto", width: "8rem", fontSize: 20 }}
               onClick={handleFilter}
