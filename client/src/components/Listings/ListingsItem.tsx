@@ -12,15 +12,7 @@ import {
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StyledButton from "../UI/Styled/StyledButton";
-
-interface IProps {
-  src: string;
-  title: string;
-  description: string;
-  startingPrice: number;
-  reviewAmount: number;
-  rating: number;
-}
+import { IAccommodationDisplay } from "../../shared/interfaces/accommodationInterfaces";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   ...theme.typography,
@@ -32,13 +24,22 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
   WebkitBoxOrient: "vertical",
 }));
 
-const ListingsItem: FC<IProps> = (props) => {
+interface IProps {
+  accommodation: IAccommodationDisplay;
+}
+
+const ListingsItem: FC<IProps> = ({ accommodation }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const handleNavigationClick = () => {
-    navigate(`${pathname}/d3ba14f5-0715-432f-84a2-f1ea7bbb953d`);
+    navigate(`${pathname}/${accommodation?.id}`);
   };
+
+  const image =
+    accommodation?.thumbnailImage !== null
+      ? accommodation?.thumbnailImage.imageURL
+      : "/header-background.jpg";
 
   return (
     <Card
@@ -72,7 +73,7 @@ const ListingsItem: FC<IProps> = (props) => {
           component="img"
           height="260"
           alt="property-thumbnail"
-          image="/header-background.jpg"
+          image={image}
         ></CardMedia>
       </ButtonBase>
 
@@ -86,9 +87,9 @@ const ListingsItem: FC<IProps> = (props) => {
         <Grid container direction="column" sx={{ display: "flex" }}>
           <Grid item sx={{ display: "flex" }}>
             <StarIcon sx={{ color: "primary.main" }} />
-            <Typography sx={{ ml: 1 }}>{`${props.rating.toFixed(
+            <Typography sx={{ ml: 1 }}>{`${accommodation?.averageGrade.toFixed(
               1
-            )} (${props.reviewAmount.toFixed(0)} reviews)`}</Typography>
+            )} (${accommodation?.comments.toFixed(0)} reviews)`}</Typography>
           </Grid>
           <Grid
             item
@@ -98,12 +99,12 @@ const ListingsItem: FC<IProps> = (props) => {
               whiteSpace: "nowrap",
             }}
           >
-            <StyledTypography>{props.title}</StyledTypography>
+            <StyledTypography>{accommodation?.name}</StyledTypography>
           </Grid>
           <Grid item sx={{ ml: 0.4, mb: 1 }}>
             <Box sx={{ height: 40 }}>
               <StyledTypography variant="body2">
-                {props.description}
+                {accommodation?.description}
               </StyledTypography>
             </Box>
           </Grid>

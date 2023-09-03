@@ -15,19 +15,15 @@ import { useSearchParams } from "react-router-dom";
 import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
 import { getAccommodationsAction } from "../../store/accommodationSlice";
 
-const DUMMY_OBJECT = {
-  src: "header-background.jpg", // image src
-  title: "Dummy title", // listing name
-  description:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-};
-
 const Listings: FC = () => {
   const dispatch = useAppDispatch();
   const page = useAppSelector((state) => state.accommodations.page);
   const totalPages = useAppSelector((state) => state.accommodations.totalPages);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const accommodations = useAppSelector(
+    (state) => state.accommodations.accommodations
+  );
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [sortOption, setSortOption] = useState<string>("highest-price");
 
   useEffect(() => {
@@ -49,20 +45,24 @@ const Listings: FC = () => {
     setSortOption(event.target.value);
   };
 
-  const content: JSX.Element[] = [];
-  for (let i = 0; i < 10; i++) {
-    content.push(
-      <ListingsItem
-        key={Math.random() * 1000}
-        src={DUMMY_OBJECT.src}
-        title={DUMMY_OBJECT.title}
-        description={DUMMY_OBJECT.description}
-        startingPrice={Math.random() * 1000}
-        reviewAmount={Math.random() * 500}
-        rating={Math.random() * 5}
-      />
-    );
-  }
+  // const content: JSX.Element[] = [];
+  // for (let i = 0; i < 10; i++) {
+  //   content.push(
+  //     <ListingsItem
+  //       key={Math.random() * 1000}
+  //       src={DUMMY_OBJECT.src}
+  //       title={DUMMY_OBJECT.title}
+  //       description={DUMMY_OBJECT.description}
+  //       startingPrice={Math.random() * 1000}
+  //       reviewAmount={Math.random() * 500}
+  //       rating={Math.random() * 5}
+  //     />
+  //   );
+  // }
+
+  const content: JSX.Element[] = accommodations?.map((accommodation) => (
+    <ListingsItem key={accommodation.id} accommodation={accommodation} />
+  ));
 
   // lat - lon
   const position = [51.505, -0.09];
@@ -91,7 +91,7 @@ const Listings: FC = () => {
       maxPrice: searchParams.get("maxPrice")?.toString() || "",
       adults: searchParams.get("adults")?.toString() || "",
       children: searchParams.get("children")?.toString() || "",
-      utilities: searchParams.get("utilities")?.map(Number) || [],
+      utilities: searchParams.getAll("utilities")?.map(Number) || [],
       page: value,
     };
 

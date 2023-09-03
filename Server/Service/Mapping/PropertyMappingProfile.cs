@@ -14,7 +14,9 @@ namespace Service.Mapping
         public PropertyMappingProfile() 
         {
             CreateMap<NewPropertyDTO, Property>().ReverseMap();
-            CreateMap<DisplayPropertyDTO, Property>().ReverseMap();
+            CreateMap<Property, DisplayPropertyDTO>().ForMember(
+                    dest => dest.Comments,
+                    opt => opt.MapFrom(src => src.Comments.Count)).ReverseMap();
             CreateMap<DetailedPropertyDTO, Property>().ReverseMap();
         }
     }

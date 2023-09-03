@@ -49,8 +49,6 @@ const DetailedListing: FC = () => {
     (utility) => <DetailedListingAmenity key={utility.id} name={utility.name} />
   );
 
-  const [rating, setRating] = useState<number>(4.2);
-
   const handleBookingSectionNavigation = () => {
     // navigate(`${originalPathname}/#bookings`);
     scrollToSection("bookings")();
@@ -179,7 +177,7 @@ const DetailedListing: FC = () => {
             }}
           >
             <Typography variant="h5" sx={{ pt: 2, pb: 2 }}>
-              Property name
+              {accommodation?.name}
             </Typography>
             <Divider />
             <Box
@@ -192,13 +190,13 @@ const DetailedListing: FC = () => {
               }}
             >
               <Rating
-                value={rating}
+                value={accommodation?.averageGrade}
                 precision={0.5}
                 readOnly
                 sx={{ ml: "auto" }}
               />
               <Typography variant="body1" sx={{ pl: 1, pr: 1 }}>
-                {rating}
+                {accommodation?.averageGrade}
               </Typography>
             </Box>
             <Divider />
@@ -221,7 +219,7 @@ const DetailedListing: FC = () => {
               >
                 <AttachMoneyIcon sx={{ fontSize: 28 }} />
                 <Typography variant="h5" sx={{ pr: 1 }}>
-                  {rating}
+                  {accommodation?.startingPrice}
                 </Typography>
               </Box>
             </Box>

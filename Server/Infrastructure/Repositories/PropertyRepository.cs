@@ -26,6 +26,7 @@ namespace Infrastructure.Repositories
                             .Include(p => p.Rooms)
                             .Include(p => p.RoomTypes)
                             .Include(p => p.Utilities)
+                            .Include(p => p.ThumbnailImage)
                             .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchParamsDTO.ArrivalDate))

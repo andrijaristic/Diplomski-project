@@ -1,4 +1,5 @@
 ﻿using Contracts.AccommodationImageDTOs;
+using Contracts.CommentDTOs;
 
 namespace Contracts.PropertyDTOs
 {
@@ -8,7 +9,7 @@ namespace Contracts.PropertyDTOs
         public string Name { get; set; }
         public string Description { get; set; }
         public double AverageGrade { get; set; }
-        public int RatingsAmount { get; set; }
+        public int Comments { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public AccommodationImageDTO ThumbnailImage { get; set; }  

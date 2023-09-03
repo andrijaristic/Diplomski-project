@@ -9,25 +9,10 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
 
-const steps = [
-  {
-    label: "Select campaign settings",
-    src: "/header-background.jpg",
-  },
-  {
-    label: "Create an ad group",
-    src: "/header-background.jpg",
-  },
-  {
-    label: "Create an ad",
-    src: "/header-background.jpg",
-  },
-];
-
 interface IProps {
   edit: boolean;
   images: IAccommodationImage[];
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
@@ -44,7 +29,9 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
   };
 
   const handleDelete = () => {
-    onDelete(images[activeStep]?.id);
+    if (onDelete) {
+      onDelete(images[activeStep]?.id);
+    }
   };
 
   return (
@@ -70,7 +57,9 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
           }}
         >
           <Typography>Property showcase</Typography>
-          <Button sx={{ ml: "auto" }}>Delete this image?</Button>
+          <Button sx={{ ml: "auto" }} onClick={handleDelete}>
+            Delete this image?
+          </Button>
         </Paper>
       )}
       <Box

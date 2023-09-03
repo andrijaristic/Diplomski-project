@@ -8,7 +8,7 @@ export interface IAccommodationDisplay {
   name: string;
   description: string;
   averageGrade: number;
-  ratingsAmount: number;
+  comments: number;
   thumbnailImage: IAccommodationImage;
 }
 
@@ -28,6 +28,7 @@ export interface IAccommodation {
   comments: IComment[];
   utilities: IUtility[];
   roomTypes: IRoomTypeDisplay[];
+  startingPrice: number;
 }
 
 export interface INewAccommodation {
