@@ -9,6 +9,7 @@ namespace Service.Mapping
         public RoomMappingProfile() 
         {
             CreateMap<DisplayRoomDTO, Room>().ReverseMap();
+            CreateMap<Room, DisplayRoomBookingDTO>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Divider, Fade, Grid, Rating, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -7,23 +7,14 @@ import DetailedListingAmenity from "./DetailedListingAmenity";
 import DetailedListingSearchAction from "./DetailedListingSearchAction";
 import Comment from "../Comment/Comment";
 import NewCommentForm from "../Comment/NewCommentForm";
-import StyledButton from "../UI/Styled/StyledButton";
-import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import ImageDisplay from "../EditListing/ImageDisplay";
+import StyledButton from "../UI/Styled/StyledButton";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
-
-const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
-
-Nullam non dapibus lorem. Aenean hendrerit, dolor in ornare consectetur, ligula ligula commodo lacus, non tincidunt sapien quam at lacus. Pellentesque vitae sem vulputate neque commodo aliquam. Nunc interdum eu diam sit amet condimentum. In sit amet volutpat mi, sed condimentum nibh. Cras fringilla tempor dui, vel fringilla tellus hendrerit id. Integer auctor ut sapien ac hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Nam nec laoreet nulla, nec aliquet leo.
-
-Proin rhoncus non ante vel scelerisque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris quis lorem mi. Vestibulum tempus sapien arcu, vel molestie tellus gravida dapibus. Morbi consequat tincidunt quam quis posuere. Ut tristique pulvinar mauris, eu tempor quam pretium ut. Vivamus ac lorem laoreet, tincidunt elit ut, sodales mauris. Fusce eget nunc et risus molestie finibus. Proin a dolor a magna eleifend convallis a nec velit. Donec quis pretium nisl, sit amet bibendum ligula. Aenean orci nisi, mattis fringilla ex ut, consequat suscipit ex. Integer finibus est in nisi convallis venenatis. Nulla volutpat bibendum arcu in finibus. Maecenas dictum auctor turpis, non pretium metus faucibus eu. In scelerisque consequat aliquet.
-
-Curabitur auctor turpis ac tortor varius, vitae egestas magna egestas. Suspendisse id nulla luctus, porttitor turpis in, imperdiet nunc. Proin in tortor lorem. Sed purus ante, dapibus ac nulla vitae, tincidunt pellentesque massa. Ut et felis gravida, lobortis purus eget, rutrum neque. Aenean non quam in erat euismod hendrerit. Cras lobortis vestibulum est id malesuada. Proin vitae metus rutrum, aliquam sem a, bibendum nunc. Curabitur id aliquet elit, et finibus dui. Etiam vel sem tempus, porttitor orci eleifend, commodo elit. Mauris augue velit, malesuada quis blandit non, congue nec turpis.
-
-Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non dapibus neque. Donec tellus ligula, tristique at eleifend in, euismod eget ante. Praesent eget elementum sapien. Nullam leo lacus, venenatis id elit et, sagittis accumsan felis. Duis ut odio luctus lorem maximus aliquam. Phasellus vel finibus massa. Fusce consectetur velit quis ex scelerisque malesuada. 
-
-Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non dapibus neque. Donec tellus ligula, tristique at eleifend in, euismod eget ante. Praesent eget elementum sapien. Nullam leo lacus, venenatis id elit et, sagittis accumsan felis. Duis ut odio luctus lorem maximus aliquam. Phasellus vel finibus massa. Fusce consectetur velit quis ex scelerisque malesuada.`;
+import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
+import DetailedListingRoomBooking from "./DetailedListingRoomBooking";
+import { IRoomSearch } from "../../shared/interfaces/roomInterfaces";
+import { getFilteredRoomsAction } from "../../store/roomSlice";
 
 const noAmenitiesMessage: JSX.Element = (
   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -44,6 +35,7 @@ const DetailedListing: FC = () => {
   const accommodationComments = useAppSelector(
     (state) => state.comments.accommodationComments
   );
+  const bookingRooms = useAppSelector((state) => state.rooms.bookingRooms);
 
   const utilities: JSX.Element[] | undefined = accommodation?.utilities?.map(
     (utility) => <DetailedListingAmenity key={utility.id} name={utility.name} />
@@ -79,6 +71,15 @@ const DetailedListing: FC = () => {
     images.push(accommodation?.thumbnailImage);
     accommodation?.images.map((image) => images.push(image));
   }
+
+  const handleRoomSearch = (booking: IRoomSearch) => {
+    console.log(booking);
+    dispatch(getFilteredRoomsAction(booking));
+  };
+
+  const bookingRoomsContent: JSX.Element[] = bookingRooms?.map((room) => {
+    return <DetailedListingRoomBooking key={room.id} room={room} />;
+  });
 
   return (
     <Fade in>
@@ -124,7 +125,7 @@ const DetailedListing: FC = () => {
                     variant="body1"
                     sx={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
                   >
-                    {accommodation?.description || DUMMY_DESCRIPTION}
+                    {accommodation?.description}
                   </Typography>
                 </Box>
                 <Box sx={{ pt: 4 }}>
@@ -132,7 +133,7 @@ const DetailedListing: FC = () => {
                   <Box
                     sx={{ display: "flex", flexWrap: "wrap", gap: 2, pt: 2 }}
                   >
-                    {utilities?.count > 0 ? utilities : noAmenitiesMessage}
+                    {utilities?.length > 0 ? utilities : noAmenitiesMessage}
                   </Box>
                 </Box>
               </Box>
@@ -142,7 +143,10 @@ const DetailedListing: FC = () => {
                 <Typography id="bookings" variant="h5">
                   Bookings
                 </Typography>
-                <DetailedListingSearchAction />
+                <DetailedListingSearchAction onSearch={handleRoomSearch} />
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {bookingRoomsContent.length > 0 && bookingRoomsContent}
+                </Box>
               </Box>
             </Grid>
             <Grid item sx={{ pt: 4 }}>

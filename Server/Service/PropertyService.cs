@@ -149,6 +149,7 @@ namespace Service
 
             Property property = _mapper.Map<Property>(newPropertyDTO);
 
+
             await _unitOfWork.Properties.Add(property);
 
             property.ThumbnailImage = new AccommodationImage() 
@@ -157,8 +158,6 @@ namespace Service
                                         _settings.Value.DefaultImagePath :
                                         await ImageHelper.SaveImage(newPropertyDTO.ThumbnailImage, property.Id, _hostEnvironment.ContentRootPath)
             };
-
-            property.Images.Add(property.ThumbnailImage);
 
             await _unitOfWork.Save();
 

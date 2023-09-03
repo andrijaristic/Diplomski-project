@@ -3,6 +3,7 @@ using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 
 namespace Web.API.Controllers
 {
@@ -14,6 +15,14 @@ namespace Web.API.Controllers
         public RoomsController(IRoomService roomService)
         {
             _roomService = roomService;
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFilteredRooms([FromQuery] SearchRoomDTO searchRoomDTO)
+        {
+            List<DisplayRoomBookingDTO> displayRoomBookingDTOs = await _roomService.FilterRoomsForBooking(searchRoomDTO);
+            return Ok(displayRoomBookingDTOs);
         }
 
         [HttpPost]

@@ -15,6 +15,7 @@ using Service;
 using Service.Mapping;
 using Service.Utilities;
 using Service.Utilities.DataInitializers;
+using Stripe;
 using System.Text;
 using Web.API.Middleware;
 
@@ -165,6 +166,8 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("AppSettings")["StripeSecretKey"];
 
 app.UseCors(_cors);
 

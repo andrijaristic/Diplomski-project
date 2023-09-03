@@ -78,6 +78,7 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
         activeStep={activeStep}
         nextButton={
           <Button
+            variant="outlined"
             size="small"
             onClick={handleNext}
             disabled={activeStep === maxSteps - 1}
@@ -91,7 +92,12 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
           </Button>
         }
         backButton={
-          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={handleBack}
+            disabled={activeStep === 0}
+          >
             {theme.direction === "rtl" ? (
               <KeyboardArrowRight />
             ) : (

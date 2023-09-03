@@ -4,6 +4,7 @@ import accommodationReducer from "./accommodationSlice";
 import commentReducer from "./commentSlice";
 import reservationReducer from "./reservationSlice";
 import roomTypeReducer from "./roomTypeSlice";
+import roomReducer from "./roomSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     comments: commentReducer,
     reservations: reservationReducer,
     roomTypes: roomTypeReducer,
+    rooms: roomReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

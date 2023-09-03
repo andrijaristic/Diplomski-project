@@ -13,7 +13,7 @@ namespace Service.Mapping
     {
         public PropertyMappingProfile() 
         {
-            CreateMap<NewPropertyDTO, Property>().ReverseMap();
+            CreateMap<NewPropertyDTO, Property>().ForMember(dest => dest.ThumbnailImage, opt => opt.Ignore()).ReverseMap();
             CreateMap<Property, DisplayPropertyDTO>().ForMember(
                     dest => dest.Comments,
                     opt => opt.MapFrom(src => src.Comments.Count)).ReverseMap();

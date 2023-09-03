@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Contracts.RoomDTOs;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Domain.Interfaces.Repositories
     {
         Task<Room> FindDetailedRoom(Guid id);
         Task<Room> FindByIdAndProperty(Guid roomId, Guid propertyId);
+        Task<List<Room>> FilterRooms(SearchRoomDTO searchRoomDTO);
     }
 }

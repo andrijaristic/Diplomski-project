@@ -6,6 +6,7 @@ using Domain.Interfaces.Repositories;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
 using Domain.Exceptions.RoomExceptions;
+using Contracts.ReservationDTOs;
 
 namespace Service
 {
@@ -18,6 +19,55 @@ namespace Service
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<List<DisplayRoomBookingDTO>> FilterRoomsForBooking(SearchRoomDTO searchRoomDTO)
+        {
+            List<Room> rooms = await _unitOfWork
+                                            .Rooms
+                                            .FilterRooms(searchRoomDTO);
+            if (rooms is null)
+            {
+                return new List<DisplayRoomBookingDTO>();
+            }
+
+            List<DisplayRoomBookingDTO> displayRoomBookingDTOs = _mapper.Map<List<DisplayRoomBookingDTO>>(rooms);
+            foreach (DisplayRoomBookingDTO dto in displayRoomBookingDTOs)
+            {
+                dto.ArrivalDate = searchRoomDTO.ArrivalDate;
+                dto.DepartureDate = searchRoomDTO.DepartureDate;
+            }
+
+            foreach (Room room in rooms)
+            { 
+                SeasonalPricing pricing = room
+                                            .RoomType
+                                            .SeasonalPricing
+                                            .Where(sp => sp.StartDate.Month == searchRoomDTO.ArrivalDate.Month)
+                                            .First();
+
+                int days = (searchRoomDTO.DepartureDate - searchRoomDTO.ArrivalDate).Days;
+                DateTime date = searchRoomDTO.ArrivalDate;
+                double price = pricing.Price;
+                for (int i = 0; i < days; i++)
+                {
+                    if (date.Month != pricing.StartDate.Month)
+                    {
+                        pricing = room
+                                    .RoomType
+                                    .SeasonalPricing
+                                    .Where(sp => sp.StartDate.Month == date.Month)
+                                    .First();
+                    }
+
+                    price += pricing.Price;
+                    date = date.AddDays(1);
+                }
+
+                displayRoomBookingDTOs.Where(x => x.Id == room.Id).First().Price = price;
+            }
+
+            return displayRoomBookingDTOs;
         }
 
         public async Task<DisplayRoomDTO> CreateRoom(NewRoomDTO newRoomDTO)

@@ -7,5 +7,6 @@ namespace Domain.Interfaces.Services
         Task<DisplayRoomDTO> CreateRoom(NewRoomDTO newRoomDTO);
         Task<DisplayRoomDTO> UpdateRoom(Guid id, UpdateRoomDTO updateRoomDTO, string username);
         Task DeleteRoom(Guid id, string username);
+        Task<List<DisplayRoomBookingDTO>> FilterRoomsForBooking(SearchRoomDTO searchRoomDTO);
     }
 }

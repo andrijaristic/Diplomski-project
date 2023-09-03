@@ -16,6 +16,7 @@ namespace Service.Mapping
         {
             CreateMap<DisplayRoomTypeDTO, RoomType>().ReverseMap();
             CreateMap<NewRoomTypeDTO, RoomType>().ReverseMap();
+            CreateMap<RoomType, RoomTypeMinimalDTO>().ReverseMap();
         }
     }
 }
