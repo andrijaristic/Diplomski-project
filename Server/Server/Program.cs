@@ -2,6 +2,7 @@ using AutoMapper;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Utilities;
+using Domain.Interfaces.Utilities.DataInitializers;
 using Domain.Models.AppSettings;
 using Infrastructure;
 using Infrastructure.Repositories;
@@ -104,6 +105,7 @@ builder.Services.AddScoped<ICommentsService, CommentService>();
 
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
 builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
+builder.Services.AddScoped<IUtilityDataInitializer, UtilityDataInitializer>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
@@ -111,6 +113,7 @@ builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IPropertyUtilityRepository, PropertyUtilityRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
@@ -136,7 +139,9 @@ using (var scope = app.Services.CreateScope())
     // apply new migrations on startup
     var context = scope.ServiceProvider.GetRequiredService<ProjectDbContext>();
     context.Database.EnsureCreated();
+
     scope.ServiceProvider.GetRequiredService<IUserDataInitializer>().InitializeData();
+    scope.ServiceProvider.GetRequiredService<IUtilityDataInitializer>().InitializeData();
 }
 
 // Configure the HTTP request pipeline.

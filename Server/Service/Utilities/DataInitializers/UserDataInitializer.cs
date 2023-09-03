@@ -1,5 +1,5 @@
 ﻿using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Utilities;
+using Domain.Interfaces.Utilities.DataInitializers;
 using Domain.Models;
 using Domain.Models.AppSettings;
 using Microsoft.Extensions.Options;

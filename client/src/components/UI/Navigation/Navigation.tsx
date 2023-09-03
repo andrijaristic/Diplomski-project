@@ -1,14 +1,7 @@
 import React, { FC, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../../store/hooks";
-import {
-  AppBar,
-  Button,
-  Container,
-  Divider,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Container, Toolbar } from "@mui/material";
 import Logo from "../Logo/Logo";
 import styles from "./Navigation.module.css";
 import AvatarWithOptions from "../Avatar/AvatarWithOptions";

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Interfaces.Utilities
+namespace Domain.Interfaces.Utilities.DataInitializers
 {
-    public interface IUserDataInitializer 
+    public interface IUtilityDataInitializer
     {
         void InitializeData();
     }

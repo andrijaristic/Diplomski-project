@@ -16,6 +16,7 @@ namespace Infrastructure.Repositories
         public IRoomRepository Rooms { get; set; }
         public IRoomTypeRepository RoomTypes { get; set; }
         public ICommentRepository Comments { get; }
+        public IPropertyUtilityRepository PropertyUtilities { get; set; }
 
         public UnitOfWork(ProjectDbContext dbContext,
                           IUserRepository users,
@@ -23,7 +24,8 @@ namespace Infrastructure.Repositories
                           IReservationRepository reservations,
                           IRoomRepository rooms,
                           IRoomTypeRepository roomTypes,
-                          ICommentRepository comments)
+                          ICommentRepository comments,
+                          IPropertyUtilityRepository propertyUtilities)
         {
             _dbContext = dbContext;
             Users = users;
@@ -32,6 +34,7 @@ namespace Infrastructure.Repositories
             Rooms = rooms;
             RoomTypes = roomTypes;
             Comments = comments;
+            PropertyUtilities = propertyUtilities;
         }
 
         public async Task Save()

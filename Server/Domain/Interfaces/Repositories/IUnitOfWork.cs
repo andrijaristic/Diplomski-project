@@ -14,6 +14,7 @@ namespace Domain.Interfaces.Repositories
         public IRoomRepository Rooms { get; }
         public IRoomTypeRepository RoomTypes { get; }
         public ICommentRepository Comments { get; }
+        public IPropertyUtilityRepository PropertyUtilities { get; set; }
         Task Save();
     }
 }
