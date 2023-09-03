@@ -25,25 +25,27 @@ import {
 } from "../../constants/Constants";
 import AddImagePicker from "../EditListing/AddImagePicker";
 import StyledButton from "../UI/Styled/StyledButton";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { errorNotification } from "../../utils/toastNotificationUtil";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
 import { INewAccommodation } from "../../shared/interfaces/accommodationInterfaces";
+import { createNewAccommodationAction } from "../../store/accommodationSlice";
 
 const NewListing: FC = () => {
+  const dispatch = useAppDispatch();
+  const apiState = useAppSelector((state) => state.accommodations.apiState);
+
   const token = useAppSelector((state) => state.user.token);
   const { id } = jwtDecode<IJwt>(token ? token : "");
 
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [dummyApiState, setDummyApiState] = useState<ApiCallState>(
-    ApiCallState.PENDING
-  );
+  const [indicator, setIndicator] = useState<boolean>(false);
 
   useEffect(() => {
-    if (dummyApiState === ApiCallState.COMPLETED) {
+    if (indicator && apiState === ApiCallState.COMPLETED) {
       setActiveStep((prevStep) => ++prevStep);
     }
-  }, [dummyApiState]);
+  }, [indicator, apiState]);
 
   const imageInput = useRef<HTMLInputElement>(null);
   const [displayImage, setDisplayImage] = useState<string | undefined>("");
@@ -81,11 +83,11 @@ const NewListing: FC = () => {
     }
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
-    const name = data.get("title");
+    const name = data.get("name");
     const description = data.get("description");
     const country = data.get("country");
     const area = data.get("area");
@@ -101,15 +103,13 @@ const NewListing: FC = () => {
     }
 
     // appropriate type
-    const newProperty: INewAccommodation = {
-      userId: parseInt(id),
-      name: name.toString().trim(),
-      description: description.toString().trim(),
-      thumbnailImage: uploadedImage,
-    };
+    data.append("userId", id);
+    data.append("thumbnailImage", uploadedImage);
+    data.append("latitude", coords.lat.toString());
+    data.append("longitude", coords.lng.toString());
 
-    console.log(newProperty);
-    setDummyApiState(ApiCallState.COMPLETED);
+    await dispatch(createNewAccommodationAction(data));
+    setIndicator(true);
   };
 
   const handleNextStep = (event: React.FormEvent<HTMLFormElement>) => {
@@ -197,7 +197,7 @@ const NewListing: FC = () => {
               </StyledButton>
               <UserInformationField
                 disabled
-                id="title"
+                id="name"
                 label="Your property name"
                 type={HookTypes.TEXT}
                 minChars={minTextInputLength}

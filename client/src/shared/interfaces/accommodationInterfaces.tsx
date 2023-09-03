@@ -23,7 +23,11 @@ export interface IAccommodation {
 export interface INewAccommodation {
   name: string;
   description: string;
-  userId: number;
+  country: string;
+  area: string;
+  userId: string;
+  latitude: number;
+  longitude: number;
   thumbnailImage: File;
 }
 

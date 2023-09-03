@@ -130,6 +130,7 @@ builder.Services.AddSingleton(new MapperConfiguration(mc =>
     mc.AddProfile(new RoomTypeMappingProfile());
     mc.AddProfile(new ReservationMappingProfile());
     mc.AddProfile(new CommentMappingProfile());
+    mc.AddProfile(new SeasonalPricingMappingProfile());
 }).CreateMapper());
 
 var app = builder.Build();
