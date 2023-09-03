@@ -12,6 +12,10 @@ export const getAccommodationById = async (id: string) => {
   return await axiosClient.get(`${API}/properties/${id}`);
 };
 
+export const getUserAccommodations = async (id: string) => {
+  return await axiosClient.get(`${API}/properties/user/${id}`);
+};
+
 export const createNewAccommodation = async (newAccommodation: FormData) => {
   return await axiosClient.post(`${API}/properties`, newAccommodation);
 };

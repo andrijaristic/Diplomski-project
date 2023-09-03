@@ -9,6 +9,7 @@ import {
   styled,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { IAccommodationMinimal } from "../../shared/interfaces/accommodationInterfaces";
 
 const DUMMY_TITLE = "Dummy property name";
 const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
@@ -34,39 +35,42 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 }));
 
 interface IProps {
-  id?: number;
-  title?: string;
-  description?: string;
+  accommodation: IAccommodationMinimal;
 }
 
-const MyListingsItem: FC<IProps> = ({ id = 1, title, description }) => {
+const MyListingsItem: FC<IProps> = ({ accommodation }) => {
   const navigate = useNavigate();
 
   const handleView = () => {
-    navigate(`/listings/${id}`);
+    navigate(`/listings/${accommodation.id}`);
   };
 
   const handleEdit = () => {
-    navigate(`/listings/${id}/edit`);
+    navigate(`/listings/${accommodation.id}/edit`);
   };
 
   const handleDelete = () => {
     // API Call to delete
   };
 
+  const image =
+    accommodation?.thumbnailImage !== null
+      ? accommodation?.thumbnailImage?.imageURL
+      : "/header-background.jpg";
+
   return (
     <Card sx={{ borderRadius: 2 }}>
       <CardMedia
         sx={{ height: 140 }}
-        image="/header-background.jpg"
+        image={image}
         title="property-thumbnail"
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {title ?? DUMMY_TITLE}
+          {accommodation?.name ?? DUMMY_TITLE}
         </Typography>
         <StyledTypography variant="body2" color="text.secondary">
-          {description ?? DUMMY_DESCRIPTION}
+          {accommodation?.description ?? DUMMY_DESCRIPTION}
         </StyledTypography>
       </CardContent>
       <CardActions>

@@ -7,11 +7,13 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
 using Domain.Models.AppSettings;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Service.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,11 +24,13 @@ namespace Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IOptions<AppSettings> _settings;
-        public PropertyService(IUnitOfWork unitOfWork, IMapper mapper, IOptions<AppSettings> settings)
+        private readonly IHostEnvironment _hostEnvironment;
+        public PropertyService(IUnitOfWork unitOfWork, IMapper mapper, IOptions<AppSettings> settings, IHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _settings = settings;
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO)
@@ -41,6 +45,12 @@ namespace Service
                                                                                      searchParamsDTO.Page,
                                                                                      _settings.Value.AccommodationsPageSize,
                                                                                      _mapper);
+        }
+
+        public async Task<List<DisplayPropertyDTO>> GetUserAccommodations(Guid userId)
+        {
+            List<Property> properties = await _unitOfWork.Properties.GetUserAccommodations(userId);
+            return _mapper.Map<List<DisplayPropertyDTO>>(properties);
         }
 
         public async Task<DetailedPropertyDTO> GetById(Guid id)
@@ -86,6 +96,14 @@ namespace Service
             Property property = _mapper.Map<Property>(newPropertyDTO);
 
             await _unitOfWork.Properties.Add(property);
+
+            property.ThumbnailImage = new AccommodationImage() 
+            {
+                ImageURL = newPropertyDTO.ThumbnailImage == null ?
+                                        _settings.Value.DefaultImagePath :
+                                        await ImageHelper.SaveImage(newPropertyDTO.ThumbnailImage, property.Id, _hostEnvironment.ContentRootPath)
+            };
+
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayPropertyDTO>(property); 

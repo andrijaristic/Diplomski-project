@@ -124,6 +124,7 @@ namespace Infrastructure.Repositories
                                             .Include(p => p.Comments)
                                             .Include(p => p.ThumbnailImage)
                                             .Include(p => p.Images)
+                                            .Include(p => p.Utilities)
                                             .FirstOrDefaultAsync();
             return property;
         }
@@ -136,6 +137,16 @@ namespace Infrastructure.Repositories
                                             .Include(u => u.User)
                                             .FirstOrDefaultAsync();
             return property;
+        }
+
+        public async Task<List<Property>> GetUserAccommodations(Guid userId)
+        {
+            List<Property> properties = await _dbContext
+                                                    .Properties
+                                                    .Where(p => p.UserId == userId)
+                                                    .Include(p => p.ThumbnailImage)
+                                                    .ToListAsync();
+            return properties;
         }
     }
 }

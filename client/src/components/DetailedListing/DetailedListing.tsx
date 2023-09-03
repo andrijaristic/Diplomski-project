@@ -10,6 +10,7 @@ import NewCommentForm from "../Comment/NewCommentForm";
 import StyledButton from "../UI/Styled/StyledButton";
 import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import ImageDisplay from "../EditListing/ImageDisplay";
 
 const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
 
@@ -75,6 +76,16 @@ const DetailedListing: FC = () => {
     <Comment flag comment={comment} />
   ));
 
+  const images: string[] = [
+    detailedAccommodation?.thumbnailImage?.imageURL,
+    "/header-background.jpg",
+  ];
+  detailedAccommodation?.images?.map((image) => {
+    images.push(image?.imageURL);
+  });
+
+  console.log(images);
+
   return (
     <Fade in>
       <Grid container sx={{ pt: 8, pl: "5%", pr: "5%", pb: "5%" }}>
@@ -95,17 +106,14 @@ const DetailedListing: FC = () => {
               </Box>
             </Grid>
             <Grid item sx={{ p: 1 }}>
-              <Box>
-                <Box
-                  component="img"
-                  src="/header-background.jpg"
-                  alt="thumbnail-image"
-                  sx={{
-                    width: "100%",
-                    aspectRatio: "1.66 / 1",
-                  }}
-                />
-                <Box>Every other image in carousel</Box>
+              <Box
+                sx={{
+                  height: "80%",
+                  width: 1200,
+                  maxWidth: { xs: 1600 },
+                }}
+              >
+                <ImageDisplay edit={false} images={images} />
               </Box>
             </Grid>
             <Grid item sx={{ p: 1, pt: 2 }}>

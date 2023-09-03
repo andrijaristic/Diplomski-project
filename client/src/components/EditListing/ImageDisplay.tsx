@@ -25,12 +25,13 @@ const steps = [
 
 interface IProps {
   edit: boolean;
+  images: string[];
 }
 
-const ImageDisplay: FC<IProps> = ({ edit = false }) => {
+const ImageDisplay: FC<IProps> = ({ edit = false, images }) => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = steps.length;
+  const maxSteps = images.length;
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -41,7 +42,15 @@ const ImageDisplay: FC<IProps> = ({ edit = false }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: "60%", flexGrow: 1, pt: 2 }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        maxWidth: "auto",
+        flexGrow: 1,
+        pt: 2,
+      }}
+    >
       {edit && (
         <Paper
           square
@@ -60,11 +69,11 @@ const ImageDisplay: FC<IProps> = ({ edit = false }) => {
       )}
       <Box
         component="img"
-        src={steps[activeStep].src}
+        src={images[activeStep]}
         alt="thumbnail-image"
         sx={{
           width: "100%",
-          aspectRatio: "1.66 / 1",
+          aspectRatio: "2 / 1",
         }}
       />
       <MobileStepper

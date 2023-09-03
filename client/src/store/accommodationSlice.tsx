@@ -15,11 +15,12 @@ import {
   createNewAccommodation,
   getAccommodationById,
   getAccommodations,
+  getUserAccommodations,
 } from "../services/AccommodationService";
 
 export interface AccommodationState {
   accommodations: IAccommodationDisplay[];
-  ownerAccommodations: IAccommodationDisplay[];
+  userAccommodations: IAccommodationDisplay[];
   detailedAccommodation: IAccommodation | null;
   createdAccommodationId: string | null;
   page: number;
@@ -29,7 +30,7 @@ export interface AccommodationState {
 
 const initialState: AccommodationState = {
   accommodations: [],
-  ownerAccommodations: [],
+  userAccommodations: [],
   detailedAccommodation: null,
   createdAccommodationId: null,
   page: 1,
@@ -42,6 +43,18 @@ export const getAccommodationsAction = createAsyncThunk(
   async (query: ISearchParams, thunkApi) => {
     try {
       const response = await getAccommodations(query);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const getUserAccommodationsAction = createAsyncThunk(
+  "accommodations/getUserAccommodations",
+  async (id: string, thunkApi) => {
+    try {
+      const response = await getUserAccommodations(id);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -87,7 +100,7 @@ const accommodationSlice = createSlice({
       state.apiState = ApiCallState.COMPLETED;
     },
     clearOwnerAccommodations(state) {
-      state.ownerAccommodations = [];
+      state.userAccommodations = [];
       state.page = 1;
       state.totalPages = 0;
       state.apiState = ApiCallState.COMPLETED;
@@ -110,6 +123,24 @@ const accommodationSlice = createSlice({
       state.totalPages = action.payload.totalPages;
     });
     builder.addCase(getAccommodationsAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // GET USER ACCOMMODATIONS
+    builder.addCase(getUserAccommodationsAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(getUserAccommodationsAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+      state.userAccommodations = [...action.payload];
+    });
+    builder.addCase(getUserAccommodationsAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;

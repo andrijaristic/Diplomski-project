@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Contracts.AccommodationImageDTOs;
 
 namespace Contracts.PropertyDTOs
 {
@@ -15,5 +11,6 @@ namespace Contracts.PropertyDTOs
         public int RatingsAmount { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public AccommodationImageDTO ThumbnailImage { get; set; }  
     }
 }

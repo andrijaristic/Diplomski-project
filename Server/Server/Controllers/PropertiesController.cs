@@ -14,7 +14,7 @@ namespace Web.API.Controllers
     {
         private readonly IPropertyService _propertyService;
 
-        public PropertiesController(IPropertyService propertyService) 
+        public PropertiesController(IPropertyService propertyService)
         {
             _propertyService = propertyService;
         }
@@ -25,6 +25,14 @@ namespace Web.API.Controllers
         {
             PagedListDTO<DisplayPropertyDTO> pagedAccommodations = await _propertyService.GetAccommodations(searchParamsDTO);
             return Ok(pagedAccommodations);
+        }
+
+        [HttpGet("user/{id}")]
+        [Authorize(Roles = "propertyowner")]
+        public async Task<IActionResult> GetUserAccommodations(Guid id)
+        {
+            List<DisplayPropertyDTO> displayPropertyDTOs = await _propertyService.GetUserAccommodations(id);
+            return Ok(displayPropertyDTOs);
         }
 
         [HttpGet("{id}")]

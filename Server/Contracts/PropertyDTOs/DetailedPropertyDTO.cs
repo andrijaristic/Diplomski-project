@@ -1,4 +1,6 @@
-﻿using Contracts.CommentDTOs;
+﻿using Contracts.AccommodationImageDTOs;
+using Contracts.CommentDTOs;
+using Contracts.PropertyUtilityDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +17,9 @@ namespace Contracts.PropertyDTOs
         public double AverageGrade { get; set; }    
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public string ThumbnailImage { get; set; }
-        public List<string> Images { get; set; }
+        public AccommodationImageDTO ThumbnailImage { get; set; }
+        public List<PropertyUtilityDTO> Utilities { get; set; }
+        public List<AccommodationImageDTO> Images { get; set; }
         public List<DisplayCommentDTO> Comments { get; set; }
         public int StartingPrice { get; set; }
     }

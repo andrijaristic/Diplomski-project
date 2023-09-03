@@ -17,10 +17,9 @@ const DetailedListingPage: FC = () => {
   const accId = "d3ba14f5-0715-432f-84a2-f1ea7bbb953d";
 
   useEffect(() => {
-    dispatch(getAccommodationByIdAction(accId));
-    dispatch(getAccommodationCommentsAction(accId));
-    console.log("re-render");
-  }, [dispatch]);
+    dispatch(getAccommodationByIdAction(id ? id : ""));
+    dispatch(getAccommodationCommentsAction(id ? id : ""));
+  }, [id, dispatch]);
 
   return (
     <>

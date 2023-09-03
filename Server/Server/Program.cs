@@ -125,12 +125,14 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
 builder.Services.AddSingleton(new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserMappingProfile());
-    mc.AddProfile(new PropertyMappingProfile(builder.Configuration.GetSection("AppSettings")["DefaultImagePath"]));
+    mc.AddProfile(new PropertyMappingProfile());
     mc.AddProfile(new RoomMappingProfile());
     mc.AddProfile(new RoomTypeMappingProfile());
     mc.AddProfile(new ReservationMappingProfile());
     mc.AddProfile(new CommentMappingProfile());
     mc.AddProfile(new SeasonalPricingMappingProfile());
+    mc.AddProfile(new AccommodationImageMappingProfile(builder.Configuration.GetSection("AppSettings")["DefaultImagePath"]));
+    mc.AddProfile(new PropertyUtilityMappingProfile());
 }).CreateMapper());
 
 var app = builder.Build();
@@ -156,7 +158,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "../Infrastructure/Images")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "..", "Infrastructure", "Images")),
     RequestPath = "/Images"
 });
 

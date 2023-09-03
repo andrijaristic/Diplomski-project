@@ -1,4 +1,5 @@
-import { ICommentDisplay } from "./commentInterfaces";
+import { IAccommodationImage } from "./accommodationImageInterfaces";
+import { IComment } from "./commentInterfaces";
 import { IUtility } from "./utilityInterfaces";
 
 export interface IAccommodationDisplay {
@@ -7,16 +8,23 @@ export interface IAccommodationDisplay {
   description: string;
   averageGrade: number;
   ratingsAmount: number;
-  thumbnailImage: string;
+  thumbnailImage: IAccommodationImage;
 }
 
+export interface IAccommodationMinimal {
+  id: string;
+  name: string;
+  description: string;
+  thumbnailImage: IAccommodationImage;
+}
 export interface IAccommodation {
   id: string;
   name: string;
   description: string;
   averageGrade: number;
-  images: File[];
-  comments: ICommentDisplay[];
+  thumbnailImage: IAccommodationImage;
+  images: IAccommodationImage[];
+  comments: IComment[];
   utilities: IUtility[];
 }
 
