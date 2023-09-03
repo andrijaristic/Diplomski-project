@@ -9,6 +9,8 @@ export interface IAccommodationDisplay {
   description: string;
   averageGrade: number;
   comments: number;
+  country: string;
+  area: string;
   thumbnailImage: IAccommodationImage;
 }
 

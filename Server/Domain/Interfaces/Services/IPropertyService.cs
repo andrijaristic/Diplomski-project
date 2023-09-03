@@ -11,6 +11,7 @@ namespace Domain.Interfaces.Services
     public interface IPropertyService
     {
         Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO);
+        Task<List<PropertyPreviewDTO>> GetHighestRatedAccommodations();
         Task<List<DisplayPropertyDTO>> GetUserAccommodations(Guid userId);
         Task<DisplayPropertyDTO> CreateProperty(NewPropertyDTO newPropertyDTO, string username);
         Task<DisplayPropertyDTO> UpdateBasicPropertyInformation(Guid id, UpdateBasicPropertyInformationDTO updatePropertyDTO, string username);

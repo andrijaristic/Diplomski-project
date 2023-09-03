@@ -19,6 +19,17 @@ namespace Infrastructure.Repositories
 
         }
 
+        public async Task<List<Property>> GetHighestRatedAccommodations()
+        {
+            List<Property> properties = await _dbContext
+                                                    .Properties
+                                                    .OrderBy(p => p.AverageGrade)
+                                                    .Take(5)
+                                                    .Include(p => p.ThumbnailImage)
+                                                    .ToListAsync();
+            return properties;
+        }
+ 
         public Task<List<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO)
         {
             var source = _dbContext

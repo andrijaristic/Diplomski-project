@@ -12,6 +12,10 @@ export const getAccommodations = async (query: ISearchParams) => {
   });
 };
 
+export const getHighestRatedAccommodations = async () => {
+  return await axiosClient.get(`${API}/properties/highest-rated`);
+};
+
 export const getAccommodationById = async (id: string) => {
   return await axiosClient.get(`${API}/properties/${id}`);
 };

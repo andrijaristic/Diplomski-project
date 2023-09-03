@@ -27,6 +27,14 @@ namespace Web.API.Controllers
             return Ok(pagedAccommodations);
         }
 
+        [HttpGet("highest-rated")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetHighestRatedAccommodations()
+        {
+            List<PropertyPreviewDTO> propertyPreviewDTOs = await _propertyService.GetHighestRatedAccommodations();
+            return Ok(propertyPreviewDTOs);
+        }
+
         [HttpGet("user/{id}")]
         [Authorize(Roles = "propertyowner")]
         public async Task<IActionResult> GetUserAccommodations(Guid id)

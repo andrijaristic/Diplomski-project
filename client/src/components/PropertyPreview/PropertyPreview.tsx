@@ -14,9 +14,10 @@ interface IProps {
   name: string;
   country: string;
   area: string;
+  imageURL: string;
 }
 
-const PropertyPreview: FC<IProps> = ({ name, country, area }) => {
+const PropertyPreview: FC<IProps> = ({ name, country, area, imageURL }) => {
   return (
     <Slide direction="left" in>
       <Card
@@ -46,7 +47,7 @@ const PropertyPreview: FC<IProps> = ({ name, country, area }) => {
             component="img"
             height="164"
             alt="property-thumbnail"
-            image="/header-background.jpg"
+            image={imageURL}
           ></CardMedia>
         </ButtonBase>
 

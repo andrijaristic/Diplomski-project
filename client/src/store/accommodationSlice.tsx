@@ -18,6 +18,7 @@ import {
   createNewAccommodation,
   getAccommodationById,
   getAccommodations,
+  getHighestRatedAccommodations,
   getUserAccommodations,
   updateBasicAccommodationInformation,
 } from "../services/AccommodationService";
@@ -47,6 +48,18 @@ export const getAccommodationsAction = createAsyncThunk(
   async (query: ISearchParams, thunkApi) => {
     try {
       const response = await getAccommodations(query);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const getHighestRatedAccommodationsAction = createAsyncThunk(
+  "accommodations/getHighestRated",
+  async (id, thunkApi) => {
+    try {
+      const response = await getHighestRatedAccommodations();
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -164,6 +177,30 @@ const accommodationSlice = createSlice({
       }
       errorNotification(error);
     });
+
+    // GET HIGHEST RATED ACCOMMODATIONS
+    builder.addCase(getHighestRatedAccommodationsAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(
+      getHighestRatedAccommodationsAction.fulfilled,
+      (state, action) => {
+        state.apiState = ApiCallState.COMPLETED;
+        state.accommodations = [...action.payload];
+      }
+    );
+    builder.addCase(
+      getHighestRatedAccommodationsAction.rejected,
+      (state, action) => {
+        state.apiState = ApiCallState.REJECTED;
+
+        let error: string = defaultErrorMessage;
+        if (typeof action.payload === "string") {
+          error = action.payload;
+        }
+        errorNotification(error);
+      }
+    );
 
     // GET USER ACCOMMODATIONS
     builder.addCase(getUserAccommodationsAction.pending, (state) => {

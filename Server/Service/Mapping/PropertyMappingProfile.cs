@@ -18,6 +18,7 @@ namespace Service.Mapping
                     dest => dest.Comments,
                     opt => opt.MapFrom(src => src.Comments.Count)).ReverseMap();
             CreateMap<DetailedPropertyDTO, Property>().ReverseMap();
+            CreateMap<Property, PropertyPreviewDTO>().ReverseMap();
         }
     }
 }

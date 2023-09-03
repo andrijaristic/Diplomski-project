@@ -6,51 +6,28 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import StyledButton from "../UI/Styled/StyledButton";
 import PropertyPreview from "../PropertyPreview/PropertyPreview";
 import styles from "./Home.module.css";
-
-const DUMMY_DATA = [
-  {
-    id: 1,
-    name: "First property",
-    country: "Serbia",
-    area: "Trstenik",
-  },
-  {
-    id: 2,
-    name: "Second property",
-    country: "Serbia",
-    area: "Trstenik",
-  },
-  {
-    id: 3,
-    name: "Third property",
-    country: "Serbia",
-    area: "Trstenik",
-  },
-  {
-    id: 4,
-    name: "Fourth property",
-    country: "Serbia",
-    area: "Trstenik",
-  },
-  {
-    id: 5,
-    name: "Fifth property",
-    country: "Serbia",
-    area: "Trstenik",
-  },
-];
+import { useAppSelector } from "../../store/hooks";
 
 const Home: FC = () => {
-  const content = DUMMY_DATA.map((item) => {
-    return (
-      <PropertyPreview
-        key={item.id}
-        name={item.name}
-        country={item.country}
-        area={item.area}
-      />
-    );
-  });
+  const accommodations = useAppSelector(
+    (state) => state.accommodations.accommodations
+  );
+
+  const content: JSX.Element[] | undefined = accommodations?.map(
+    (accommodation) => {
+      {
+        return (
+          <PropertyPreview
+            key={accommodation?.id}
+            name={accommodation?.name}
+            country={accommodation?.country}
+            area={accommodation?.area}
+            imageURL={accommodation?.thumbnailImage?.imageURL}
+          />
+        );
+      }
+    }
+  );
 
   return (
     <Fade in>

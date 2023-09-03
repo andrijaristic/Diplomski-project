@@ -35,7 +35,9 @@ namespace Service
 
         public async Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO)
         {
-            IEnumerable<Property> accommodations = await _unitOfWork.Properties.GetFilteredAcccommodations(searchParamsDTO);
+            IEnumerable<Property> accommodations = await _unitOfWork
+                                                                .Properties
+                                                                .GetFilteredAcccommodations(searchParamsDTO);
             if (accommodations == null)
             {
                 throw new InvalidSearchParamsException();
@@ -47,15 +49,27 @@ namespace Service
                                                                                      _mapper);
         }
 
+        public async Task<List<PropertyPreviewDTO>> GetHighestRatedAccommodations()
+        {
+            List<Property> properties = await _unitOfWork
+                                                    .Properties
+                                                    .GetHighestRatedAccommodations();
+            return _mapper.Map<List<PropertyPreviewDTO>>(properties);
+        }
+
         public async Task<List<DisplayPropertyDTO>> GetUserAccommodations(Guid userId)
         {
-            List<Property> properties = await _unitOfWork.Properties.GetUserAccommodations(userId);
+            List<Property> properties = await _unitOfWork
+                                                    .Properties
+                                                    .GetUserAccommodations(userId);
             return _mapper.Map<List<DisplayPropertyDTO>>(properties);
         }
 
         public async Task<DetailedPropertyDTO> GetById(Guid id)
         {
-            Property property = await _unitOfWork.Properties.GetFullPropertyById(id);
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .GetFullPropertyById(id);
             if (property == null)
             {
                 throw new PropertyNotFoundException(id);
@@ -74,7 +88,9 @@ namespace Service
 
         public async Task<DetailedPropertyDTO> AddPropertyImage(Guid id, AddPropertyImageDTO addPropertyImageDTO, string username)
         {
-            User user = await _unitOfWork.Users.FindByUsername(username);
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
             if (user == null)
             {
                 throw new UserNotFoundException(username);
@@ -85,7 +101,9 @@ namespace Service
                 throw new InvalidUserIdInNewPropertyException();
             }
 
-            Property property = await _unitOfWork.Properties.GetFullPropertyById(id);
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .GetFullPropertyById(id);
             if (property == null)
             {
                 throw new PropertyNotFoundException(id);

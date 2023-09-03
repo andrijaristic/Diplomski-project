@@ -20,6 +20,8 @@ namespace Domain.Models
         public List<AccommodationImage> Images { get; set; }
         public Guid UserId { get; set; }    
         public User User { get; set; }  
+        public string Country { get; set; }
+        public string Area { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public List<Comment> Comments { get; set; }
