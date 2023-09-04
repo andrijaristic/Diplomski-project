@@ -1,14 +1,7 @@
-﻿using Contracts.Common;
-using Domain.Interfaces.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Contracts.Common;
 using Domain.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Interfaces.Repositories;
 
 namespace Infrastructure.Repositories
 {
@@ -23,6 +16,7 @@ namespace Infrastructure.Repositories
         {
             List<Property> properties = await _dbContext
                                                     .Properties
+                                                    .AsNoTracking()
                                                     .OrderBy(p => p.AverageGrade)
                                                     .Take(5)
                                                     .Include(p => p.ThumbnailImage)
@@ -34,6 +28,7 @@ namespace Infrastructure.Repositories
         {
             var source = _dbContext
                             .Properties
+                            .AsNoTracking()
                             .Include(p => p.Rooms)
                             .Include(p => p.RoomTypes)
                             .Include(p => p.Utilities)
@@ -50,7 +45,7 @@ namespace Infrastructure.Repositories
                 source = source
                             .Where(x => x.Rooms
                             .Any(x => x.OccupiedDates
-                            .Any(x => x.ArrivalDate > arrivalDate && x.DepartureDate < arrivalDate)));
+                            .Any(x => !(x.ArrivalDate >= arrivalDate && x.DepartureDate <= arrivalDate))));
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.DepartureDate))
@@ -63,7 +58,7 @@ namespace Infrastructure.Repositories
                 source = source
                             .Where(x => x.Rooms
                             .Any(x => x.OccupiedDates
-                            .Any(x => x.DepartureDate < departureDate && x.ArrivalDate > departureDate)));
+                            .Any(x => !(x.ArrivalDate >= departureDate && x.DepartureDate <= departureDate))));
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.Country))
@@ -146,6 +141,7 @@ namespace Infrastructure.Repositories
         {
             Property property = await _dbContext
                                             .Properties
+                                            .AsNoTracking()
                                             .Where(p => p.Id == id)
                                             .Include(p => p.Comments)
                                             .Include(p => p.ThumbnailImage)
@@ -159,6 +155,7 @@ namespace Infrastructure.Repositories
         {
             Property property = await _dbContext
                                             .Properties
+                                            .AsNoTracking()
                                             .Where(p => p.Id == id)                             
                                             .Include(u => u.User)
                                             .FirstOrDefaultAsync();
@@ -169,6 +166,7 @@ namespace Infrastructure.Repositories
         {
             List<Property> properties = await _dbContext
                                                     .Properties
+                                                    .AsNoTracking()
                                                     .Where(p => p.UserId == userId)
                                                     .Include(p => p.ThumbnailImage)
                                                     .ToListAsync();

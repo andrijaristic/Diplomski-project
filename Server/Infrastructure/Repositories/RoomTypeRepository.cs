@@ -15,11 +15,14 @@ namespace Infrastructure.Repositories
 
         public async Task<RoomType> FindDetailedRoomType(Guid id)
         {
-            RoomType roomType = await _dbContext.RoomTypes.Where(rt => rt.Id == id)
-                                                          .Include(sp => sp.SeasonalPricing)
-                                                          .Include(r => r.Rooms)
-                                                          .Include(p => p.Property)
-                                                          .FirstOrDefaultAsync();
+            RoomType roomType = await _dbContext
+                                            .RoomTypes
+                                            .AsNoTracking()
+                                            .Where(rt => rt.Id == id)
+                                            .Include(sp => sp.SeasonalPricing)
+                                            .Include(r => r.Rooms)
+                                            .Include(p => p.Property)
+                                            .FirstOrDefaultAsync();
             return roomType;
         }
     }

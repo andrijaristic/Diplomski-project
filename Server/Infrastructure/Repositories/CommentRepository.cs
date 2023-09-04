@@ -15,6 +15,7 @@ namespace Infrastructure.Repositories
         {
             List<Comment> comments = await _dbContext
                                                 .Comments
+                                                .AsNoTracking()
                                                 .Where(x => x.PropertyId == accommodationId)
                                                 .ToListAsync();
             return comments;
@@ -24,6 +25,7 @@ namespace Infrastructure.Repositories
         {
             List<Comment> comments = await _dbContext
                                                 .Comments
+                                                .AsNoTracking()
                                                 .Where(x => x.UserId == userId)
                                                 .Include(x => x.Property)
                                                 .ToListAsync();

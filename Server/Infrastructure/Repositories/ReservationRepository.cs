@@ -25,6 +25,7 @@ namespace Infrastructure.Repositories
         {
             List<Reservation> reservations = await _dbContext
                                                         .Reservations
+                                                        .AsNoTracking()
                                                         .Where(r => r.UserId == userId)
                                                         .ToListAsync();
             return reservations;

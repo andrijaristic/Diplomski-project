@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
 
         }
 
-        public async Task<List<Room>> FilterRooms(SearchRoomDTO searchRoomDTO)
+        public Task<List<Room>> FilterRooms(SearchRoomDTO searchRoomDTO)
         {
             var source = _dbContext
                             .Rooms
@@ -52,7 +52,7 @@ namespace Infrastructure.Repositories
             var src3 = source.ToList();
 
 
-            return source.ToList();
+            return source.ToListAsync();
         }
 
         public async Task<Room> FindByIdAndProperty(Guid roomId, Guid propertyId)
