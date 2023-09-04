@@ -38,8 +38,8 @@ namespace Infrastructure.Repositories
             // This finds where overlaps happen but negates that so TRUE becomes FALSE
             source = source
                         .Where(x => (x.OccupiedDates
-                        .Any(x => !(searchRoomDTO.ArrivalDate < x.DepartureDate &&
-                                    x.ArrivalDate < searchRoomDTO.DepartureDate))) || 
+                        .Any(x => searchRoomDTO.ArrivalDate > x.DepartureDate &&
+                                    x.ArrivalDate > searchRoomDTO.DepartureDate)) || 
                         (x.OccupiedDates.Count == 0));
 
             var src2 = source.ToList();

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Divider, Fade, Grid, Rating, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -14,7 +14,11 @@ import { IAccommodationImage } from "../../shared/interfaces/accommodationImageI
 import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
 import DetailedListingRoomBooking from "./DetailedListingRoomBooking";
 import { IRoomSearch } from "../../shared/interfaces/roomInterfaces";
-import { getFilteredRoomsAction } from "../../store/roomSlice";
+import {
+  clearBookingRooms,
+  getFilteredRoomsAction,
+} from "../../store/roomSlice";
+import { clearSuccessfulReservation } from "../../store/reservationSlice";
 
 const noAmenitiesMessage: JSX.Element = (
   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -28,6 +32,9 @@ const noAmenitiesMessage: JSX.Element = (
 const DetailedListing: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const successfulReservation = useAppSelector(
+    (state) => state.reservations.successfulReservation
+  );
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const accommodation = useAppSelector(
     (state) => state.accommodations.detailedAccommodation
@@ -36,6 +43,13 @@ const DetailedListing: FC = () => {
     (state) => state.comments.accommodationComments
   );
   const bookingRooms = useAppSelector((state) => state.rooms.bookingRooms);
+
+  useEffect(() => {
+    if (successfulReservation) {
+      dispatch(clearBookingRooms());
+      dispatch(clearSuccessfulReservation());
+    }
+  }, [dispatch, successfulReservation]);
 
   const utilities: JSX.Element[] | undefined = accommodation?.utilities?.map(
     (utility) => <DetailedListingAmenity key={utility.id} name={utility.name} />

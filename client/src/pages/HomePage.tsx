@@ -6,7 +6,10 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getUserByIdAction } from "../store/userSlice";
 import { IJwt } from "../shared/interfaces/userInterfaces";
 import { ApiCallState } from "../shared/types/enumerations";
-import { getHighestRatedAccommodationsAction } from "../store/accommodationSlice";
+import {
+  clearAccommodations,
+  getHighestRatedAccommodationsAction,
+} from "../store/accommodationSlice";
 
 const HomePage: FC = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +26,7 @@ const HomePage: FC = () => {
   }, [token, dispatch]);
 
   useEffect(() => {
+    dispatch(clearAccommodations());
     dispatch(getHighestRatedAccommodationsAction());
   }, [dispatch]);
 

@@ -31,6 +31,11 @@ const DetailedListingSearchAction: FC<IProps> = ({ onSearch }) => {
       return;
     }
 
+    if (checkinDate > checkoutDate) {
+      errorNotification("Arrival cannot be after departure");
+      return;
+    }
+
     const booking: IRoomSearch = {
       propertyId: id ? id : "",
       arrivalDate: new Date(checkinDate.setHours(12, 0, 0, 0)).toISOString(),
@@ -68,6 +73,7 @@ const DetailedListingSearchAction: FC<IProps> = ({ onSearch }) => {
         <FormLabel>Departure date</FormLabel>
         <DatePicker
           disablePast
+          minDate={checkinDate}
           value={checkoutDate}
           onChange={(newValue) => {
             setCheckoutDate(newValue);

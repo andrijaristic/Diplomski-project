@@ -41,7 +41,7 @@ namespace Service
             return displayReservationDTOs;
         }
 
-        public async Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO)
+        public async Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO, bool online)
         {
             bool propertyExists = await _unitOfWork.Properties.Find(newReservationDTO.PropertyId) != null;
             if (!propertyExists) 
@@ -90,6 +90,7 @@ namespace Service
 
             newReservationDTO.Price = price;
             Reservation reservation = _mapper.Map<Reservation>(newReservationDTO);
+            reservation.IsPayed = online;
 
             room.OccupiedDates.Add(
                 new ReservedDays()

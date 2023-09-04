@@ -6,7 +6,10 @@ import { useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
 import { INewReservation } from "../../shared/interfaces/reservationInterface";
-import { createReservationAction } from "../../store/reservationSlice";
+import {
+  createInPersonPaymentReservationAction,
+  createOnlinePaymentReservationAction,
+} from "../../store/reservationSlice";
 import ReservationModal from "../ReservationModal/ReservationModal";
 
 interface IProps {
@@ -34,18 +37,30 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
     window.location.href = stripeUrl;
   }, [stripeUrl]);
 
-  const handleReservationCreation = () => {
+  const handleOnlinePayment = () => {
     const newReservation: INewReservation = {
       userId: userId,
       propertyId: propertyId ? propertyId : "",
       roomId: room?.id,
       price: room?.price,
-      arrivalDate: room?.arrivalDate,
-      departureDate: room?.departureDate,
+      arrivalDate: new Date(room?.arrivalDate).toISOString(),
+      departureDate: new Date(new Date(room?.departureDate)).toISOString(),
     };
 
-    console.log(newReservation);
-    dispatch(createReservationAction(newReservation));
+    dispatch(createOnlinePaymentReservationAction(newReservation));
+  };
+
+  const handleInPersonPayment = () => {
+    const newReservation: INewReservation = {
+      userId: userId,
+      propertyId: propertyId ? propertyId : "",
+      roomId: room?.id,
+      price: room?.price,
+      arrivalDate: new Date(room?.arrivalDate).toISOString(),
+      departureDate: new Date(room?.departureDate).toISOString(),
+    };
+
+    dispatch(createInPersonPaymentReservationAction(newReservation));
   };
 
   return (
@@ -93,7 +108,8 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
               <ReservationModal
                 open={isOpen}
                 onClose={handleModalToggle}
-                onOnlinePayment={handleReservationCreation}
+                onOnlinePayment={handleOnlinePayment}
+                onInPersonPayment={handleInPersonPayment}
                 room={{
                   roomId: room.id,
                   arrivalDate: room.arrivalDate,

@@ -6,6 +6,20 @@ export const getUserReservations = async (id: string) => {
   return await axiosClient.get(`${API}/reservations/${id}`);
 };
 
-export const createReservation = async (newReservation: INewReservation) => {
-  return await axiosClient.post(`${API}/reservations`, newReservation);
+export const createOnlinePaymentReservation = async (
+  newReservation: INewReservation
+) => {
+  return await axiosClient.post(
+    `${API}/reservations/online-payment`,
+    newReservation
+  );
+};
+
+export const createInPersonPaymentReservation = async (
+  newReservation: INewReservation
+) => {
+  return await axiosClient.post(
+    `${API}/reservations/in-person-payment`,
+    newReservation
+  );
 };
