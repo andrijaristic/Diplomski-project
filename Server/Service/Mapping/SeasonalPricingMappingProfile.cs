@@ -13,8 +13,9 @@ namespace Service.Mapping
     {
         public SeasonalPricingMappingProfile() 
         {
-            CreateMap<DisplaySeasonalPricingDTO, SeasonalPricing>().ReverseMap();
-            CreateMap<NewSeasonalPricingDTO, SeasonalPricing>().ReverseMap();
+            CreateMap<SeasonalPricing, DisplaySeasonalPricingDTO>().ReverseMap();
+            CreateMap<SeasonalPricing, NewSeasonalPricingDTO>().ReverseMap();
+            CreateMap<SeasonalPricing, SeasonalPricingMinimalDTO>().ReverseMap();
         }
     }
 }

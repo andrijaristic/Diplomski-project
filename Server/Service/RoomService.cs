@@ -7,6 +7,7 @@ using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
 using Domain.Exceptions.RoomExceptions;
 using Contracts.ReservationDTOs;
+using Contracts.SeasonalPricingDTOs;
 
 namespace Service
 {
@@ -38,6 +39,7 @@ namespace Service
                 dto.DepartureDate = searchRoomDTO.DepartureDate;
             }
 
+            List<SeasonalPricing> dtoPricings = new List<SeasonalPricing>();
             foreach (Room room in rooms)
             { 
                 SeasonalPricing pricing = room
@@ -46,25 +48,37 @@ namespace Service
                                             .Where(sp => sp.StartDate.Month == searchRoomDTO.ArrivalDate.Month)
                                             .First();
 
-                int days = (searchRoomDTO.DepartureDate - searchRoomDTO.ArrivalDate).Days;
-                DateTime date = searchRoomDTO.ArrivalDate;
-                double price = pricing.Price;
-                for (int i = 0; i < days; i++)
+                if (!dtoPricings.Contains(pricing))
                 {
-                    if (date.Month != pricing.StartDate.Month)
+                    dtoPricings.Add(pricing);
+                }
+
+                double price = 0;
+                for (var day = searchRoomDTO.ArrivalDate.Date; day.Date < searchRoomDTO.DepartureDate.Date; day = day.AddDays(1))
+                {
+                    if (day.Month != pricing.StartDate.Month)
                     {
                         pricing = room
                                     .RoomType
                                     .SeasonalPricing
-                                    .Where(sp => sp.StartDate.Month == date.Month)
+                                    .Where(sp => sp.StartDate.Month == day.Month)
                                     .First();
+
+                        if (!dtoPricings.Contains(pricing))
+                        {
+                            dtoPricings.Add(pricing);
+                        }
                     }
 
                     price += pricing.Price;
-                    date = date.AddDays(1);
                 }
 
                 displayRoomBookingDTOs.Where(x => x.Id == room.Id).First().Price = price;
+            }
+
+            foreach (DisplayRoomBookingDTO dto in displayRoomBookingDTOs)
+            {
+                dto.RoomType.SeasonalPricing = _mapper.Map<List<SeasonalPricingMinimalDTO>>(dtoPricings);
             }
 
             return displayRoomBookingDTOs;

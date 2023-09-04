@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { Box, Button, Card, Divider, Grid, Typography } from "@mui/material";
 import { IRoomSearchDisplay } from "../../shared/interfaces/roomInterfaces";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -7,6 +7,7 @@ import jwtDecode from "jwt-decode";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
 import { INewReservation } from "../../shared/interfaces/reservationInterface";
 import { createReservationAction } from "../../store/reservationSlice";
+import ReservationModal from "../ReservationModal/ReservationModal";
 
 interface IProps {
   room: IRoomSearchDisplay;
@@ -18,6 +19,12 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
   const token = useAppSelector((state) => state.user.token);
   const { id: userId } = jwtDecode<IJwt>(token ? token : "");
   const { id: propertyId } = useParams();
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleModalToggle = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     if (stripeUrl === "") {
@@ -80,10 +87,22 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
               <Typography sx={{ ml: "auto", mr: 1 }}>${room?.price}</Typography>
             </Box>
             <Typography sx={{ ml: "auto", mr: 1 }}>
-              <Button onClick={handleReservationCreation}>
-                Make reservation
-              </Button>
+              <Button onClick={handleModalToggle}>Make reservation</Button>
             </Typography>
+            {isOpen && (
+              <ReservationModal
+                open={isOpen}
+                onClose={handleModalToggle}
+                onOnlinePayment={handleReservationCreation}
+                room={{
+                  roomId: room.id,
+                  arrivalDate: room.arrivalDate,
+                  departureDate: room.departureDate,
+                  price: room.price,
+                  seasonalPricing: room.roomType.seasonalPricing,
+                }}
+              />
+            )}
           </Box>
         </Grid>
       </Grid>

@@ -6,6 +6,7 @@ import { getAccommodationByIdAction } from "../store/accommodationSlice";
 import { getAccommodationCommentsAction } from "../store/commentSlice";
 import LoadingModal from "../components/UI/Modal/LoadingModal";
 import { ApiCallState } from "../shared/types/enumerations";
+import { clearBookingRooms } from "../store/roomSlice";
 
 const DetailedListingPage: FC = () => {
   const { id } = useParams();
@@ -14,7 +15,10 @@ const DetailedListingPage: FC = () => {
     (state) => state.accommodations.apiState
   );
   const commentApiState = useAppSelector((state) => state.comments.apiState);
-  const accId = "d3ba14f5-0715-432f-84a2-f1ea7bbb953d";
+
+  useEffect(() => {
+    dispatch(clearBookingRooms());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getAccommodationByIdAction(id ? id : ""));

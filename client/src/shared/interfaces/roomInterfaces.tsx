@@ -1,4 +1,5 @@
 import { IRoomTypeDisplay } from "./roomTypeInterfaces";
+import { ISeasonalPricing } from "./seasonalPricingInterfaces";
 
 export interface IRoom {
   id: string;
@@ -11,6 +12,7 @@ export interface IRoomSearchDisplay {
   departureDate: Date;
   roomType: IRoomTypeDisplay;
   price: number;
+  seasonalPricings: ISeasonalPricing[];
 }
 
 export interface IRoomSearch {
@@ -19,4 +21,12 @@ export interface IRoomSearch {
   children: number;
   arrivalDate: string;
   departureDate: string;
+}
+
+export interface IRoomModal {
+  roomId: string;
+  arrivalDate: Date;
+  departureDate: Date;
+  price: number;
+  seasonalPricing: ISeasonalPricing[];
 }

@@ -37,7 +37,16 @@ export const getFilteredRoomsAction = createAsyncThunk(
 const roomSlice = createSlice({
   name: "room",
   initialState,
-  reducers: {},
+  reducers: {
+    clearBookingRooms(state) {
+      state.bookingRooms = [];
+      state.apiState = ApiCallState.COMPLETED;
+    },
+    clearRooms(state) {
+      state.rooms = [];
+      state.apiState = ApiCallState.COMPLETED;
+    },
+  },
   extraReducers: (builder) => {
     // FILTER ROOMS
     builder.addCase(getFilteredRoomsAction.pending, (state) => {
@@ -59,4 +68,5 @@ const roomSlice = createSlice({
   },
 });
 
+export const { clearBookingRooms, clearRooms } = roomSlice.actions;
 export default roomSlice.reducer;

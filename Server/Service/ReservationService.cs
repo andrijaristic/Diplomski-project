@@ -7,6 +7,7 @@ using Domain.Exceptions.RoomExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Contracts.CommentDTOs;
+using Contracts.RoomDTOs;
 
 namespace Service
 {
@@ -56,32 +57,7 @@ namespace Service
 
             ValidateDates(newReservationDTO.ArrivalDate, newReservationDTO.DepartureDate);
 
-            DateTime date;
             int days = (newReservationDTO.DepartureDate - newReservationDTO.ArrivalDate).Days;
-            //List<ReservedDays> existingReservations = room.OccupiedDates.Where(
-            //    rd => newReservationDTO.ArrivalDate.Month == rd.ArrivalDate.Month ||
-            //          newReservationDTO.ArrivalDate.Month == rd.DepartureDate.Month ||
-            //          newReservationDTO.DepartureDate.Month == rd.ArrivalDate.Month ||
-            //          newReservationDTO.DepartureDate.Month == rd.DepartureDate.Month).ToList();
-
-            //foreach (ReservedDays occupiedDates in existingReservations)
-            //{
-            //    date = newReservationDTO.ArrivalDate;
-            //    for (int i = 0; i < days; i++)
-            //    {
-            //        if (date >= occupiedDates.ArrivalDate &&
-            //            date <= occupiedDates.DepartureDate)
-            //        {
-            //            throw new RoomAlreadyOccupiedException();
-            //        }
-
-            //        date.AddDays(1);
-            //    }
-            //}
-
-            // Same thing as code above
-            // Needs further testing
-            // Checks if date ranges overlap. If there is anything in list, reservation not possible.
             List<ReservedDays> reservedDays = room
                                                 .OccupiedDates
                                                 .Where(x => newReservationDTO.ArrivalDate < x.DepartureDate &&
@@ -91,34 +67,25 @@ namespace Service
             {
                 throw new RoomAlreadyOccupiedException();
             }
-            
-
-            // Go through each date of the month 
-            // Find pricing that matches arrivalDate
-            // Iterate and with each iteration check if month is same
-            // If month isn't same, find new pricing and continue iterating until departureDate (DepartureDate - ArrivalDate to get amount of iterations)
 
             SeasonalPricing pricing = room
                                         .RoomType
                                         .SeasonalPricing
                                         .Where(sp => sp.StartDate.Month == newReservationDTO.ArrivalDate.Month)
                                         .First();
-
-            date = newReservationDTO.ArrivalDate.AddDays(1);
-            double price = pricing.Price;
-            for (int i = 0; i < days; i++)
+            double price = 0;
+            for (var day = newReservationDTO.ArrivalDate.Date; day.Date < newReservationDTO.DepartureDate.Date; day = day.AddDays(1))
             {
-                if (date.Month != pricing.StartDate.Month)
+                if (day.Month != pricing.StartDate.Month)
                 {
                     pricing = room
                                 .RoomType
                                 .SeasonalPricing
-                                .Where(sp => sp.StartDate.Month == date.Month)
+                                .Where(sp => sp.StartDate.Month == day.Month)
                                 .First();
                 }
 
                 price += pricing.Price;
-                date = date.AddDays(1);
             }
 
             newReservationDTO.Price = price;

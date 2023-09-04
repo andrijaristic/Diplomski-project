@@ -73,7 +73,6 @@ const DetailedListing: FC = () => {
   }
 
   const handleRoomSearch = (booking: IRoomSearch) => {
-    console.log(booking);
     dispatch(getFilteredRoomsAction(booking));
   };
 

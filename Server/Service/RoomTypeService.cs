@@ -37,6 +37,10 @@ namespace Service
                 roomType.Rooms.Add(new Room() { PropertyId = roomType.PropertyId });
             }
 
+            int seasonalPricingMin = roomType.SeasonalPricing.Min(x => x.Price);
+            property.StartingPrice = property.StartingPrice > seasonalPricingMin ? seasonalPricingMin : 
+                                                                                   property.StartingPrice;
+
             await _unitOfWork.RoomTypes.Add(roomType);
             await _unitOfWork.Save();
 

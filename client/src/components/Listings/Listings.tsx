@@ -1,4 +1,7 @@
 import { FC, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { LatLng } from "leaflet-geosearch/dist/providers/provider.js";
 import {
   Box,
   Fade,
@@ -9,14 +12,10 @@ import {
 } from "@mui/material";
 import ListingsItem from "./ListingsItem";
 import ListingActions from "./ListingActions";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { useSearchParams } from "react-router-dom";
-import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
 import { getAccommodationsAction } from "../../store/accommodationSlice";
-import { LatLng } from "leaflet-geosearch/dist/providers/provider.js";
-import L from "leaflet";
+import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
 
 const Listings: FC = () => {
   const dispatch = useAppDispatch();
