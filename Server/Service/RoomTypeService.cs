@@ -3,6 +3,7 @@ using Contracts.RoomTypeDTOs;
 using Contracts.SeasonalPricingDTOs;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
+using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
@@ -17,6 +18,23 @@ namespace Service
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<List<DisplayRoomTypeDTO>> GetRoomTypesForAccommodation(Guid accommodationId, string username)
+        {
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            List<RoomType> roomTypes = await _unitOfWork
+                                                    .RoomTypes
+                                                    .FindRoomTypesForAccommodation(accommodationId, user.Id);
+
+            return _mapper.Map<List<DisplayRoomTypeDTO>>(roomTypes);
         }
 
         public async Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO)

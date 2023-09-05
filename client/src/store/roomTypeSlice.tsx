@@ -2,15 +2,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiCallState } from "../shared/types/enumerations";
 import { defaultErrorMessage } from "../constants/Constants";
-import { errorNotification } from "../utils/toastNotificationUtil";
-import { createNewRoomType } from "../services/RoomTypeService";
-import { INewRoomType } from "../shared/interfaces/roomTypeInterfaces";
+import {
+  errorNotification,
+  successNotification,
+} from "../utils/toastNotificationUtil";
+import {
+  createNewRoomType,
+  getRoomTypesForAccommodation,
+} from "../services/RoomTypeService";
+import {
+  INewRoomType,
+  IRoomTypeDisplay,
+} from "../shared/interfaces/roomTypeInterfaces";
 
 export interface RoomTypeState {
+  roomTypes: IRoomTypeDisplay[];
   apiState: ApiCallState;
 }
 
 const initialState: RoomTypeState = {
+  roomTypes: [],
   apiState: ApiCallState.COMPLETED,
 };
 
@@ -26,17 +37,35 @@ export const createNewRoomTypeAction = createAsyncThunk(
   }
 );
 
+export const getRoomTypesForAccommodationAction = createAsyncThunk(
+  "roomTypes/getRoomTypesForAccommodation",
+  async (id: string, thunkApi) => {
+    try {
+      const response = await getRoomTypesForAccommodation(id);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
 const roomTypeSlice = createSlice({
   name: "roomTypes",
   initialState,
-  reducers: {},
+  reducers: {
+    clearRoomTypes(state) {
+      state.roomTypes = [];
+      state.apiState = ApiCallState.COMPLETED;
+    },
+  },
   extraReducers: (builder) => {
-    // GET USER RESERVATIONS
+    // CREATE NEW ROOM TYPE ACTION
     builder.addCase(createNewRoomTypeAction.pending, (state) => {
       state.apiState = ApiCallState.PENDING;
     });
     builder.addCase(createNewRoomTypeAction.fulfilled, (state) => {
       state.apiState = ApiCallState.COMPLETED;
+      successNotification("Succesfully added new room type!");
     });
     builder.addCase(createNewRoomTypeAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
@@ -47,7 +76,32 @@ const roomTypeSlice = createSlice({
       }
       errorNotification(error);
     });
+
+    // GET ROOM TYPES FOR ACCOMMODATION
+    builder.addCase(getRoomTypesForAccommodationAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(
+      getRoomTypesForAccommodationAction.fulfilled,
+      (state, action) => {
+        state.apiState = ApiCallState.COMPLETED;
+        state.roomTypes = [...action.payload];
+      }
+    );
+    builder.addCase(
+      getRoomTypesForAccommodationAction.rejected,
+      (state, action) => {
+        state.apiState = ApiCallState.REJECTED;
+
+        let error: string = defaultErrorMessage;
+        if (typeof action.payload === "string") {
+          error = action.payload;
+        }
+        errorNotification(error);
+      }
+    );
   },
 });
 
+export const { clearRoomTypes } = roomTypeSlice.actions;
 export default roomTypeSlice.reducer;

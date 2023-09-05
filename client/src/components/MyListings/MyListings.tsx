@@ -11,8 +11,6 @@ const MyListings: FC = () => {
     (state) => state.accommodations.userAccommodations
   );
 
-  console.log(userAccommodations);
-
   const handleCreate = () => {
     navigate("/listings/new");
   };

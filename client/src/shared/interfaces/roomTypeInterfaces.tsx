@@ -15,3 +15,9 @@ export interface IRoomTypeDisplay {
   children: number;
   seasonalPricing: ISeasonalPricing[];
 }
+
+export interface IRoomTypeAddDisplay {
+  id: string;
+  startDate: Date;
+  endDate: Date;
+}

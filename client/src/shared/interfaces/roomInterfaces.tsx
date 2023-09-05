@@ -30,3 +30,9 @@ export interface IRoomModal {
   price: number;
   seasonalPricing: ISeasonalPricing[];
 }
+
+export interface INewRoom {
+  amountOfRooms: number;
+  propertyId: string;
+  roomTypeId: string;
+}

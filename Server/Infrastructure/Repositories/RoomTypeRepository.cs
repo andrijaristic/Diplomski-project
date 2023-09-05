@@ -11,7 +11,23 @@ namespace Infrastructure.Repositories
 {
     public class RoomTypeRepository : GenericRepository<RoomType>, IRoomTypeRepository
     {
-        public RoomTypeRepository(ProjectDbContext _dbContext) : base(_dbContext) { }
+        public RoomTypeRepository(ProjectDbContext _dbContext) : base(_dbContext) 
+        {
+        
+        }
+
+        public async Task<List<RoomType>> FindRoomTypesForAccommodation(Guid accommodationId, Guid userId)
+        {
+            List<RoomType> roomTypes = await _dbContext
+                                                    .RoomTypes
+                                                    .AsNoTracking()
+                                                    .Where(rt => rt.PropertyId == accommodationId)
+                                                    .Include(rt => rt.Property)
+                                                    .Include(rt => rt.SeasonalPricing)
+                                                    .ToListAsync();
+
+            return roomTypes.Where(rt => rt.Property.UserId == userId).ToList();
+        }
 
         public async Task<RoomType> FindDetailedRoomType(Guid id)
         {

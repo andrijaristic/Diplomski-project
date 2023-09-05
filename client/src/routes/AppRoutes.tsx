@@ -16,9 +16,14 @@ import ReservationsPage from "../pages/ReservationsPage";
 import MyListingsPage from "../pages/MyListingsPage";
 import EditListingPage from "../pages/EditListingPage";
 import NewListingPage from "../pages/NewListingPage";
+import { UserType } from "../shared/types/enumerations";
+import AddRoomsPage from "../pages/AddRoomsPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const user = useAppSelector((state) => state.user.user);
+
+  const isOwner = user?.role === "PROPERTYOWNER";
 
   return (
     <BrowserRouter>
@@ -36,10 +41,11 @@ const AppRoutes: FC = () => {
           <Route path="/listings">
             <Route index element={<ListingsPage />} />
             <Route path=":id" element={<DetailedListingPage />} />
-            {isLoggedIn && (
+            {isLoggedIn && isOwner && (
               <>
-                <Route path=":id/edit" element={<EditListingPage />} />
                 <Route path="new" element={<NewListingPage />} />
+                <Route path=":id/edit" element={<EditListingPage />} />
+                <Route path=":id/add-rooms" element={<AddRoomsPage />} />
               </>
             )}
           </Route>
@@ -54,7 +60,9 @@ const AppRoutes: FC = () => {
                 />
                 <Route path="comments" element={<CommentsPage />} />
                 <Route path="reservations" element={<ReservationsPage />} />
-                <Route path="my-listings" element={<MyListingsPage />} />
+                {isOwner && (
+                  <Route path="my-listings" element={<MyListingsPage />} />
+                )}
                 <Route path="*" element={<Navigate replace to="/" />} />
               </Route>
             </>

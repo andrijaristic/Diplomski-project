@@ -17,6 +17,14 @@ namespace Web.API.Controllers
             _roomTypeService = roomTypeService;
         }
 
+        [HttpGet("accommodation/{id}")]
+        [Authorize(Roles = "propertyowner")]
+        public async Task<IActionResult> GetRoomTypesForAccommodation(Guid id)
+        {
+            List<DisplayRoomTypeDTO> displayRoomTypeDTOs = await _roomTypeService.GetRoomTypesForAccommodation(id, User.Identity.Name);
+            return Ok(displayRoomTypeDTOs);
+        }
+
         [HttpPost]
         [Authorize(Roles = "propertyowner")]
         public async Task<IActionResult> Post([FromBody] NewRoomTypeDTO newRoomTypeDTO)

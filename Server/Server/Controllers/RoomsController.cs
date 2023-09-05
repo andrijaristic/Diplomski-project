@@ -1,9 +1,7 @@
 ﻿using Contracts.RoomDTOs;
 using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.DataAnnotations;
 
 namespace Web.API.Controllers
 {

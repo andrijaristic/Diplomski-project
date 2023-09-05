@@ -24,6 +24,11 @@ namespace Service
 
         public async Task<List<DisplayRoomBookingDTO>> FilterRoomsForBooking(SearchRoomDTO searchRoomDTO)
         {
+            if (searchRoomDTO.ArrivalDate.Date > searchRoomDTO.DepartureDate.Date)
+            {
+                throw new InvalidRoomSearchDatesException();
+            }
+
             List<Room> rooms = await _unitOfWork
                                             .Rooms
                                             .FilterRooms(searchRoomDTO);
@@ -100,7 +105,11 @@ namespace Service
 
             Room room = _mapper.Map<Room>(newRoomDTO);
 
-            await _unitOfWork.Rooms.Add(room);
+            for (int i = 0; i < newRoomDTO.AmountOfRooms; i++)
+            {
+                await _unitOfWork.Rooms.Add(room);
+            }
+
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayRoomDTO>(room);

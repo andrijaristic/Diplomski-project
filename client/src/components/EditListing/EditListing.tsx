@@ -7,7 +7,7 @@ import StyledButton from "../UI/Styled/StyledButton";
 import ImageDisplay from "./ImageDisplay";
 import AddImagePicker from "./AddImagePicker";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
 import {
@@ -19,8 +19,6 @@ import {
   updateBasicAccommodationInformationAction,
 } from "../../store/accommodationSlice";
 import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
-
-const DUMMY_DESCRIPTION = `Lorem ipsum dolor`;
 
 const EditListingPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -129,7 +127,7 @@ const EditListingPage: FC = () => {
     const data = new FormData(event.currentTarget);
     const pricings: any[] = []; // proper type
     for (const kvp of data.entries()) {
-      pricings.push({ id: parseInt(kvp[0]), price: kvp[1] });
+      pricings.push({ id: kvp[0], price: kvp[1] });
     }
   };
 
@@ -189,7 +187,9 @@ const EditListingPage: FC = () => {
               <Typography variant="h4">
                 Oops! It seems like there are no rooms registered for this
                 accommodation. <br />
-                How about you add some?
+                <NavLink to={`/listings/${accommodation?.id}/add-rooms`}>
+                  How about you add some?
+                </NavLink>
               </Typography>
             )}
           </Box>
