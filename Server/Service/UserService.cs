@@ -17,14 +17,20 @@ namespace Service
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthUtility _authUtility;
+        private readonly IEmailUtility _emailUtility;
         private readonly IOptions<AppSettings> _settings;
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IAuthUtility authUtility, IOptions<AppSettings> settings) 
+        public UserService(IMapper mapper,
+                           IUnitOfWork unitOfWork,
+                           IAuthUtility authUtility,
+                           IOptions<AppSettings> settings,
+                           IEmailUtility emailUtility) 
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _authUtility = authUtility;
             _settings = settings;
+            _emailUtility = emailUtility;
         }
 
         public async Task<DisplayUserDTO> GetById(Guid id)
@@ -224,11 +230,12 @@ namespace Service
                 throw new UserAlreadyVerifiedException();
             }
 
-            user.IsVerified = true;
+            user.IsVerified = isAccepted;
             user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED : 
                                                    VerificationStatus.REJECTED;
 
             await _unitOfWork.Save();
+            await _emailUtility.SendEmail(user.Email, $"{user.FirstName} {user.LastName}", user.IsVerified);
 
             return _mapper.Map<DisplayUserDTO>(user);
         }

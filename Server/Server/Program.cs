@@ -106,6 +106,7 @@ builder.Services.AddScoped<ICommentsService, CommentService>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
 
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
+builder.Services.AddScoped<IEmailUtility, EmailUtility>();
 builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
 builder.Services.AddScoped<IUtilityDataInitializer, UtilityDataInitializer>();
 

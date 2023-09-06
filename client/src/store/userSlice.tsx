@@ -318,7 +318,7 @@ const userSlice = createSlice({
     });
     builder.addCase(sendUserVerificationAction.fulfilled, (state) => {
       state.apiState = ApiCallState.COMPLETED;
-      successNotification("Successfully send new verification status");
+      successNotification("Successfully updated user status");
     });
     builder.addCase(sendUserVerificationAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
