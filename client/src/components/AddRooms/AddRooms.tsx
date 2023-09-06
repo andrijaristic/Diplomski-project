@@ -165,7 +165,7 @@ const AddRooms: FC = () => {
           border: `1px solid ${grey[400]}`,
         }}
       >
-        <Paper sx={{ height: 8, bgcolor: "secondary.main" }}></Paper>
+        <Paper sx={{ height: 8, bgcolor: "secondary.main" }} />
         <Box component="form" onSubmit={handleRoomAdd} sx={{ p: 4, pt: 2 }}>
           <StyledButton
             submit

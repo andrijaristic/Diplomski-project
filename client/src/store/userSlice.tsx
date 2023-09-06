@@ -9,13 +9,16 @@ import {
   IUserLogin,
   IUserRegistration,
   IUserUpdate,
+  IUserVerification,
 } from "../shared/interfaces/userInterfaces";
 import {
   externalLogin,
+  getUnverifiedUsers,
   getUserById,
   login,
   passwordChange,
   register,
+  sendUserVerification,
   update,
 } from "../services/UserService";
 import { defaultErrorMessage } from "../constants/Constants";
@@ -28,6 +31,7 @@ import { localStorageJsonParse } from "../utils/localStorageFetchUtil";
 export interface UserState {
   token: string | null;
   user: IDisplayUser | null;
+  unverifiedUsers: IDisplayUser[];
   isLoggedIn: boolean;
   apiState: ApiCallState;
 }
@@ -35,6 +39,7 @@ export interface UserState {
 const initialState: UserState = {
   token: localStorage.getItem("token"),
   user: localStorageJsonParse("user"),
+  unverifiedUsers: [],
   isLoggedIn: localStorage.getItem("token") !== null,
   apiState: ApiCallState.COMPLETED,
 };
@@ -114,6 +119,33 @@ export const getUserByIdAction = createAsyncThunk(
   }
 );
 
+export const getUnverifiedUsersAction = createAsyncThunk(
+  "user/getUnverified",
+  async (id: string, thunkApi) => {
+    try {
+      const response = await getUnverifiedUsers();
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const sendUserVerificationAction = createAsyncThunk(
+  "user/sendVerification",
+  async (userVerification: IUserVerification, thunkApi) => {
+    try {
+      const response = await sendUserVerification(
+        userVerification.id,
+        userVerification.isAccepted
+      );
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -130,6 +162,10 @@ const userSlice = createSlice({
 
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+    },
+    clearUnverifiedUsers(state) {
+      state.unverifiedUsers = [];
+      state.apiState = ApiCallState.COMPLETED;
     },
   },
   extraReducers: (builder) => {
@@ -256,8 +292,46 @@ const userSlice = createSlice({
       }
       errorNotification(error);
     });
+
+    // GET UNVERIFIED USERS
+    builder.addCase(getUnverifiedUsersAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(getUnverifiedUsersAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+
+      state.unverifiedUsers = [...action.payload];
+    });
+    builder.addCase(getUnverifiedUsersAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // SEND USER VERIFICATION
+    builder.addCase(sendUserVerificationAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(sendUserVerificationAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("Successfully send new verification status");
+    });
+    builder.addCase(sendUserVerificationAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
   },
 });
 
-export const { receivedToken, logout } = userSlice.actions;
+export const { receivedToken, logout, clearUnverifiedUsers } =
+  userSlice.actions;
 export default userSlice.reducer;

@@ -25,5 +25,16 @@ namespace Infrastructure.Repositories
                                     .FirstOrDefaultAsync(x => x.Username.Equals(username));
             return user;
         }
+
+        public async Task<List<User>> GetUnverifiedUsers()
+        {
+            List<User> users = await _dbContext
+                                            .Users
+                                            .AsNoTracking()
+                                            .Where(x => !x.IsVerified && 
+                                                   x.VerificationStatus == Domain.Enums.VerificationStatus.PENDING)
+                                            .ToListAsync();
+            return users;
+        }
     }
 }

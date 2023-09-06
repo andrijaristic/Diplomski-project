@@ -26,6 +26,14 @@ namespace Web.API.Controllers
             return Ok(displayUserDTO);
         }
 
+        [HttpGet("unverified")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetAllUnverifiedUsers()
+        {
+            List<DisplayUserDTO> displayUserDTOs = await _userService.GetUnverifiedUsers();
+            return Ok(displayUserDTOs);
+        }
+
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)

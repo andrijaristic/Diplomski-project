@@ -9,6 +9,5 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IAmenityRepository : IGenericRepository<PropertyUtility>
     {
-        Task<List<PropertyUtility>> GetAccommodationAmenities(Guid accommodationId);
     }
 }

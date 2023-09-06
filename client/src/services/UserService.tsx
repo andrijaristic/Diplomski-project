@@ -37,3 +37,13 @@ export const passwordChange = async (
 export const getUserById = async (id: string) => {
   return await axiosClient.get(`${API}/users/${id}`);
 };
+
+export const getUnverifiedUsers = async () => {
+  return await axiosClient.get(`${API}/users/unverified`);
+};
+
+export const sendUserVerification = async (id: string, isAccepted: boolean) => {
+  return await axiosClient.put(`${API}/users/${id}/verify`, {
+    isAccepted: isAccepted,
+  });
+};

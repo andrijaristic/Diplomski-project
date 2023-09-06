@@ -4,6 +4,7 @@ export interface IUserLogin {
 }
 
 export interface IDisplayUser {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -12,6 +13,12 @@ export interface IDisplayUser {
   role: string;
   verificationStatus: string;
   isVerified: boolean;
+}
+
+export interface IUnverifiedUser {
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export interface IExternalLogin {
@@ -58,4 +65,9 @@ export interface IJwt {
   id: string;
   firstName: string;
   lastName: string;
+}
+
+export interface IUserVerification {
+  id: string;
+  isAccepted: boolean;
 }

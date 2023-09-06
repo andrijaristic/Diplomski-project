@@ -23,6 +23,10 @@ const generateNavigationItems = (userType: string) => {
     items.push({ title: "my listings", to: `/account/my-listings` });
   }
 
+  if (userType === "ADMIN") {
+    items.push({ title: "unverified users", to: "/account/unverified-users" });
+  }
+
   return items;
 };
 

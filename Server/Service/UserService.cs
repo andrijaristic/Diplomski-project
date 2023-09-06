@@ -29,7 +29,9 @@ namespace Service
 
         public async Task<DisplayUserDTO> GetById(Guid id)
         {
-            User user = await _unitOfWork.Users.Find(id);
+            User user = await _unitOfWork
+                                    .Users
+                                    .Find(id);
             if (user == null)
             {
                 throw new UserByIdNotFoundException(id);
@@ -38,9 +40,19 @@ namespace Service
             return _mapper.Map<DisplayUserDTO>(user);
         }
 
+        public async Task<List<DisplayUserDTO>> GetUnverifiedUsers()
+        {
+            List<User> users = await _unitOfWork
+                                            .Users
+                                            .GetUnverifiedUsers();
+            return _mapper.Map<List<DisplayUserDTO>>(users);
+        }
+
         public async Task<AuthDTO> Login(LoginDTO loginDTO)
         {
-            User user = await _unitOfWork.Users.FindByUsername(loginDTO.Username);
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(loginDTO.Username);
             if(user == null)
             {
                 throw new InvalidUsernameException();
@@ -100,7 +112,7 @@ namespace Service
                     Country = _settings.Value.DefaultCountry,
                     PhoneNumber = _settings.Value.DefaultPhoneNumber,
                     Role = userType,
-                    IsVerified = userType != UserType.PROPERTYOWNER ? true : false,
+                    IsVerified = userType != UserType.PROPERTYOWNER,
                 };
 
                 user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
@@ -133,7 +145,7 @@ namespace Service
             user.Password = BCrypt.Net.BCrypt.HashPassword(newUserDTO.Password, BCrypt.Net.BCrypt.GenerateSalt());
 
             user.IsVerified = user.Role != UserType.PROPERTYOWNER;
-            user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
+            user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.PENDING;
 
             await _unitOfWork.Users.Add(user);
             await _unitOfWork.Save();

@@ -16,14 +16,15 @@ import ReservationsPage from "../pages/ReservationsPage";
 import MyListingsPage from "../pages/MyListingsPage";
 import EditListingPage from "../pages/EditListingPage";
 import NewListingPage from "../pages/NewListingPage";
-import { UserType } from "../shared/types/enumerations";
 import AddRoomsPage from "../pages/AddRoomsPage";
+import UnverifiedUsersPage from "../pages/UnverifiedUsersPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const user = useAppSelector((state) => state.user.user);
 
-  const isOwner = user?.role === "PROPERTYOWNER";
+  const isOwner = user?.role === "PROPERTYOWNER" && user?.isVerified;
+  const isAdmin = user?.role === "ADMIN";
 
   return (
     <BrowserRouter>
@@ -62,6 +63,12 @@ const AppRoutes: FC = () => {
                 <Route path="reservations" element={<ReservationsPage />} />
                 {isOwner && (
                   <Route path="my-listings" element={<MyListingsPage />} />
+                )}
+                {isAdmin && (
+                  <Route
+                    path="unverified-users"
+                    element={<UnverifiedUsersPage />}
+                  />
                 )}
                 <Route path="*" element={<Navigate replace to="/" />} />
               </Route>
