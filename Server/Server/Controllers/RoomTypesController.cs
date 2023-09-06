@@ -27,15 +27,15 @@ namespace Web.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Post([FromBody] NewRoomTypeDTO newRoomTypeDTO)
+        public async Task<IActionResult> CreateRoomType([FromBody] NewRoomTypeDTO newRoomTypeDTO)
         {
             DisplayRoomTypeDTO displayRoomTypeDTO = await _roomTypeService.CreateRoomType(newRoomTypeDTO, User.Identity.Name);
-            return CreatedAtAction(nameof(Post), new {id = displayRoomTypeDTO.Id}, displayRoomTypeDTO);
+            return CreatedAtAction(nameof(GetRoomTypesForAccommodation), new {id = displayRoomTypeDTO.Id}, displayRoomTypeDTO);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateRoomTypeDTO updateRoomTypeDTO)
+        public async Task<IActionResult> UpdateRoomType(Guid id, [FromBody] UpdateRoomTypeDTO updateRoomTypeDTO)
         {
             DisplayRoomTypeDTO displayRoomTypeDTO = await _roomTypeService.UpdateRoomType(id, updateRoomTypeDTO, User.Identity.Name);
             return Ok(displayRoomTypeDTO);
@@ -43,7 +43,7 @@ namespace Web.API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteRoomType(Guid id)
         {
             await _roomTypeService.DeleteRoomType(id, User.Identity.Name);
             return NoContent();

@@ -78,13 +78,15 @@ namespace Service
 
         public async Task<DisplayRoomTypeDTO> UpdateRoomType(Guid id,UpdateRoomTypeDTO updateRoomTypeDTO, string username)
         {
-            RoomType roomType = await _unitOfWork.RoomTypes.FindDetailedRoomType(id);
-            if (roomType == null)
+            RoomType roomType = await _unitOfWork
+                                            .RoomTypes
+                                            .FindDetailedRoomType(id);
+            if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(id);
             }
 
-            if (roomType.Property == null)
+            if (roomType.Property is null)
             {
                 throw new PropertyNotFoundException(roomType.PropertyId);
             }
@@ -108,13 +110,15 @@ namespace Service
 
         public async Task DeleteRoomType(Guid id, string username)
         {
-            RoomType roomType = await _unitOfWork.RoomTypes.FindDetailedRoomType(id);
-            if (roomType == null)
+            RoomType roomType = await _unitOfWork
+                                            .RoomTypes
+                                            .FindDetailedRoomType(id);
+            if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(id);
             }
 
-            if (roomType.Property == null)
+            if (roomType.Property is null)
             {
                 throw new PropertyNotFoundException(roomType.PropertyId);
             }

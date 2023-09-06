@@ -78,7 +78,10 @@ namespace Service
                     price += pricing.Price;
                 }
 
-                displayRoomBookingDTOs.Where(x => x.Id == room.Id).First().Price = price;
+                displayRoomBookingDTOs
+                                .Where(x => x.Id == room.Id)
+                                .First()
+                                .Price = price;
             }
 
             foreach (DisplayRoomBookingDTO dto in displayRoomBookingDTOs)
@@ -91,7 +94,9 @@ namespace Service
 
         public async Task<DisplayRoomDTO> CreateRoom(NewRoomDTO newRoomDTO, string username)
         {
-            Property property = await _unitOfWork.Properties.Find(newRoomDTO.PropertyId);
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .Find(newRoomDTO.PropertyId);
             if (property is null)
             {
                 throw new PropertyNotFoundException(newRoomDTO.PropertyId);
@@ -108,7 +113,9 @@ namespace Service
                 throw new InvalidUserInPropertyException();
             }
 
-            RoomType roomType = await _unitOfWork.RoomTypes.Find(newRoomDTO.RoomTypeId);
+            RoomType roomType = await _unitOfWork
+                                            .RoomTypes
+                                            .Find(newRoomDTO.RoomTypeId);
             if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(newRoomDTO.RoomTypeId);
@@ -128,7 +135,9 @@ namespace Service
 
         public async Task DeleteRoom(Guid id, string username)
         {
-            Room room = await _unitOfWork.Rooms.FindDetailedRoom(id);
+            Room room = await _unitOfWork
+                                    .Rooms
+                                    .FindDetailedRoom(id);
             if (room is null)
             {
                 throw new RoomNotFoundException(id);
@@ -150,7 +159,9 @@ namespace Service
 
         public async Task<DisplayRoomDTO> UpdateRoom(Guid id, UpdateRoomDTO updateRoomDTO, string username)
         {
-            Room room = await _unitOfWork.Rooms.FindDetailedRoom(id);
+            Room room = await _unitOfWork
+                                    .Rooms
+                                    .FindDetailedRoom(id);
             if (room is null)
             {
                 throw new RoomNotFoundException(id);
@@ -161,8 +172,10 @@ namespace Service
                 throw new InvalidRoomPermissionsExpection();
             }
 
-            RoomType roomType = await _unitOfWork.RoomTypes.Find(updateRoomDTO.RoomTypeId);
-            if (roomType == null)
+            RoomType roomType = await _unitOfWork
+                                            .RoomTypes
+                                            .Find(updateRoomDTO.RoomTypeId);
+            if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(updateRoomDTO.RoomTypeId);
             }

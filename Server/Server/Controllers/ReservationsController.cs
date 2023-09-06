@@ -32,15 +32,15 @@ namespace Web.API.Controllers
 
         [HttpPost("in-person-payment")]
         [Authorize]
-        public async Task<IActionResult> CreateReservationWithNoPayment([FromBody] NewReservationDTO newReservationDTO)
+        public async Task<IActionResult> CreateReservationWithoutPayment([FromBody] NewReservationDTO newReservationDTO)
         {
             DisplayReservationDTO displayReservationDTO = await _reservationsService.CreateReservation(newReservationDTO, false);
-            return CreatedAtAction(nameof(Post), new { id = displayReservationDTO.Id }, displayReservationDTO);
+            return CreatedAtAction(nameof(GetUserReservations), new { id = displayReservationDTO.Id }, displayReservationDTO);
         }
 
         [HttpPost("online-payment")]
         [Authorize]
-        public async Task<IActionResult> Post([FromBody] NewReservationDTO newReservationDTO)
+        public async Task<IActionResult> CreateReservationWithPayment([FromBody] NewReservationDTO newReservationDTO)
         {
             DisplayReservationDTO displayReservationDTO = await _reservationsService.CreateReservation(newReservationDTO, true);
             var domain = "http://localhost:5173";

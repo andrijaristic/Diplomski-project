@@ -9,7 +9,7 @@ namespace Domain.Interfaces.Services
 {
     public interface ICommentsService
     {
-        public Task<List<DisplayCommentDTO>> GetAccommodationComments(Guid accommodationId);
-        public Task<List<DisplayCommentDTO>> GetUserComments(Guid userId);
+        Task<List<DisplayCommentDTO>> GetAccommodationComments(Guid accommodationId);
+        Task<List<DisplayCommentDTO>> GetUserComments(Guid userId);
     }
 }

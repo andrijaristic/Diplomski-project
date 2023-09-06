@@ -19,19 +19,25 @@ namespace Service
 
         public async Task<List<DisplayCommentDTO>> GetAccommodationComments(Guid accommodationId)
         {
-            List<Comment> comments = await _unitOfWork.Comments.GetAccommodationComments(accommodationId);
+            List<Comment> comments = await _unitOfWork
+                                                .Comments
+                                                .GetAccommodationComments(accommodationId);
             return _mapper.Map<List<DisplayCommentDTO>>(comments);
         }
 
         public async Task<List<DisplayCommentDTO>> GetUserComments(Guid userId)
         {
-            List<Comment> comments = await _unitOfWork.Comments.GetUserComments(userId);
+            List<Comment> comments = await _unitOfWork
+                                                .Comments
+                                                .GetUserComments(userId);
             List<DisplayCommentDTO> displayCommentDTOs =_mapper.Map<List<DisplayCommentDTO>>(comments);
 
             foreach (var displayCommentDTO in displayCommentDTOs)
             {
-                Property property = await _unitOfWork.Properties.Find(displayCommentDTO.PropertyId);
-                if (property == null)
+                Property property = await _unitOfWork
+                                                .Properties
+                                                .Find(displayCommentDTO.PropertyId);
+                if (property is null)
                 {
                     throw new PropertyNotFoundException(displayCommentDTO.PropertyId);
                 }

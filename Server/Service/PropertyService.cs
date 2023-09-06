@@ -64,7 +64,7 @@ namespace Service
             Property property = await _unitOfWork
                                             .Properties
                                             .GetFullPropertyById(id);
-            if (property == null)
+            if (property is null)
             {
                 throw new PropertyNotFoundException(id);
             }
@@ -85,7 +85,7 @@ namespace Service
             User user = await _unitOfWork
                                     .Users
                                     .FindByUsername(username);
-            if (user == null)
+            if (user is null)
             {
                 throw new UserNotFoundException(username);
             }
@@ -98,16 +98,18 @@ namespace Service
             Property property = await _unitOfWork
                                             .Properties
                                             .GetFullPropertyById(id);
-            if (property == null)
+            if (property is null)
             {
                 throw new PropertyNotFoundException(id);
             }
 
             AccommodationImage image = new AccommodationImage()
             {
-                ImageURL = addPropertyImageDTO.Image == null ?
+                ImageURL = addPropertyImageDTO.Image is null ?
                                         _settings.Value.DefaultImagePath :
-                                        await ImageHelper.SaveImage(addPropertyImageDTO.Image, property.Id, _hostEnvironment.ContentRootPath)
+                                        await ImageHelper.SaveImage(addPropertyImageDTO.Image, 
+                                                                    property.Id, 
+                                                                    _hostEnvironment.ContentRootPath)
             };
 
             if (property.Images.Count == 5) 
@@ -125,8 +127,10 @@ namespace Service
         {
             ValidateNewProperty(newPropertyDTO);
 
-            User user = await _unitOfWork.Users.FindByUsername(username);
-            if (user == null)
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
             {
                 throw new UserNotFoundException(username);
             }
@@ -153,9 +157,11 @@ namespace Service
 
             property.ThumbnailImage = new AccommodationImage() 
             {
-                ImageURL = newPropertyDTO.ThumbnailImage == null ?
+                ImageURL = newPropertyDTO.ThumbnailImage is null ?
                                         _settings.Value.DefaultImagePath :
-                                        await ImageHelper.SaveImage(newPropertyDTO.ThumbnailImage, property.Id, _hostEnvironment.ContentRootPath)
+                                        await ImageHelper.SaveImage(newPropertyDTO.ThumbnailImage, 
+                                                                    property.Id, 
+                                                                    _hostEnvironment.ContentRootPath)
             };
 
             await _unitOfWork.Save();
@@ -167,14 +173,18 @@ namespace Service
         {
             ValidateUpdateProperty(updatePropertyDTO);
 
-            Property property = await _unitOfWork.Properties.Find(id);
-            if (property == null)
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .Find(id);
+            if (property is null)
             {
                 throw new PropertyNotFoundException(id);
             }
 
-            User user = await _unitOfWork.Users.FindByUsername(username);
-            if (user == null)
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
             {
                 throw new UserNotFoundException(username);
             }
@@ -194,14 +204,18 @@ namespace Service
 
         public async Task DeleteProperty(Guid id, string username)
         {
-            Property property = await _unitOfWork.Properties.Find(id);
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .Find(id);
             if (property == null)
             {
                 throw new PropertyNotFoundException(id);
             }
 
-            User user = await _unitOfWork.Users.FindByUsername(username);
-            if (user == null)
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
             {
                 throw new UserNotFoundException(username);
             }
@@ -218,7 +232,9 @@ namespace Service
 
         public async Task<DisplayPropertyDTO> VerifyProperty(Guid id, bool isAccepted)
         {
-            Property property = await _unitOfWork.Properties.Find(id); 
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .Find(id); 
             if (property == null)
             {
                 throw new PropertyNotFoundException(id);

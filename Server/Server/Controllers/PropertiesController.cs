@@ -45,7 +45,7 @@ namespace Web.API.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetDetailedAccommodation(Guid id)
         {
             DetailedPropertyDTO detailedPropertyDTO = await _propertyService.GetById(id);
             return Ok(detailedPropertyDTO);
@@ -53,15 +53,15 @@ namespace Web.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Post([FromForm] NewPropertyDTO newPropertyDTO)
+        public async Task<IActionResult> CreateAccommodation([FromForm] NewPropertyDTO newPropertyDTO)
         {
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.CreateProperty(newPropertyDTO, User.Identity.Name);
-            return CreatedAtAction(nameof(Get), new { id = displayPropertyDTO.Id }, displayPropertyDTO);
+            return CreatedAtAction(nameof(GetAcccommodations), new { id = displayPropertyDTO.Id }, displayPropertyDTO);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateBasicPropertyInformationDTO updatePropertyDTO)
+        public async Task<IActionResult> UpdateAccommodation(Guid id, [FromBody] UpdateBasicPropertyInformationDTO updatePropertyDTO)
         {
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.UpdateBasicPropertyInformation(id, updatePropertyDTO, User.Identity.Name);
             return Ok(displayPropertyDTO);
@@ -77,7 +77,7 @@ namespace Web.API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteAccommodation(Guid id)
         {
             await _propertyService.DeleteProperty(id, User.Identity.Name);
             return NoContent();
@@ -85,7 +85,7 @@ namespace Web.API.Controllers
 
         [HttpPut("{id}/verify")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Verify(Guid id, [FromBody] VerifyPropertyDTO verifyPropertyDTO)
+        public async Task<IActionResult> VerifyAccommodation(Guid id, [FromBody] VerifyPropertyDTO verifyPropertyDTO)
         {
             DisplayPropertyDTO displayPropertyDTO = await _propertyService.VerifyProperty(id, verifyPropertyDTO.IsAccepted);
             return Ok(displayPropertyDTO);

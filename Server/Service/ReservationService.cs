@@ -24,13 +24,17 @@ namespace Service
 
         public async Task<List<DisplayReservationDTO>> GetReservations(Guid id)
         {
-            List<Reservation> reservations = await _unitOfWork.Reservations.FindUserReservations(id);
+            List<Reservation> reservations = await _unitOfWork
+                                                        .Reservations
+                                                        .FindUserReservations(id);
             List<DisplayReservationDTO> displayReservationDTOs = _mapper.Map<List<DisplayReservationDTO>>(reservations);
 
             foreach (var displayReservationDTO in displayReservationDTOs)
             {
-                Property property = await _unitOfWork.Properties.Find(displayReservationDTO.PropertyId);
-                if (property == null)
+                Property property = await _unitOfWork
+                                                .Properties
+                                                .Find(displayReservationDTO.PropertyId);
+                if (property is null)
                 {
                     throw new PropertyNotFoundException(displayReservationDTO.PropertyId);
                 }
@@ -43,14 +47,19 @@ namespace Service
 
         public async Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO, bool online)
         {
-            bool propertyExists = await _unitOfWork.Properties.Find(newReservationDTO.PropertyId) != null;
+            bool propertyExists = await _unitOfWork
+                                            .Properties
+                                            .Find(newReservationDTO.PropertyId) != null;
             if (!propertyExists) 
             {
                 throw new PropertyNotFoundException(newReservationDTO.PropertyId);
             }
 
-            Room room = await _unitOfWork.Rooms.FindByIdAndProperty(newReservationDTO.RoomId, newReservationDTO.PropertyId);
-            if (room == null)
+            Room room = await _unitOfWork
+                                    .Rooms
+                                    .FindByIdAndProperty(newReservationDTO.RoomId, 
+                                                        newReservationDTO.PropertyId);
+            if (room is null)
             {
                 throw new RoomForPropertyNotFoundException();
             }
@@ -107,8 +116,10 @@ namespace Service
 
         public async Task<DisplayReservationDTO> CancelReservation(Guid id, string username)
         {
-            Reservation reservation = await _unitOfWork.Reservations.FindByIdWithUser(id);
-            if (reservation == null) 
+            Reservation reservation = await _unitOfWork
+                                                .Reservations
+                                                .FindByIdWithUser(id);
+            if (reservation is null) 
             {
                 throw new ReservationNotFoundException(id);
             }

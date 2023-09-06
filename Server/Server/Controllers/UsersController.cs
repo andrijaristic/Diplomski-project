@@ -1,9 +1,7 @@
-﻿using Contracts.UserDTOs;
-using Domain.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
+using Contracts.UserDTOs;
+using Domain.Interfaces.Services;
 
 namespace Web.API.Controllers
 {
@@ -20,7 +18,7 @@ namespace Web.API.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             DisplayUserDTO displayUserDTO = await _userService.GetById(id);
             return Ok(displayUserDTO);
@@ -55,12 +53,12 @@ namespace Web.API.Controllers
         public async Task<IActionResult> Post([FromBody] NewUserDTO newUserDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.CreateUser(newUserDTO);
-            return CreatedAtAction(nameof(Get), new { id = displayUserDTO.Id }, displayUserDTO);
+            return CreatedAtAction(nameof(GetUserById), new { id = displayUserDTO.Id }, displayUserDTO);
         }
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Put([FromBody] UpdateUserDTO updateUserDTO)
+        public async Task<IActionResult> UpdateUserInformation([FromBody] UpdateUserDTO updateUserDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.UpdateUser(updateUserDTO, User.Identity.Name);
             return Ok(displayUserDTO);
@@ -76,7 +74,7 @@ namespace Web.API.Controllers
 
         [HttpPut("{id}/verify")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Verify(Guid id, [FromBody] VerifyUserDTO verifyUserDTO)
+        public async Task<IActionResult> VerifyUser(Guid id, [FromBody] VerifyUserDTO verifyUserDTO)
         {
             DisplayUserDTO displayUserDTO = await _userService.VerifyUser(id, verifyUserDTO.IsAccepted);
             return Ok(displayUserDTO);
