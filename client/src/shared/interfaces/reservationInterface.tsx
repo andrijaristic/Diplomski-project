@@ -1,6 +1,4 @@
 import { IRoom } from "./roomInterfaces";
-import { ISeasonalPricing } from "./seasonalPricingInterfaces";
-
 export interface IReservationDisplay {
   id: string;
   isPayed: boolean;

@@ -2,7 +2,11 @@ import { FC } from "react";
 import { Card, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
-const NoUsersMessage: FC = () => {
+interface IProps {
+  message: string;
+}
+
+const EmptyArrayMessage: FC<IProps> = ({ message }) => {
   return (
     <Card
       sx={{
@@ -10,16 +14,16 @@ const NoUsersMessage: FC = () => {
         pt: 1,
         display: "flex",
         justifyContent: "center",
-        borderRadius: 1,
+        borderRadius: 4,
         height: "fit-content",
         border: `1px solid ${grey[400]}`,
       }}
     >
       <Typography variant="h3" color="info">
-        There are no users awaiting verification
+        {message}
       </Typography>
     </Card>
   );
 };
 
-export default NoUsersMessage;
+export default EmptyArrayMessage;

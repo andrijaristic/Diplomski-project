@@ -80,7 +80,7 @@ namespace Web.API.Controllers
             //return CreatedAtAction(nameof(Post), new { id = displayReservationDTO.Id }, displayReservationDTO);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("cancel/{id}")]
         [Authorize]
         public async Task<IActionResult> CancelReservation(Guid id)
         {

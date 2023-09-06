@@ -17,6 +17,8 @@ namespace Infrastructure.Repositories
                                                 .Reservations
                                                 .Where(r => r.Id == id)
                                                 .Include(u => u.User)
+                                                .Include(r => r.Room)
+                                                .ThenInclude(r => r.OccupiedDates)
                                                 .FirstOrDefaultAsync();
             return reservation;
         }
@@ -26,7 +28,8 @@ namespace Infrastructure.Repositories
             List<Reservation> reservations = await _dbContext
                                                         .Reservations
                                                         .AsNoTracking()
-                                                        .Where(r => r.UserId == userId)
+                                                        .Where(r => r.UserId == userId &&
+                                                                   !r.IsCancelled)
                                                         .ToListAsync();
             return reservations;
         }

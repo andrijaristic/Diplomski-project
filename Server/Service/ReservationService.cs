@@ -140,6 +140,16 @@ namespace Service
             }
 
             reservation.IsCancelled = true;
+
+            ReservedDays reservedDays = await _unitOfWork
+                                                    .ReservedDays
+                                                    .FindByDatesAndRoom(reservation.ArrivalDate, 
+                                                                        reservation.DepartureDate,
+                                                                        reservation.RoomId);
+            if (reservedDays != null) 
+            {
+                _unitOfWork.ReservedDays.Remove(reservedDays);
+            }
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayReservationDTO>(reservation);

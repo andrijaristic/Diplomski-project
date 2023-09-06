@@ -6,6 +6,7 @@ import {
 } from "../shared/interfaces/reservationInterface";
 import { ApiCallState } from "../shared/types/enumerations";
 import {
+  cancelReservation,
   createInPersonPaymentReservation,
   createOnlinePaymentReservation,
   getUserReservations,
@@ -59,6 +60,18 @@ export const createInPersonPaymentReservationAction = createAsyncThunk(
   async (newReservation: INewReservation, thunkApi) => {
     try {
       const response = await createInPersonPaymentReservation(newReservation);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const cancelReservationAction = createAsyncThunk(
+  "reservations/cancelReservation",
+  async (id: string, thunkApi) => {
+    try {
+      const response = await cancelReservation(id);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -143,6 +156,24 @@ const reservationSlice = createSlice({
         errorNotification(error);
       }
     );
+
+    // CANCEL RESERVATION
+    builder.addCase(cancelReservationAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(cancelReservationAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("Succesfully cancelled your reservation");
+    });
+    builder.addCase(cancelReservationAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
   },
 });
 

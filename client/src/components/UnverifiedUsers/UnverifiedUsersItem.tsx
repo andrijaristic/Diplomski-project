@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Card, Stack, Typography, Button } from "@mui/material";
+import { Box, Card, Stack, Typography, Button, Paper } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { IUnverifiedUser } from "../../shared/interfaces/userInterfaces";
 
@@ -17,14 +17,13 @@ const UnverifiedUsersItem: FC<IProps> = ({
   return (
     <Card
       sx={{
-        p: 2,
-        pt: 1,
-        borderRadius: 1,
+        borderRadius: 4,
         height: "fit-content",
         border: `1px solid ${grey[400]}`,
       }}
     >
-      <Stack direction="row">
+      <Paper sx={{ height: 8, bgcolor: "secondary.main" }} />
+      <Stack direction="row" sx={{ p: 2, pt: 1 }}>
         <Box>
           <Typography variant="h4">{`${unverifiedUser?.firstName} ${unverifiedUser?.lastName}`}</Typography>
           <Typography variant="subtitle2">{`${unverifiedUser?.email}`}</Typography>

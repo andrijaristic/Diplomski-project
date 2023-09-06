@@ -23,3 +23,7 @@ export const createInPersonPaymentReservation = async (
     newReservation
   );
 };
+
+export const cancelReservation = async (id: string) => {
+  return await axiosClient.put(`${API}/reservations/cancel/${id}`);
+};

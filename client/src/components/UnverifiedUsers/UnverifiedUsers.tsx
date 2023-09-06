@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import UnverifiedUsersItem from "./UnverifiedUsersItem";
-import NoUsersMessage from "./NoUsersMessage";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   clearUnverifiedUsers,
   getUnverifiedUsersAction,
   sendUserVerificationAction,
 } from "../../store/userSlice";
+import NoUnverifiedUsersMessage from "./NoUnverifiedUsersMessage";
 
 const UnverifiedUsers: FC = () => {
   const dispatch = useAppDispatch();
@@ -77,7 +77,7 @@ const UnverifiedUsers: FC = () => {
       <Box
         sx={{ p: 4, pt: 2, display: "flex", flexDirection: "column", gap: 2 }}
       >
-        {content.length > 0 ? content : <NoUsersMessage />}
+        {content.length > 0 ? content : <NoUnverifiedUsersMessage />}
       </Box>
     </>
   );

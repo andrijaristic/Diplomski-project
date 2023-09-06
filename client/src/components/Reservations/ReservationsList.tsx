@@ -1,40 +1,59 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 import { Box } from "@mui/material";
 import ReservationItem from "./ReservationItem";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+  cancelReservationAction,
+  getUserReservationsAction,
+} from "../../store/reservationSlice";
+import { IJwt } from "../../shared/interfaces/userInterfaces";
+import NoReservationsMessage from "./NoReservationsMessage";
 
 const ReservationsList: FC = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const token = useAppSelector((state) => state.user.token);
+  const { id } = jwtDecode<IJwt>(token ? token : "");
+
+  const [refresh, setRefresh] = useState<boolean>(false);
   const reservations = useAppSelector(
     (state) => state.reservations.reservations
   );
-  {
-    /* Tmp data to verify if display is fine if appropriate fields are sent  */
-  }
-  const res = {
-    id: "1",
-    isPayed: true,
-    price: 100,
-    arrivalDate: new Date("01/01/2023"),
-    departureDate: new Date("02/02/2023"),
-    propertyName: "Dummy property name",
-    propertyId: "2",
+
+  useEffect(() => {
+    if (!refresh) {
+      return;
+    }
+
+    dispatch(getUserReservationsAction(id ? id : ""));
+    setRefresh(false);
+  }, [refresh, id, dispatch]);
+
+  const handleAccommodationNavigateion = (id: string) => () => {
+    navigate(`/listings/${id}`);
+  };
+
+  const handleReservationCancel = (id: string) => async () => {
+    const response = await dispatch(cancelReservationAction(id));
+    if (response) {
+      setRefresh(true);
+    }
   };
 
   const content = reservations?.map((reservation) => (
-    <ReservationItem key={reservation.id} reservation={reservation} />
+    <ReservationItem
+      key={reservation.id}
+      reservation={reservation}
+      onCancel={handleReservationCancel(reservation?.id)}
+      onNavigate={handleAccommodationNavigateion(reservation?.propertyId)}
+    />
   ));
 
   return (
-    <Box
-      sx={{
-        pl: 2,
-        pr: 2,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <ReservationItem reservation={res} />
-      {content.length > 0 && content}
+    <Box sx={{ p: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+      {content.length > 0 ? content : <NoReservationsMessage />}
     </Box>
   );
 };
