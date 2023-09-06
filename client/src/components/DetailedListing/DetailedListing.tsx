@@ -52,7 +52,9 @@ const DetailedListing: FC = () => {
   }, [dispatch, successfulReservation]);
 
   const utilities: JSX.Element[] | undefined = accommodation?.utilities?.map(
-    (utility) => <DetailedListingAmenity key={utility.id} name={utility.name} />
+    (utility) => (
+      <DetailedListingAmenity key={utility.id} name={utility.utility} />
+    )
   );
 
   const handleBookingSectionNavigation = () => {
@@ -146,7 +148,9 @@ const DetailedListing: FC = () => {
                   <Box
                     sx={{ display: "flex", flexWrap: "wrap", gap: 2, pt: 2 }}
                   >
-                    {utilities?.length > 0 ? utilities : noAmenitiesMessage}
+                    {utilities && utilities?.length > 0
+                      ? utilities
+                      : noAmenitiesMessage}
                   </Box>
                 </Box>
               </Box>

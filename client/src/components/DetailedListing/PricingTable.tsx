@@ -104,7 +104,7 @@ const PricingTable: FC<IProps> = ({
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <EuroSymbolIcon />
+                          <EuroSymbolIcon fontSize="small" />
                         </InputAdornment>
                       ),
                     }}
@@ -168,7 +168,7 @@ const PricingTable: FC<IProps> = ({
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <EuroSymbolIcon />
+                            <EuroSymbolIcon fontSize="small" />
                           </InputAdornment>
                         ),
                       }}

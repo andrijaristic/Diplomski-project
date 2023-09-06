@@ -103,6 +103,7 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
 builder.Services.AddScoped<IReservationsService, ReservationService>();
 builder.Services.AddScoped<ICommentsService, CommentService>();
+builder.Services.AddScoped<IAmenityService, AmenityService>();
 
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
 builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
@@ -114,7 +115,7 @@ builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IPropertyUtilityRepository, PropertyUtilityRepository>();
+builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>

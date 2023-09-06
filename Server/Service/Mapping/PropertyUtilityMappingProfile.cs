@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts.AmenityDTOs;
 using Contracts.PropertyUtilityDTOs;
 using Domain.Models;
 using System;
@@ -14,6 +15,7 @@ namespace Service.Mapping
         public PropertyUtilityMappingProfile() 
         {
             CreateMap<PropertyUtility, PropertyUtilityDTO>().ReverseMap();
+            CreateMap<PropertyUtility, DisplayAmenityDTO>().ReverseMap();
         }
     }
 }

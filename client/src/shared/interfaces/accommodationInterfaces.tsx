@@ -1,7 +1,7 @@
 import { IAccommodationImage } from "./accommodationImageInterfaces";
 import { IComment } from "./commentInterfaces";
 import { IRoomTypeDisplay } from "./roomTypeInterfaces";
-import { IUtility } from "./utilityInterfaces";
+import { IAmenity } from "./amenityInterfaces";
 
 export interface IAccommodationDisplay {
   id: string;
@@ -30,7 +30,7 @@ export interface IAccommodation {
   thumbnailImage: IAccommodationImage;
   images: IAccommodationImage[];
   comments: IComment[];
-  utilities: IUtility[];
+  utilities: IAmenity[];
   roomTypes: IRoomTypeDisplay[];
   startingPrice: number;
 }

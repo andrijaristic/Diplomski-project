@@ -1,13 +1,11 @@
 ﻿using Contracts.CommentDTOs;
-using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/comments")]
     [ApiController]
     public class CommentsController : ControllerBase
     {

@@ -7,7 +7,6 @@ import { getAccommodationCommentsAction } from "../store/commentSlice";
 import LoadingModal from "../components/UI/Modal/LoadingModal";
 import { ApiCallState } from "../shared/types/enumerations";
 import { clearBookingRooms } from "../store/roomSlice";
-
 const DetailedListingPage: FC = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
@@ -17,6 +16,7 @@ const DetailedListingPage: FC = () => {
   const commentApiState = useAppSelector((state) => state.comments.apiState);
 
   useEffect(() => {
+    window.scrollTo(0, 0); // Force scroll to top of page
     dispatch(clearBookingRooms());
   }, [dispatch]);
 

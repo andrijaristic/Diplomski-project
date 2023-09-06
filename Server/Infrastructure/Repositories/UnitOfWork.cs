@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         public IRoomRepository Rooms { get; set; }
         public IRoomTypeRepository RoomTypes { get; set; }
         public ICommentRepository Comments { get; }
-        public IPropertyUtilityRepository PropertyUtilities { get; set; }
+        public IAmenityRepository PropertyUtilities { get; set; }
 
         public UnitOfWork(ProjectDbContext dbContext,
                           IUserRepository users,
@@ -25,7 +25,7 @@ namespace Infrastructure.Repositories
                           IRoomRepository rooms,
                           IRoomTypeRepository roomTypes,
                           ICommentRepository comments,
-                          IPropertyUtilityRepository propertyUtilities)
+                          IAmenityRepository propertyUtilities)
         {
             _dbContext = dbContext;
             Users = users;

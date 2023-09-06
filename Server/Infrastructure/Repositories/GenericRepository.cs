@@ -33,7 +33,7 @@ namespace Infrastructure.Repositories
         public async Task<IEnumerable<T>> GetAll()
         {
             IEnumerable<T> entities = await _dbContext.Set<T>().ToListAsync();
-            return entities; ;
+            return entities;
         }
 
         public void Remove(T entity)

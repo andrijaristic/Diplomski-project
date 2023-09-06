@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class PropertyUtilityRepository : GenericRepository<PropertyUtility>, IPropertyUtilityRepository
+    public class AmenityRepository : GenericRepository<PropertyUtility>, IAmenityRepository
     {
-        public PropertyUtilityRepository(ProjectDbContext _dbContext) : base(_dbContext) 
+        public AmenityRepository(ProjectDbContext _dbContext) : base(_dbContext) 
         {
         
         }

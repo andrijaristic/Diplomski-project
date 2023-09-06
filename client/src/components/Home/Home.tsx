@@ -27,8 +27,8 @@ const Home: FC = () => {
             key={accommodation?.id}
             id={accommodation?.id}
             name={accommodation?.name}
-            country={accommodation?.country}
-            area={accommodation?.area}
+            country={accommodation?.country ? accommodation?.country : ""}
+            area={accommodation?.area ? accommodation?.area : ""}
             imageURL={accommodation?.thumbnailImage?.imageURL}
           />
         );

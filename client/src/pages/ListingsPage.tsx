@@ -6,6 +6,7 @@ import { getAccommodationsAction } from "../store/accommodationSlice";
 import { ISearchParams } from "../shared/interfaces/accommodationInterfaces";
 import LoadingModal from "../components/UI/Modal/LoadingModal";
 import { ApiCallState } from "../shared/types/enumerations";
+import { getAllAmenitiesAction } from "../store/amenitySlice";
 
 const ListingsPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +27,7 @@ const ListingsPage: FC = () => {
     };
 
     dispatch(getAccommodationsAction(searchParamsData));
+    dispatch(getAllAmenitiesAction(null));
   }, []);
 
   if (apiState === ApiCallState.PENDING) {

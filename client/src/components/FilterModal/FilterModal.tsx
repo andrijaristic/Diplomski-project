@@ -47,51 +47,9 @@ interface IProps {
   onClose: () => void;
 }
 
-const DUMMY_AMENTIES = [
-  {
-    id: 1,
-    name: "Dummy amenity",
-  },
-  {
-    id: 2,
-    name: "Dummy amenity",
-  },
-  {
-    id: 3,
-    name: "Dummy amenity",
-  },
-  {
-    id: 4,
-    name: "Dummy amenity",
-  },
-  {
-    id: 5,
-    name: "Dummy amenity",
-  },
-  {
-    id: 6,
-    name: "Dummy amenity",
-  },
-  {
-    id: 7,
-    name: "Dummy amenity",
-  },
-  {
-    id: 8,
-    name: "Dummy amenity",
-  },
-  {
-    id: 9,
-    name: "Dummy amenity",
-  },
-  {
-    id: 10,
-    name: "Dummy amenity",
-  },
-];
-
 const FilterModal: FC<IProps> = (props) => {
   const dispatch = useAppDispatch();
+  const amenities = useAppSelector((state) => state.amenities.amenities);
   const page = useAppSelector((state) => state.accommodations.page);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -197,14 +155,14 @@ const FilterModal: FC<IProps> = (props) => {
     dispatch(getAccommodationsAction(searchParams));
   };
 
-  const amenities = DUMMY_AMENTIES.map((amenity) => (
+  const displayAmenities = amenities.map((amenity) => (
     <FilterModalAmenity
       initialState={
         checkedAmenities.find((checked) => checked === amenity.id) !== undefined
       }
       id={amenity.id}
       key={amenity.id}
-      name={amenity.name}
+      name={amenity.utility}
       onChange={handleAmenitiesCheckChange(amenity.id)}
     />
   ));
@@ -413,7 +371,7 @@ const FilterModal: FC<IProps> = (props) => {
                     flexGrow: 1,
                   }}
                 >
-                  {amenities}
+                  {displayAmenities}
                 </Box>
               </Grid>
             </Grid>

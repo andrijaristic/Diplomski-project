@@ -167,8 +167,14 @@ const AddRooms: FC = () => {
       >
         <Paper sx={{ height: 8, bgcolor: "secondary.main" }}></Paper>
         <Box component="form" onSubmit={handleRoomAdd} sx={{ p: 4, pt: 2 }}>
-          <StyledButton submit sx={{ mb: 1, width: "100%" }}>
-            Add more rooms
+          <StyledButton
+            submit
+            disabled={roomTypes.length === 0}
+            sx={{ mb: 1, width: "100%" }}
+          >
+            {roomTypes.length > 0
+              ? "Add more rooms"
+              : "No room types to choose"}
           </StyledButton>
           <Box sx={{ pb: 2, display: "flex", gap: 2 }}>
             <TextField

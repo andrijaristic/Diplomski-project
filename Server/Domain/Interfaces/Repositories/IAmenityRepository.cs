@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces.Repositories
 {
-    public interface IPropertyUtilityRepository : IGenericRepository<PropertyUtility>
+    public interface IAmenityRepository : IGenericRepository<PropertyUtility>
     {
+        Task<List<PropertyUtility>> GetAccommodationAmenities(Guid accommodationId);
     }
 }
