@@ -8,7 +8,7 @@ type NavItem = {
   to: string;
 };
 
-const generateNavigationItems = (userType: string) => {
+const generateNavigationItems = (userType: string, isVerified: boolean) => {
   const items: NavItem[] = [];
 
   items.push({ title: "account", to: `/account` });
@@ -19,7 +19,7 @@ const generateNavigationItems = (userType: string) => {
   items.push({ title: "comments", to: `/account/comments` });
   items.push({ title: "reservations", to: `/account/reservations` });
 
-  if (userType === "PROPERTYOWNER") {
+  if (userType === "PROPERTYOWNER" && isVerified) {
     items.push({ title: "my listings", to: `/account/my-listings` });
   }
 
@@ -33,8 +33,8 @@ const generateNavigationItems = (userType: string) => {
 const AccountNavigation: FC = () => {
   const user = useAppSelector((state) => state.user.user);
   const items: NavItem[] = useMemo(() => {
-    return generateNavigationItems(user?.role || "");
-  }, [user?.role]);
+    return generateNavigationItems(user?.role || "", user?.isVerified || false);
+  }, [user?.role, user?.isVerified]);
 
   const content: JSX.Element[] = items?.map((item) => (
     <AccountNavigationItem key={item.to} title={item.title} to={item.to} />

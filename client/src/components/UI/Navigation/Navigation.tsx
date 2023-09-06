@@ -31,11 +31,11 @@ const generateNavItems = (
 const Navigation: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const user = useAppSelector((state) => state.user.user);
-  const isAccommodationOwner = user?.role === "PROPERTYOWNER" || false;
+  const isVerifiedOwner = user?.role === "PROPERTYOWNER" && user?.isVerified;
 
   const items = useMemo(() => {
-    return generateNavItems(isLoggedIn, isAccommodationOwner);
-  }, [isLoggedIn, isAccommodationOwner]);
+    return generateNavItems(isLoggedIn, isVerifiedOwner);
+  }, [isLoggedIn, isVerifiedOwner]);
 
   const content: React.ReactNode[] | undefined = items?.map((item) => {
     return (
