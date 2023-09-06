@@ -37,12 +37,23 @@ namespace Service
             return _mapper.Map<List<DisplayRoomTypeDTO>>(roomTypes);
         }
 
-        public async Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO)
+        public async Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO, string username)
         {
             Property property = await _unitOfWork.Properties.Find(newRoomTypeDTO.PropertyId);
-            if (property == null)
+            if (property is null)
             {
                 throw new PropertyNotFoundException(newRoomTypeDTO.PropertyId);
+            }
+
+            User user = await _unitOfWork.Users.FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (property.UserId != user.Id)
+            {
+                throw new InvalidUserInPropertyException();
             }
 
             ValidateNewRoomType(newRoomTypeDTO);

@@ -1,21 +1,15 @@
-﻿using AutoMapper;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using AutoMapper;
+using Domain.Models;
+using Domain.Models.AppSettings;
 using Contracts.Common;
 using Contracts.PropertyDTOs;
+using Service.Helpers;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using Domain.Models;
-using Domain.Models.AppSettings;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using Service.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -145,6 +139,11 @@ namespace Service
             if (user.Role != Domain.Enums.UserType.PROPERTYOWNER)
             {
                 throw new InvalidPropertyUserRoleException();
+            }
+
+            if (!user.IsVerified || user.VerificationStatus == Domain.Enums.VerificationStatus.REJECTED)
+            {
+                throw new UserNotVerifiedException();
             }
 
             Property property = _mapper.Map<Property>(newPropertyDTO);

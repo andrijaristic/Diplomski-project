@@ -6,8 +6,8 @@ using Domain.Interfaces.Repositories;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
 using Domain.Exceptions.RoomExceptions;
-using Contracts.ReservationDTOs;
 using Contracts.SeasonalPricingDTOs;
+using Domain.Exceptions.UserExceptions;
 
 namespace Service
 {
@@ -89,16 +89,27 @@ namespace Service
             return displayRoomBookingDTOs;
         }
 
-        public async Task<DisplayRoomDTO> CreateRoom(NewRoomDTO newRoomDTO)
+        public async Task<DisplayRoomDTO> CreateRoom(NewRoomDTO newRoomDTO, string username)
         {
             Property property = await _unitOfWork.Properties.Find(newRoomDTO.PropertyId);
-            if (property == null)
+            if (property is null)
             {
                 throw new PropertyNotFoundException(newRoomDTO.PropertyId);
             }
 
+            User user = await _unitOfWork.Users.FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (property.UserId != user.Id)
+            {
+                throw new InvalidUserInPropertyException();
+            }
+
             RoomType roomType = await _unitOfWork.RoomTypes.Find(newRoomDTO.RoomTypeId);
-            if (roomType == null)
+            if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(newRoomDTO.RoomTypeId);
             }
@@ -118,7 +129,7 @@ namespace Service
         public async Task DeleteRoom(Guid id, string username)
         {
             Room room = await _unitOfWork.Rooms.FindDetailedRoom(id);
-            if (room == null)
+            if (room is null)
             {
                 throw new RoomNotFoundException(id);
             }
@@ -140,7 +151,7 @@ namespace Service
         public async Task<DisplayRoomDTO> UpdateRoom(Guid id, UpdateRoomDTO updateRoomDTO, string username)
         {
             Room room = await _unitOfWork.Rooms.FindDetailedRoom(id);
-            if (room == null)
+            if (room is null)
             {
                 throw new RoomNotFoundException(id);
             }

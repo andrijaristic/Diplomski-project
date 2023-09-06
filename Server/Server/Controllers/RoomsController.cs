@@ -27,7 +27,7 @@ namespace Web.API.Controllers
         [Authorize(Roles = "propertyowner")]
         public async Task<IActionResult> Post([FromBody] NewRoomDTO newRoomDTO)
         {
-            DisplayRoomDTO displayRoomDTO = await _roomService.CreateRoom(newRoomDTO);
+            DisplayRoomDTO displayRoomDTO = await _roomService.CreateRoom(newRoomDTO, User.Identity.Name);
             return CreatedAtAction(nameof(Post), new { id = displayRoomDTO.Id }, displayRoomDTO);
         }
 
