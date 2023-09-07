@@ -29,16 +29,19 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { errorNotification } from "../../utils/toastNotificationUtil";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
 import { createNewAccommodationAction } from "../../store/accommodationSlice";
+import FilterModalAmenity from "../FilterModal/FilterModalAmenity";
 
 const NewListing: FC = () => {
   const dispatch = useAppDispatch();
   const apiState = useAppSelector((state) => state.accommodations.apiState);
+  const amenities = useAppSelector((state) => state.amenities.amenities);
 
   const token = useAppSelector((state) => state.user.token);
   const { id } = jwtDecode<IJwt>(token ? token : "");
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [indicator, setIndicator] = useState<boolean>(false);
+  const [checkedAmenities, setCheckedAmenities] = useState<string[]>([]);
 
   useEffect(() => {
     if (indicator && apiState === ApiCallState.COMPLETED) {
@@ -101,14 +104,18 @@ const NewListing: FC = () => {
       return;
     }
 
-    // appropriate type
     data.append("userId", id);
     data.append("thumbnailImage", uploadedImage);
     data.append("latitude", coords.lat.toString());
     data.append("longitude", coords.lng.toString());
+    checkedAmenities.forEach((amenity) => {
+      data.append("utilities", amenity);
+    });
+
+    console.log(data);
 
     await dispatch(createNewAccommodationAction(data));
-    setIndicator(true);
+    // setIndicator(true);
   };
 
   const handleNextStep = (event: React.FormEvent<HTMLFormElement>) => {
@@ -158,6 +165,35 @@ const NewListing: FC = () => {
     map._onResize();
     return null;
   };
+
+  const handleAmenitiesCheckChange = (id: number) => () => {
+    const exists: boolean =
+      checkedAmenities.find((amenityId) => amenityId === id.toString()) !==
+      undefined;
+
+    if (exists)
+      setCheckedAmenities((prevAmenities) =>
+        prevAmenities.filter((amenityId) => amenityId !== id.toString())
+      );
+    else
+      setCheckedAmenities((prevAmenities) => {
+        return [...prevAmenities, id.toString()];
+      });
+  };
+
+  const displayAmenities = amenities.map((amenity) => (
+    <FilterModalAmenity
+      initialState={
+        checkedAmenities.find(
+          (checked) => checked === amenity.id.toString()
+        ) !== undefined
+      }
+      id={amenity.id}
+      key={amenity.id}
+      name={amenity.utility}
+      onChange={handleAmenitiesCheckChange(amenity.id)}
+    />
+  ));
 
   return (
     <Box sx={{ pt: 4 }}>
@@ -231,6 +267,18 @@ const NewListing: FC = () => {
                 minChars={minTextInputLength}
                 minRows={6}
               />
+              <Box>
+                <Typography variant="h6">Choose your utilities</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    flexGrow: 1,
+                  }}
+                >
+                  {displayAmenities}
+                </Box>
+              </Box>
             </Box>
             <Box
               sx={{

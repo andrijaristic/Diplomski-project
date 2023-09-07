@@ -22,13 +22,15 @@ const ListingsPage: FC = () => {
       maxPrice: searchParams.get("maxPrice")?.toString() || "",
       adults: searchParams.get("adults")?.toString() || "",
       children: searchParams.get("children")?.toString() || "",
-      utilities: searchParams.getAll("utilities").map(Number),
+      country: searchParams.get("country")?.toString() || "",
+      area: searchParams.get("area")?.toString() || "",
+      utilities: searchParams.getAll("utilities").map(String),
       page: page,
     };
 
     dispatch(getAccommodationsAction(searchParamsData));
     dispatch(getAllAmenitiesAction(null));
-  }, []);
+  }, [dispatch, page, searchParams]);
 
   if (apiState === ApiCallState.PENDING) {
     return <LoadingModal show={true} />;

@@ -52,6 +52,7 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
         justifyContent: "center",
         flexDirection: "column",
         flexBasis: "32.33%",
+        height: "100%",
 
         borderRadius: 2,
         // ml: "auto",

@@ -1,4 +1,5 @@
-﻿using Contracts.RoomDTOs;
+﻿using Contracts.PropertyUtilityDTOs;
+using Contracts.RoomDTOs;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Contracts.PropertyDTOs
         public string Area { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public List<Guid> Utilities { get; set; }   
         public Guid UserId { get; set; }
         public IFormFile ThumbnailImage { get; set; }
     }

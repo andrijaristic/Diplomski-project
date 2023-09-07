@@ -2,7 +2,6 @@
 using Contracts.Common;
 using Domain.Models;
 using Domain.Interfaces.Repositories;
-using Domain.Exceptions.UserExceptions;
 using Domain.Enums;
 
 namespace Infrastructure.Repositories
@@ -86,7 +85,7 @@ namespace Infrastructure.Repositories
 
                 source = source
                             .Where(x => x.RoomTypes
-                            .Any(x => x.Adults == adults));
+                            .Any(x => x.Adults >= adults));
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.Children))
@@ -99,7 +98,7 @@ namespace Infrastructure.Repositories
 
                 source = source
                             .Where(x => x.RoomTypes
-                            .Any(x => x.Children == children));
+                            .Any(x => x.Children >= children));
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.MinPrice))
@@ -133,7 +132,7 @@ namespace Infrastructure.Repositories
             {
                 source = source
                             .Where(x => x.Utilities
-                            .Any(x => x.Id.Equals(searchParamsDTO.Utilities)));
+                            .Any(x => searchParamsDTO.Utilities.Contains(x.Id)));
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.Sort) &&

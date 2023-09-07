@@ -47,8 +47,8 @@ const Home: FC = () => {
     const searchParams: ISearchParams = {
       arrivalDate: checkinDate?.toISOString() || "",
       departureDate: checkoutDate?.toISOString() || "",
-      country: country?.toString() || "",
-      area: area?.toString() || "",
+      country: country?.toString().trim() || "",
+      area: area?.toString().trim() || "",
       page: 1,
     };
 
@@ -66,7 +66,7 @@ const Home: FC = () => {
             <TextField
               variant="outlined"
               type="search"
-              name="searchArea"
+              name="location"
               placeholder="Where to?"
               helperText="ex. Country, Area"
               sx={{ mr: 1 }}

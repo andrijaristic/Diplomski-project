@@ -73,18 +73,17 @@ const FilterModal: FC<IProps> = (props) => {
       : defaultGuests
   );
   const [children, setChildren] = useState<number>(
-    searchParams.get("adults")
+    searchParams.get("children")
       ? parseInt(searchParams.get("children"))
       : defaultGuests
   );
   const [checkedAmenities, setCheckedAmenities] = useState<string[]>(
-    searchParams.getAll("utilities").map(String)
+    searchParams.getAll("utilities")
+      ? searchParams.getAll("utilities")?.map(String)
+      : []
   );
 
-  const handlePriceRangeChange = (
-    event: Event,
-    newValue: number | number[]
-  ) => {
+  const handlePriceRangeChange = (_: unknown, newValue: number | number[]) => {
     setPriceRange(newValue as number[]);
   };
 
@@ -108,15 +107,16 @@ const FilterModal: FC<IProps> = (props) => {
 
   const handleAmenitiesCheckChange = (id: number) => () => {
     const exists: boolean =
-      checkedAmenities.find((amenityId) => amenityId === id) !== undefined;
+      checkedAmenities.find((amenityId) => amenityId === id.toString()) !==
+      undefined;
 
     if (exists)
       setCheckedAmenities((prevAmenities) =>
-        prevAmenities.filter((amenityId) => amenityId !== id)
+        prevAmenities.filter((amenityId) => amenityId !== id.toString())
       );
     else
       setCheckedAmenities((prevAmenities) => {
-        return [...prevAmenities, id];
+        return [...prevAmenities, id.toString()];
       });
   };
 
@@ -133,8 +133,7 @@ const FilterModal: FC<IProps> = (props) => {
       page: page,
     };
 
-    console.log(queryParams);
-    setSearchParams(queryParams);
+    setSearchParams(queryParams as unknown as URLSearchParams);
     dispatch(getAccommodationsAction(queryParams));
   };
 
@@ -147,8 +146,7 @@ const FilterModal: FC<IProps> = (props) => {
       page: 1,
     };
 
-    console.log(searchParams);
-    setSearchParams(searchParams);
+    setSearchParams(searchParams as unknown as URLSearchParams);
     dispatch(getAccommodationsAction(searchParams));
   };
 

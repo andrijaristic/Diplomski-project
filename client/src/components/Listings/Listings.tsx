@@ -17,6 +17,20 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { getAccommodationsAction } from "../../store/accommodationSlice";
 import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
 
+const getSearchParams = (searchParams: URLSearchParams) => {
+  return {
+    arrivalDate: searchParams.get("arrivalDate")?.toString() || "",
+    departureDate: searchParams.get("departureDate")?.toString() || "",
+    minPrice: searchParams.get("minPrice")?.toString() || "",
+    maxPrice: searchParams.get("maxPrice")?.toString() || "",
+    adults: searchParams.get("adults")?.toString() || "",
+    children: searchParams.get("children")?.toString() || "",
+    country: searchParams.get("country")?.toString() || "",
+    area: searchParams.get("area")?.toString() || "",
+    utilities: searchParams.getAll("utilities")?.map(String) || [],
+  };
+};
+
 const Listings: FC = () => {
   const dispatch = useAppDispatch();
   const page = useAppSelector((state) => state.accommodations.page);
@@ -38,18 +52,12 @@ const Listings: FC = () => {
     setSortOption(event.target.value);
 
     const searchParamsData: ISearchParams = {
-      arrivalDate: searchParams.get("arrivalDate")?.toString() || "",
-      departureDate: searchParams.get("departureDate")?.toString() || "",
-      minPrice: searchParams.get("minPrice")?.toString() || "",
-      maxPrice: searchParams.get("maxPrice")?.toString() || "",
-      adults: searchParams.get("adults")?.toString() || "",
-      children: searchParams.get("children")?.toString() || "",
-      utilities: searchParams.getAll("utilities")?.map(Number) || [],
+      ...getSearchParams(searchParams),
       sort: event.target.value,
       page: page,
     };
 
-    setSearchParams(searchParamsData);
+    setSearchParams(searchParamsData as unknown as URLSearchParams);
     dispatch(getAccommodationsAction(searchParamsData));
   };
 
@@ -82,33 +90,24 @@ const Listings: FC = () => {
     );
   });
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (_: unknown, value: number) => {
     const searchParamsData: ISearchParams = {
-      arrivalDate: searchParams.get("arrivalDate")?.toString() || "",
-      departureDate: searchParams.get("departureDate")?.toString() || "",
-      minPrice: searchParams.get("minPrice")?.toString() || "",
-      maxPrice: searchParams.get("maxPrice")?.toString() || "",
-      adults: searchParams.get("adults")?.toString() || "",
-      children: searchParams.get("children")?.toString() || "",
-      utilities: searchParams.getAll("utilities")?.map(Number) || [],
+      ...getSearchParams(searchParams),
       sort: sortOption,
       page: value,
     };
 
-    setSearchParams(searchParamsData);
+    setSearchParams(searchParamsData as unknown as URLSearchParams);
     dispatch(getAccommodationsAction(searchParamsData));
   };
 
   return (
     <Fade in>
-      <Grid container sx={{ mb: 20 }}>
+      <Grid container>
         <Grid item xs={9}>
           <Grid container direction="column" sx={{ pt: 8, pl: 3 }}>
             <Grid item>
-              <h1>Property listings</h1>
+              <Typography variant="h2">Property listings</Typography>
             </Grid>
             <Grid
               item

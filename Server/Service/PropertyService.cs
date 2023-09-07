@@ -10,6 +10,9 @@ using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Domain.Exceptions.PropertyUtilityExceptions;
+using Contracts.PropertyUtilityDTOs;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Service
 {
@@ -150,8 +153,20 @@ namespace Service
                 throw new UserNotVerifiedException();
             }
 
-            Property property = _mapper.Map<Property>(newPropertyDTO);
 
+            Property property = _mapper.Map<Property>(newPropertyDTO);
+            property.Utilities = new List<PropertyUtility>();
+            foreach (Guid utilityId in newPropertyDTO.Utilities)
+            {
+                PropertyUtility utility = await _unitOfWork
+                                                    .PropertyUtilities
+                                                    .Find(utilityId);
+                if (utility is null)
+                {
+                    throw new UtilityNotFoundException(utilityId);
+                }
+                property.Utilities.Add(utility);
+            }
 
             await _unitOfWork.Properties.Add(property);
 
