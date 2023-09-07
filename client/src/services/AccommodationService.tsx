@@ -1,3 +1,4 @@
+import qs from "qs";
 import { axiosClient } from "./axiosClient";
 import { API } from "../constants/Constants";
 import {
@@ -9,6 +10,9 @@ import {
 export const getAccommodations = async (query: ISearchParams) => {
   return await axiosClient.get(`${API}/properties`, {
     params: { ...query },
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { arrayFormat: "repeat" });
+    },
   });
 };
 

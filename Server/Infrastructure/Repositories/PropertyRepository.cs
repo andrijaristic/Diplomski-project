@@ -2,6 +2,8 @@
 using Contracts.Common;
 using Domain.Models;
 using Domain.Interfaces.Repositories;
+using Domain.Exceptions.UserExceptions;
+using Domain.Enums;
 
 namespace Infrastructure.Repositories
 {
@@ -126,12 +128,32 @@ namespace Infrastructure.Repositories
                             .Any(x => x.Price <= maxPrice)));
             }
 
-            if (searchParamsDTO.Utilities != null && 
-                searchParamsDTO.Utilities.Count > 0)
+            if (searchParamsDTO.Utilities != null &&
+                searchParamsDTO.Utilities.Any())
             {
                 source = source
                             .Where(x => x.Utilities
                             .Any(x => x.Id.Equals(searchParamsDTO.Utilities)));
+            }
+
+            if (!String.IsNullOrEmpty(searchParamsDTO.Sort) &&
+                Enum.TryParse(searchParamsDTO.Sort, out SortType sort))
+            {
+                switch (sort)
+                {
+                    case SortType.HighestPrice:
+                        source = source.OrderByDescending(x => x.StartingPrice);
+                        break;
+                    case SortType.LowestPrice:
+                        source = source.OrderBy(x => x.StartingPrice);
+                        break;
+                    case SortType.HighestRating:
+                        source = source.OrderByDescending(x => x.AverageGrade);
+                        break;
+                    case SortType.LowestRating:
+                        source = source.OrderBy(x => x.AverageGrade);
+                        break;
+                }
             }
 
             return source.ToListAsync();

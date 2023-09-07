@@ -30,10 +30,27 @@ const Listings: FC = () => {
     lng: 20.997136831283573,
   });
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sortOption, setSortOption] = useState<string>("highest-price");
+  const [sortOption, setSortOption] = useState<string>(
+    searchParams?.get("sort") ? searchParams?.get("sort") : "HighestPrice"
+  );
 
   const handleSortingChange = (event: SelectChangeEvent) => {
     setSortOption(event.target.value);
+
+    const searchParamsData: ISearchParams = {
+      arrivalDate: searchParams.get("arrivalDate")?.toString() || "",
+      departureDate: searchParams.get("departureDate")?.toString() || "",
+      minPrice: searchParams.get("minPrice")?.toString() || "",
+      maxPrice: searchParams.get("maxPrice")?.toString() || "",
+      adults: searchParams.get("adults")?.toString() || "",
+      children: searchParams.get("children")?.toString() || "",
+      utilities: searchParams.getAll("utilities")?.map(Number) || [],
+      sort: event.target.value,
+      page: page,
+    };
+
+    setSearchParams(searchParamsData);
+    dispatch(getAccommodationsAction(searchParamsData));
   };
 
   const handleMapCenter = (lat: number, lng: number) => {
@@ -77,6 +94,7 @@ const Listings: FC = () => {
       adults: searchParams.get("adults")?.toString() || "",
       children: searchParams.get("children")?.toString() || "",
       utilities: searchParams.getAll("utilities")?.map(Number) || [],
+      sort: sortOption,
       page: value,
     };
 

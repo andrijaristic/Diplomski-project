@@ -31,11 +31,11 @@ const ListingActions: FC<IProps> = ({ sort, onChange }) => {
       </StyledButton>
       <Box sx={{ ml: "auto", mr: 1, display: "flex", alignItems: "center" }}>
         <Typography sx={{ mr: 1 }}>Sort by</Typography>
-        <Select id="sort-select" value={sort} onChange={onChange}>
-          <MenuItem value="highest-price">Highest Price</MenuItem>
-          <MenuItem value="lowest-price">Lowest Price</MenuItem>
-          <MenuItem value="highest-rating">Highest Rating</MenuItem>
-          <MenuItem value="lowest-rating">Lowest Rating</MenuItem>
+        <Select id="sortSelect" value={sort} onChange={onChange}>
+          <MenuItem value="HighestPrice">Highest Price</MenuItem>
+          <MenuItem value="LowestPrice">Lowest Price</MenuItem>
+          <MenuItem value="HighestRating">Highest Rating</MenuItem>
+          <MenuItem value="LowestRating">Lowest Rating</MenuItem>
         </Select>
       </Box>
       <FilterModal open={isOpen} onClose={handleModalToggle} />

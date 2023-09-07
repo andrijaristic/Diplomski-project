@@ -67,6 +67,7 @@ export interface ISearchParams {
   maxPrice?: string;
   country?: string;
   area?: string;
-  utilities?: number[];
+  utilities?: string[];
+  sort?: string;
   page: number;
 }

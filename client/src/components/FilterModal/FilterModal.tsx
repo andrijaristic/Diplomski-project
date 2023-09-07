@@ -54,12 +54,8 @@ const FilterModal: FC<IProps> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [priceRange, setPriceRange] = useState<number[]>([
-    searchParams.get("minPrice") !== null
-      ? parseInt(searchParams.get("minPrice"))
-      : min,
-    searchParams.get("maxPrice") !== null
-      ? parseInt(searchParams.get("maxPrice"))
-      : max,
+    searchParams.get("minPrice") ? parseInt(searchParams.get("minPrice")) : min,
+    searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")) : max,
   ]);
   const [checkinDate, setCheckinDate] = useState<Date | null>(
     searchParams.get("arrivalDate")
@@ -81,8 +77,8 @@ const FilterModal: FC<IProps> = (props) => {
       ? parseInt(searchParams.get("children"))
       : defaultGuests
   );
-  const [checkedAmenities, setCheckedAmenities] = useState<number[]>(
-    searchParams.getAll("utilities").map(Number)
+  const [checkedAmenities, setCheckedAmenities] = useState<string[]>(
+    searchParams.getAll("utilities").map(String)
   );
 
   const handlePriceRangeChange = (
@@ -125,7 +121,7 @@ const FilterModal: FC<IProps> = (props) => {
   };
 
   const handleFilter = () => {
-    const searchParams: ISearchParams = {
+    const queryParams: ISearchParams = {
       arrivalDate: checkinDate?.toISOString() || "",
       departureDate: checkoutDate?.toISOString() || "",
       minPrice: priceRange[0].toString(),
@@ -133,12 +129,13 @@ const FilterModal: FC<IProps> = (props) => {
       adults: adults !== defaultGuests ? adults.toString() : "",
       children: children !== defaultGuests ? children.toString() : "",
       utilities: checkedAmenities,
+      sort: searchParams?.get("sort") ? searchParams?.get("sort") : "",
       page: page,
     };
 
-    console.log(searchParams);
-    setSearchParams(searchParams);
-    dispatch(getAccommodationsAction(searchParams));
+    console.log(queryParams);
+    setSearchParams(queryParams);
+    dispatch(getAccommodationsAction(queryParams));
   };
 
   const handleReset = () => {
@@ -158,7 +155,9 @@ const FilterModal: FC<IProps> = (props) => {
   const displayAmenities = amenities.map((amenity) => (
     <FilterModalAmenity
       initialState={
-        checkedAmenities.find((checked) => checked === amenity.id) !== undefined
+        checkedAmenities.find(
+          (checked) => checked === amenity.id.toString()
+        ) !== undefined
       }
       id={amenity.id}
       key={amenity.id}

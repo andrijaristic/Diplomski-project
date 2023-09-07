@@ -65,9 +65,11 @@ const NewCommentForm: FC<IProps> = ({ propertyId }) => {
       grade: rating ? rating : defaultRating,
     };
 
+    const currentTarget = event.currentTarget;
     const response = await dispatch(createCommentAction(newComment));
     if (response) {
       setRefresh(true);
+      currentTarget.reset();
     }
   };
 
