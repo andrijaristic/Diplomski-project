@@ -23,6 +23,17 @@ namespace Infrastructure.Repositories
             return reservation;
         }
 
+        public async Task<Reservation> FindReservationForUserInAccommodation(Guid userId, Guid accommodationId, DateTime date)
+        {
+            Reservation reservation = await _dbContext
+                                                    .Reservations
+                                                    .Where(x => x.UserId == userId &&
+                                                                x.PropertyId == accommodationId &&
+                                                                x.DepartureDate.Date <= date.Date)
+                                                    .FirstOrDefaultAsync();
+            return reservation;
+        }
+
         public async Task<List<Reservation>> FindUserReservations(Guid userId)
         {
             List<Reservation> reservations = await _dbContext

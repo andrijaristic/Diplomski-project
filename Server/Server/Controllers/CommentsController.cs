@@ -30,5 +30,13 @@ namespace Web.API.Controllers
             List<DisplayCommentDTO> displayCommentDTOs = await _commentsService.GetAccommodationComments(id);
             return Ok(displayCommentDTOs); 
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateComment([FromBody] NewCommentDTO newCommentDTO)
+        {
+            DisplayCommentDTO displayCommentDTO = await _commentsService.CreateComment(newCommentDTO, User.Identity.Name);
+            return Ok(displayCommentDTO);
+        }
     }
 }

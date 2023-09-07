@@ -13,7 +13,6 @@ const DetailedListingPage: FC = () => {
   const accommodationApiState = useAppSelector(
     (state) => state.accommodations.apiState
   );
-  const commentApiState = useAppSelector((state) => state.comments.apiState);
 
   useEffect(() => {
     window.scrollTo(0, 0); // Force scroll to top of page
@@ -28,12 +27,7 @@ const DetailedListingPage: FC = () => {
   return (
     <>
       <DetailedListing />
-      <LoadingModal
-        show={
-          accommodationApiState === ApiCallState.PENDING ||
-          commentApiState === ApiCallState.PENDING
-        }
-      />
+      <LoadingModal show={accommodationApiState === ApiCallState.PENDING} />
     </>
   );
 };

@@ -11,5 +11,6 @@ namespace Domain.Interfaces.Repositories
     {
         Task<List<Reservation>> FindUserReservations(Guid id);
         Task<Reservation> FindByIdWithUser(Guid id);
+        Task<Reservation> FindReservationForUserInAccommodation(Guid userId, Guid accommodationId, DateTime date);
     }
 }

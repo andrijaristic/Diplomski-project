@@ -11,6 +11,17 @@ namespace Infrastructure.Repositories
 
         }
 
+        public async Task<bool> CheckIfCommentByUserForAccommodationExists(Guid accommodationId, Guid userId)
+        {
+            bool exists = await _dbContext
+                                    .Comments
+                                    .Where(x => x.UserId == userId &&
+                                                x.PropertyId == accommodationId)
+                                    .FirstOrDefaultAsync() != null;
+
+            return exists;
+        }
+
         public async Task<List<Comment>> GetAccommodationComments(Guid accommodationId)
         {
             List<Comment> comments = await _dbContext
@@ -31,5 +42,7 @@ namespace Infrastructure.Repositories
                                                 .ToListAsync();
             return comments;
         }
+
+
     }
 }

@@ -26,7 +26,12 @@ const Comment: FC<IProps> = ({ flag = false, comment }) => {
           )}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="subtitle1">{comment?.grade}</Typography>
-            <Rating value={4.6} precision={0.5} size="small" readOnly />
+            <Rating
+              value={comment?.grade}
+              precision={0.5}
+              size="small"
+              readOnly
+            />
           </Box>
         </Box>
       </Grid>

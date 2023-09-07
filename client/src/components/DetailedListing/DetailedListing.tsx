@@ -19,6 +19,7 @@ import {
   getFilteredRoomsAction,
 } from "../../store/roomSlice";
 import { clearSuccessfulReservation } from "../../store/reservationSlice";
+import DetailedListingComments from "./DetailedListingComments";
 
 const noAmenitiesMessage: JSX.Element = (
   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -30,7 +31,6 @@ const noAmenitiesMessage: JSX.Element = (
 );
 
 const DetailedListing: FC = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const successfulReservation = useAppSelector(
     (state) => state.reservations.successfulReservation
@@ -39,9 +39,7 @@ const DetailedListing: FC = () => {
   const accommodation = useAppSelector(
     (state) => state.accommodations.detailedAccommodation
   );
-  const accommodationComments = useAppSelector(
-    (state) => state.comments.accommodationComments
-  );
+
   const bookingRooms = useAppSelector((state) => state.rooms.bookingRooms);
 
   useEffect(() => {
@@ -66,21 +64,6 @@ const DetailedListing: FC = () => {
     const element: HTMLElement | null = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const comm = {
-    id: "1",
-    propertyId: "1",
-    propertyName: "Property name",
-    userFullName: "Andrija Ristic",
-    grade: 4.2,
-    header: "This is a title",
-    content: "This is a description",
-    creationDate: new Date(),
-  };
-
-  const content = accommodationComments?.map((comment) => (
-    <Comment flag comment={comment} />
-  ));
 
   const images: IAccommodationImage[] = [];
   if (accommodation?.thumbnailImage) {
@@ -171,7 +154,11 @@ const DetailedListing: FC = () => {
                 <Typography id="reviews" variant="h5">
                   Comments
                 </Typography>
-                {isLoggedIn && <NewCommentForm />}
+                {isLoggedIn && (
+                  <NewCommentForm
+                    propertyId={accommodation?.id ? accommodation?.id : ""}
+                  />
+                )}
                 <Box
                   sx={{
                     pt: 2,
@@ -180,10 +167,7 @@ const DetailedListing: FC = () => {
                     gap: 1,
                   }}
                 >
-                  {content.length > 0 && content}
-                  <Comment comment={comm} />
-                  <Comment comment={comm} />
-                  <Comment comment={comm} />
+                  <DetailedListingComments />
                 </Box>
               </Box>
             </Grid>

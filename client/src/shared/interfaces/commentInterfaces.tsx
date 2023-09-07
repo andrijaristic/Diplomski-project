@@ -8,3 +8,10 @@ export interface IComment {
   content: string;
   creationDate: Date;
 }
+
+export interface INewComment {
+  propertyId: string;
+  header: string;
+  content: string;
+  grade: number;
+}

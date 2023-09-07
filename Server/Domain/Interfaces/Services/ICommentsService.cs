@@ -11,5 +11,6 @@ namespace Domain.Interfaces.Services
     {
         Task<List<DisplayCommentDTO>> GetAccommodationComments(Guid accommodationId);
         Task<List<DisplayCommentDTO>> GetUserComments(Guid userId);
+        Task<DisplayCommentDTO> CreateComment(NewCommentDTO newCommentDTO, string username);
     }
 }

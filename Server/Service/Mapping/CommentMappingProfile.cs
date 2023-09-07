@@ -13,7 +13,8 @@ namespace Service.Mapping
     {
         public CommentMappingProfile()
         {
-            CreateMap<DisplayCommentDTO, Comment>().ReverseMap();
+            CreateMap<Comment, DisplayCommentDTO>().ReverseMap();
+            CreateMap<Comment, NewCommentDTO>().ReverseMap();
         }
     }
 }
