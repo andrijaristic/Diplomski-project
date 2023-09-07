@@ -2,18 +2,16 @@ import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import {
-  Avatar,
   Box,
   Button,
   Divider,
-  IconButton,
   ListItemIcon,
   Menu,
   MenuItem,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Logout, Settings } from "@mui/icons-material";
+import { Logout } from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { logout } from "../../../store/userSlice";

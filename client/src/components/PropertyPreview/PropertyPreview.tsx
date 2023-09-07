@@ -25,7 +25,7 @@ const PropertyPreview: FC<IProps> = ({ id, name, country, area, imageURL }) => {
     navigate(`listings/${id}`);
   };
   return (
-    <Slide direction="left" in>
+    <Slide direction="up" in>
       <Card
         sx={{
           width: 320,
