@@ -23,7 +23,7 @@ namespace Infrastructure.Repositories
             return reservation;
         }
 
-        public async Task<Reservation> FindReservationForUserInAccommodation(Guid userId, Guid accommodationId, DateTime date)
+        public async Task<Reservation> FindForUserInAccommodation(Guid userId, Guid accommodationId, DateTime date)
         {
             Reservation reservation = await _dbContext
                                                     .Reservations

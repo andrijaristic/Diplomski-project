@@ -23,6 +23,14 @@ namespace Web.API.Controllers
             return Ok(displayRoomBookingDTOs);
         }
 
+        [HttpGet("accommodation/{id}")]
+        [Authorize(Roles = "propertyowner")]
+        public async Task<IActionResult> GetRoomsForAccommodation(Guid id)
+        {
+            List<DisplayRoomDTO> displayRoomDTOs = await _roomService.GetRoomsForAccommodation(id, User.Identity.Name);
+            return Ok(displayRoomDTOs); 
+        }
+
         [HttpPost]
         [Authorize(Roles = "propertyowner")]
         public async Task<IActionResult> CreateRoom([FromBody] NewRoomDTO newRoomDTO)

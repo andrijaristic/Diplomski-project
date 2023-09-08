@@ -2,7 +2,7 @@ import { FC } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import AppLayout from "../layouts/AppLayout";
-import UserFormLayout from "../components/UI/UserFormLayout/UserFormLayout";
+import UserFormLayout from "../components/UI/CommonLayouts/UserFormLayout";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import ListingsPage from "../pages/ListingsPage";
@@ -18,6 +18,7 @@ import EditListingPage from "../pages/EditListingPage";
 import NewListingPage from "../pages/NewListingPage";
 import AddRoomsPage from "../pages/AddRoomsPage";
 import UnverifiedUsersPage from "../pages/UnverifiedUsersPage";
+import ViewRoomsPage from "../pages/ViewRoomsPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -47,6 +48,7 @@ const AppRoutes: FC = () => {
                 <Route path="new" element={<NewListingPage />} />
                 <Route path=":id/edit" element={<EditListingPage />} />
                 <Route path=":id/add-rooms" element={<AddRoomsPage />} />
+                <Route path=":id/rooms" element={<ViewRoomsPage />} />
               </>
             )}
           </Route>

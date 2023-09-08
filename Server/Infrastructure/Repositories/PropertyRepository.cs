@@ -3,6 +3,7 @@ using Contracts.Common;
 using Domain.Models;
 using Domain.Interfaces.Repositories;
 using Domain.Enums;
+using System.Runtime.CompilerServices;
 
 namespace Infrastructure.Repositories
 {
@@ -23,6 +24,16 @@ namespace Infrastructure.Repositories
                                                     .Include(p => p.ThumbnailImage)
                                                     .ToListAsync();
             return properties;
+        }
+
+        public async Task<Property> GetWithComments(Guid id)
+        {
+            Property property = await _dbContext
+                                            .Properties
+                                            .Where(p => p.Id == id)
+                                            .Include(p => p.Comments)
+                                            .FirstOrDefaultAsync();
+            return property;
         }
  
         public Task<List<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO)
@@ -131,8 +142,10 @@ namespace Infrastructure.Repositories
                 searchParamsDTO.Utilities.Any())
             {
                 source = source
-                            .Where(x => x.Utilities
-                            .Any(x => searchParamsDTO.Utilities.Contains(x.Id)));
+                            .Where(x => searchParamsDTO.Utilities
+                                                            .IntersectBy(x.Utilities
+                                                            .Select(util => util.Id), id => id)
+                            .Count() == searchParamsDTO.Utilities.Count());
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.Sort) &&

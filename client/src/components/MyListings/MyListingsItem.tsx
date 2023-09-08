@@ -1,10 +1,13 @@
 import { FC } from "react";
 import {
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
+  Divider,
+  Stack,
   Typography,
   styled,
 } from "@mui/material";
@@ -44,6 +47,10 @@ const MyListingsItem: FC<IProps> = ({ accommodation }) => {
     navigate(`/listings/${accommodation?.id}/add-rooms`);
   };
 
+  const handleViewRooms = () => {
+    navigate(`/listings/${accommodation?.id}/rooms`);
+  };
+
   const image =
     accommodation?.thumbnailImage !== null
       ? accommodation?.thumbnailImage?.imageURL
@@ -65,18 +72,31 @@ const MyListingsItem: FC<IProps> = ({ accommodation }) => {
         </StyledTypography>
       </CardContent>
       <CardActions>
-        <Button size="medium" onClick={handleAddRooms}>
-          Add rooms
-        </Button>
-        <Button size="medium" onClick={handleView}>
-          View property
-        </Button>
-        <Button size="medium" onClick={handleEdit}>
-          Edit property
-        </Button>
-        <Button size="medium" color="error" onClick={handleDelete}>
-          Delete property
-        </Button>
+        <Stack
+          direction="row"
+          divider={<Divider orientation="vertical" flexItem />}
+          spacing={2}
+        >
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button size="medium" onClick={handleAddRooms}>
+              Add rooms
+            </Button>
+            <Button size="medium" onClick={handleViewRooms}>
+              View rooms
+            </Button>
+          </Box>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button size="medium" onClick={handleView}>
+              View property
+            </Button>
+            <Button size="medium" onClick={handleEdit}>
+              Edit property
+            </Button>
+            <Button size="medium" color="error" onClick={handleDelete}>
+              Delete property
+            </Button>
+          </Box>
+        </Stack>
       </CardActions>
     </Card>
   );

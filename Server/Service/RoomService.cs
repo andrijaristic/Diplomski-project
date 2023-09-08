@@ -22,6 +22,44 @@ namespace Service
             _mapper = mapper;
         }
 
+        public async Task<List<DisplayRoomDTO>> GetRoomsForAccommodation(Guid accommodationId, string username)
+        {
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .Find(accommodationId);
+            if (property is null)
+            {
+                throw new PropertyNotFoundException(accommodationId);
+            }
+
+            if (property.UserId != user.Id)
+            {
+                throw new InvalidUserInPropertyException();
+            }
+
+            List<Room> rooms =  await _unitOfWork
+                                            .Rooms
+                                            .GetForAccommodation(accommodationId, DateTime.Now.ToUniversalTime().Date);
+            List<DisplayRoomDTO> displayRoomDTOs = _mapper.Map<List<DisplayRoomDTO>>(rooms);
+            foreach (DisplayRoomDTO dto in displayRoomDTOs)
+            {
+                dto.ReservationAmount = rooms
+                                            .First(x => x.Id == dto.Id)
+                                            .Reservations
+                                            .Count;
+            }
+
+            return displayRoomDTOs;
+        }
+
         public async Task<List<DisplayRoomBookingDTO>> FilterRoomsForBooking(SearchRoomDTO searchRoomDTO)
         {
             if (searchRoomDTO.ArrivalDate.Date > searchRoomDTO.DepartureDate.Date)

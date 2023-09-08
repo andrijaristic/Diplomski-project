@@ -78,5 +78,18 @@ namespace Infrastructure.Repositories
                                     .FirstOrDefaultAsync();
             return room;
         }
+
+        public async Task<List<Room>> GetForAccommodation(Guid accommodationId, DateTime date)
+        {
+            List<Room> rooms =  await _dbContext
+                                            .Rooms
+                                            .Where(r => r.PropertyId == accommodationId)
+                                            .Include(r => r.RoomType)
+                                            .ThenInclude(rt => rt.SeasonalPricing)
+                                            .Include(r => r.Reservations
+                                            .Where(rs => rs.DepartureDate.Date >= date))
+                                            .ToListAsync();
+            return rooms;
+        }
     }
 }

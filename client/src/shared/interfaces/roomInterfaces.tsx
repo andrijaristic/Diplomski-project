@@ -4,6 +4,7 @@ import { ISeasonalPricing } from "./seasonalPricingInterfaces";
 export interface IRoom {
   id: string;
   roomType: IRoomTypeDisplay;
+  reservationAmount?: number;
 }
 
 export interface IRoomSearchDisplay {

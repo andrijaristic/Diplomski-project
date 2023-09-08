@@ -15,6 +15,7 @@ namespace Infrastructure.Repositories
         {
             bool exists = await _dbContext
                                     .Comments
+                                    .AsNoTracking()
                                     .Where(x => x.UserId == userId &&
                                                 x.PropertyId == accommodationId)
                                     .FirstOrDefaultAsync() != null;

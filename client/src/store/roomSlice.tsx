@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createRoom, getFilteredRooms } from "../services/RoomService";
+import {
+  createRoom,
+  getAccommodationRooms,
+  getFilteredRooms,
+} from "../services/RoomService";
 import {
   INewRoom,
   IRoom,
@@ -50,6 +54,18 @@ export const createNewRoomsAction = createAsyncThunk(
   }
 );
 
+export const getAccommodationRoomsAction = createAsyncThunk(
+  "rooms/getAccommodationRooms",
+  async (accommodationId: string, thunkApi) => {
+    try {
+      const response = await getAccommodationRooms(accommodationId);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
 const roomSlice = createSlice({
   name: "room",
   initialState,
@@ -91,6 +107,24 @@ const roomSlice = createSlice({
       successNotification("Succesfully added all new rooms!");
     });
     builder.addCase(createNewRoomsAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // GET ACCOMMODATION ROOMS
+    builder.addCase(getAccommodationRoomsAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(getAccommodationRoomsAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+      state.rooms = [...action.payload];
+    });
+    builder.addCase(getAccommodationRoomsAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;

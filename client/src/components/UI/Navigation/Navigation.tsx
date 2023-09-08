@@ -77,8 +77,17 @@ const Navigation: FC = () => {
           }}
         >
           <Logo />
-          <List sx={{ display: "flex", height: "100%", mt: 1 }}>{content}</List>
-          <Box sx={{ ml: "auto", mt: 1 }}>
+          <List
+            sx={{
+              display: "flex",
+              height: "100%",
+              mt: 1,
+              ml: 2,
+            }}
+          >
+            {content}
+          </List>
+          <Box sx={{ ml: "auto", mt: 1, mr: 10 }}>
             {isLoggedIn ? (
               <Stack
                 direction="row"

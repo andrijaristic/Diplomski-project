@@ -13,5 +13,6 @@ namespace Domain.Interfaces.Repositories
         Task<Room> FindDetailedRoom(Guid id);
         Task<Room> FindByIdAndProperty(Guid roomId, Guid propertyId);
         Task<List<Room>> FilterRooms(SearchRoomDTO searchRoomDTO);
+        Task<List<Room>> GetForAccommodation(Guid accommodationId, DateTime date);
     }
 }

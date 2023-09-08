@@ -1,11 +1,11 @@
-﻿using Domain.Models;
+﻿using AutoMapper;
+using Domain.Models;
 using Contracts.CommentDTOs;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Repositories;
-using AutoMapper;
-using Domain.Exceptions.PropertyExceptions;
-using Domain.Exceptions.CommentExceptions;
 using Domain.Exceptions.UserExceptions;
+using Domain.Exceptions.CommentExceptions;
+using Domain.Exceptions.PropertyExceptions;
 
 namespace Service
 {
@@ -33,7 +33,7 @@ namespace Service
 
             Property property = await _unitOfWork
                                             .Properties
-                                            .Find(newCommentDTO.PropertyId);
+                                            .GetWithComments(newCommentDTO.PropertyId);
             if (property is null)
             {
                 throw new PropertyNotFoundException(newCommentDTO.PropertyId);
@@ -41,9 +41,9 @@ namespace Service
 
             Reservation reservation = await _unitOfWork
                                                     .Reservations
-                                                    .FindReservationForUserInAccommodation(user.Id,
-                                                                                           property.Id,
-                                                                                           DateTime.Now.ToUniversalTime());
+                                                    .FindForUserInAccommodation(user.Id,
+                                                                                property.Id,
+                                                                                DateTime.Now.ToUniversalTime());
             if (reservation is null)
             {
                 throw new InvalidCommentPermissions();
@@ -63,6 +63,17 @@ namespace Service
             comment.CreationDate = DateTime.Now.ToUniversalTime();
 
             await _unitOfWork.Comments.Add(comment);
+
+            int count = 1;
+            double totalGrade = comment.Grade;
+            foreach (Comment _comment in property.Comments)
+            {
+                totalGrade += _comment.Grade;
+                ++count;
+            }
+
+            property.AverageGrade = totalGrade / count;
+
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayCommentDTO>(comment);

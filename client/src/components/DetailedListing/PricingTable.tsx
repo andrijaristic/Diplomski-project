@@ -117,6 +117,11 @@ const PricingTable: FC<IProps> = ({
       </TableContainer>
     );
   } else {
+    const title = `${roomType?.adults} ${
+      roomType?.adults === 1 ? "Adult" : "Adults"
+    }, ${roomType?.children} ${
+      roomType?.children === 1 ? "Child" : "Children"
+    }`;
     return (
       <TableContainer
         component={Paper}
@@ -139,7 +144,7 @@ const PricingTable: FC<IProps> = ({
         <Table id="table" size="small" aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell colSpan={3}>2 adults, 1 child</StyledTableCell>
+              <StyledTableCell colSpan={3}>{title}</StyledTableCell>
             </TableRow>
             <TableRow>
               <StyledTableCell>From</StyledTableCell>
