@@ -15,6 +15,6 @@ namespace Domain.Interfaces.Repositories
         Task<Property> GetPropertyWithOwner(Guid id);
         Task<Property> GetFullPropertyById (Guid id);
         Task<List<Property>> GetUserAccommodations(Guid userId);
-        Task<Property> GetWithComments(Guid id);
+        Task<Property> GetWithRooms(Guid id);
     }
 }

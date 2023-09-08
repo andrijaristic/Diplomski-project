@@ -14,8 +14,6 @@ namespace Domain.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public double AverageGrade { get; set; }
-        public bool IsVerified { get; set; }
-        public VerificationStatus VerificationStatus { get; set; }
         public AccommodationImage ThumbnailImage { get; set; }
         public List<AccommodationImage> Images { get; set; }
         public Guid UserId { get; set; }    
@@ -32,5 +30,6 @@ namespace Domain.Models
         // EF Core .Include() from SavedProperty table
         public List<SavedProperty> SavedProperties { get; set; }
         public int StartingPrice { get; set; }
+        public bool IsVisible { get; set; } = false;
     }
 }

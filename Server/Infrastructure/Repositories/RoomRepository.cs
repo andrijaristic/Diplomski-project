@@ -67,14 +67,16 @@ namespace Infrastructure.Repositories
             return room;
         }
 
-        public async Task<Room> FindDetailedRoom(Guid id)
+        public async Task<Room> FindDetailedRoom(Guid id, Guid propertyId, DateTime date)
         {
             Room room = await _dbContext
                                     .Rooms
-                                    .Where(r => r.Id == id)
-                                    .Include(r => r.Reservations)
-                                    .Include(p => p.Property)
-                                    .ThenInclude(u => u.User)
+                                    .Where(r => r.Id == id &&
+                                                r.PropertyId == propertyId)
+                                    .Include(r => r.Reservations
+                                    .Where(rs => rs.DepartureDate.Date >= date))
+                                    .Include(r => r.RoomType)
+                                    .Include(r => r.Property)
                                     .FirstOrDefaultAsync();
             return room;
         }

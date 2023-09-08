@@ -33,7 +33,7 @@ namespace Service
 
             Property property = await _unitOfWork
                                             .Properties
-                                            .GetWithComments(newCommentDTO.PropertyId);
+                                            .Find(newCommentDTO.PropertyId);
             if (property is null)
             {
                 throw new PropertyNotFoundException(newCommentDTO.PropertyId);

@@ -245,28 +245,28 @@ namespace Service
             await _unitOfWork.Save();
         }
 
-        public async Task<DisplayPropertyDTO> VerifyProperty(Guid id, bool isAccepted)
-        {
-            Property property = await _unitOfWork
-                                            .Properties
-                                            .Find(id); 
-            if (property == null)
-            {
-                throw new PropertyNotFoundException(id);
-            }
+        //public async Task<DisplayPropertyDTO> VerifyProperty(Guid id, bool isAccepted)
+        //{
+        //    Property property = await _unitOfWork
+        //                                    .Properties
+        //                                    .Find(id); 
+        //    if (property == null)
+        //    {
+        //        throw new PropertyNotFoundException(id);
+        //    }
 
-            if (property.IsVerified)
-            {
-                throw new PropertyAlreadyVerifiedException();
-            }
+        //    if (property.IsVerified)
+        //    {
+        //        throw new PropertyAlreadyVerifiedException();
+        //    }
 
-            property.IsVerified = true;
-            property.VerificationStatus = isAccepted ? Domain.Enums.VerificationStatus.ACCEPTED : Domain.Enums.VerificationStatus.REJECTED;
+        //    property.IsVerified = true;
+        //    property.VerificationStatus = isAccepted ? Domain.Enums.VerificationStatus.ACCEPTED : Domain.Enums.VerificationStatus.REJECTED;
 
-            await _unitOfWork.Save();
+        //    await _unitOfWork.Save();
 
-            return _mapper.Map<DisplayPropertyDTO>(property);   
-        }
+        //    return _mapper.Map<DisplayPropertyDTO>(property);   
+        //}
 
         // Validations
         // TODO: Add validations for images

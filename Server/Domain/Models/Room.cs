@@ -14,6 +14,7 @@ namespace Domain.Models
         public List<ReservedDays> OccupiedDates { get; set; }
         public Guid PropertyId { get; set; }    
         public Property Property { get; set; }
-        public List<Reservation> Reservations { get; set; } 
+        public List<Reservation> Reservations { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

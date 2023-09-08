@@ -69,6 +69,7 @@ namespace Service
             int seasonalPricingMin = roomType.SeasonalPricing.Min(x => x.Price);
             property.StartingPrice = property.StartingPrice > seasonalPricingMin ? seasonalPricingMin : 
                                                                                    property.StartingPrice;
+            property.IsVisible = true;
 
             await _unitOfWork.RoomTypes.Add(roomType);
             await _unitOfWork.Save();
@@ -128,7 +129,8 @@ namespace Service
                 throw new InvalidRoomTypePermissionsException();
             }
 
-            _unitOfWork.RoomTypes.Remove(roomType);
+            roomType.IsDeleted = true;
+            //_unitOfWork.RoomTypes.Remove(roomType);
             await _unitOfWork.Save();
         }
 

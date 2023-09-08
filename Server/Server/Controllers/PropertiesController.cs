@@ -83,12 +83,12 @@ namespace Web.API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}/verify")]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> VerifyAccommodation(Guid id, [FromBody] VerifyPropertyDTO verifyPropertyDTO)
-        {
-            DisplayPropertyDTO displayPropertyDTO = await _propertyService.VerifyProperty(id, verifyPropertyDTO.IsAccepted);
-            return Ok(displayPropertyDTO);
-        }
+        //[HttpPut("{id}/verify")]
+        //[Authorize(Roles = "admin")]
+        //public async Task<IActionResult> VerifyAccommodation(Guid id, [FromBody] VerifyPropertyDTO verifyPropertyDTO)
+        //{
+        //    DisplayPropertyDTO displayPropertyDTO = await _propertyService.VerifyProperty(id, verifyPropertyDTO.IsAccepted);
+        //    return Ok(displayPropertyDTO);
+        //}
     }
 }

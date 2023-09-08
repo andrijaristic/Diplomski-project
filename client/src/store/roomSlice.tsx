@@ -4,12 +4,14 @@ import {
   createRoom,
   getAccommodationRooms,
   getFilteredRooms,
+  updateRoom,
 } from "../services/RoomService";
 import {
   INewRoom,
   IRoom,
   IRoomSearch,
   IRoomSearchDisplay,
+  IEditRoom,
 } from "../shared/interfaces/roomInterfaces";
 import { ApiCallState } from "../shared/types/enumerations";
 import { defaultErrorMessage } from "../constants/Constants";
@@ -59,6 +61,18 @@ export const getAccommodationRoomsAction = createAsyncThunk(
   async (accommodationId: string, thunkApi) => {
     try {
       const response = await getAccommodationRooms(accommodationId);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const updateRoomAction = createAsyncThunk(
+  "rooms/updateRoom",
+  async (editRoom: IEditRoom, thunkApi) => {
+    try {
+      const response = await updateRoom(editRoom);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -125,6 +139,23 @@ const roomSlice = createSlice({
       state.rooms = [...action.payload];
     });
     builder.addCase(getAccommodationRoomsAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // UPDATE ROOM
+    builder.addCase(updateRoomAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(updateRoomAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+    });
+    builder.addCase(updateRoomAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;

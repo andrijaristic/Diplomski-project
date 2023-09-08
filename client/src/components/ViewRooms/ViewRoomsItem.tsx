@@ -14,9 +14,10 @@ import { IRoom } from "../../shared/interfaces/roomInterfaces";
 interface IProps {
   room: IRoom;
   onPriceView: () => void;
+  onEdit: () => void;
 }
 
-const ViewRoomsItem: FC<IProps> = ({ room, onPriceView }) => {
+const ViewRoomsItem: FC<IProps> = ({ room, onPriceView, onEdit }) => {
   const isReserved: boolean =
     room?.reservationAmount !== undefined && room?.reservationAmount > 0;
 
@@ -77,7 +78,7 @@ const ViewRoomsItem: FC<IProps> = ({ room, onPriceView }) => {
           <Button variant="outlined" color="success" onClick={onPriceView}>
             View prices
           </Button>
-          <Button variant="outlined" color="info">
+          <Button variant="outlined" color="info" onClick={onEdit}>
             Edit room capacity
           </Button>
           {!isReserved && (

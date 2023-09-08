@@ -5,22 +5,53 @@ import PricingTable from "../DetailedListing/PricingTable";
 import ViewRoomsItem from "./ViewRoomsItem";
 import NoRoomsMessage from "./NoRoomsMessage";
 import { useAppSelector } from "../../store/hooks";
+import RoomEditModal from "./RoomEditModal/RoomEditModal";
+import { ApiCallState } from "../../shared/types/enumerations";
+import ViewRoomsSkeleton from "./ViewRoomsSkeleton";
 
-const ViewRooms: FC = () => {
+interface IProps {
+  id: string;
+}
+
+const ViewRooms: FC<IProps> = ({ id }) => {
   const rooms = useAppSelector((state) => state.rooms.rooms);
+  const apiState = useAppSelector((state) => state.rooms.apiState);
   const [pricesIndex, setPricesIndex] = useState<number>(0);
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedRoomTypeId, setSelectedRoomTypeId] = useState<string>("");
+  const [selectedRoomId, setSelectedRoomId] = useState<string>("");
 
   const handlePriceChange = (index: number) => () => {
     setPricesIndex(index);
   };
 
+  const handleModalToggle = () => {
+    setOpen((prevState) => !prevState);
+  };
+
+  const handleModalOpen = (roomTypeId: string, roomId: string) => () => {
+    setSelectedRoomTypeId(roomTypeId);
+    setSelectedRoomId(roomId);
+    setOpen((prevState) => !prevState);
+  };
+
   const content: JSX.Element[] = rooms?.map((room, index) => (
     <ViewRoomsItem
-      key={room?.id}
+      key={room.id}
       room={room}
       onPriceView={handlePriceChange(index)}
+      onEdit={handleModalOpen(room.roomType.id, room.id)}
     />
   ));
+
+  const displayContent =
+    apiState === ApiCallState.PENDING ? (
+      <ViewRoomsSkeleton />
+    ) : content.length > 0 ? (
+      content
+    ) : (
+      <NoRoomsMessage />
+    );
 
   return (
     <Box
@@ -47,7 +78,7 @@ const ViewRooms: FC = () => {
       </Card>
       <Card
         sx={{
-          width: "70%",
+          width: "80%",
           minWidth: "50%",
           height: 680,
           overflow: "auto",
@@ -59,9 +90,18 @@ const ViewRooms: FC = () => {
         <Box
           sx={{ p: 4, pt: 2, display: "flex", flexDirection: "column", gap: 2 }}
         >
-          {content.length > 0 ? content : <NoRoomsMessage />}
+          {displayContent}
         </Box>
       </Card>
+      {open && (
+        <RoomEditModal
+          open={open}
+          onClose={handleModalToggle}
+          accommodationId={id}
+          roomId={selectedRoomId}
+          roomTypeId={selectedRoomTypeId}
+        />
+      )}
     </Box>
   );
 };

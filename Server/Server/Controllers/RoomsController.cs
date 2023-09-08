@@ -49,9 +49,9 @@ namespace Web.API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "propertyowner")]
-        public async Task<IActionResult> DeleteRoom(Guid id)
+        public async Task<IActionResult> DeleteRoom(Guid id, [FromBody] DeleteRoomDTO deleteRoomDTO)
         {
-            await _roomService.DeleteRoom(id, User.Identity.Name);
+            await _roomService.DeleteRoom(id, deleteRoomDTO, User.Identity.Name);
             return NoContent();
         }
     }

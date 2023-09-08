@@ -37,3 +37,9 @@ export interface INewRoom {
   propertyId: string;
   roomTypeId: string;
 }
+
+export interface IEditRoom {
+  roomId: string;
+  roomTypeId: string;
+  propertyId: string;
+}

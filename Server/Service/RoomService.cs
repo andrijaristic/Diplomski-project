@@ -166,22 +166,42 @@ namespace Service
                 await _unitOfWork.Rooms.Add(room);
             }
 
+            property.IsVisible = true;
+
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayRoomDTO>(room);
         }
 
-        public async Task DeleteRoom(Guid id, string username)
+        public async Task DeleteRoom(Guid id, DeleteRoomDTO deleteRoomDTO, string username)
         {
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);    
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
             Room room = await _unitOfWork
                                     .Rooms
-                                    .FindDetailedRoom(id);
+                                    .FindDetailedRoom(id, 
+                                                      deleteRoomDTO.PropertyId, 
+                                                      DateTime.Now.ToUniversalTime().Date);
             if (room is null)
             {
                 throw new RoomNotFoundException(id);
             }
 
-            if (!String.Equals(room.Property.User.Username, username))
+            Property property = await _unitOfWork
+                                            .Properties
+                                            .GetWithRooms(room.PropertyId);
+            if (property is null)
+            {
+                throw new PropertyNotFoundException(room.PropertyId);
+            }
+
+            if (property.UserId != user.Id)
             {
                 throw new InvalidRoomPermissionsExpection();
             }
@@ -191,21 +211,37 @@ namespace Service
                 throw new RoomHasReservationsException();
             }
 
-            _unitOfWork.Rooms.Remove(room);
+            if (property.Rooms.Count == 1)
+            {
+                throw new InsufficientRoomsException();
+            }
+
+            room.IsDeleted = true;
+            //_unitOfWork.Rooms.Remove(room);
             await _unitOfWork.Save();
         }
 
         public async Task<DisplayRoomDTO> UpdateRoom(Guid id, UpdateRoomDTO updateRoomDTO, string username)
         {
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
             Room room = await _unitOfWork
                                     .Rooms
-                                    .FindDetailedRoom(id);
+                                    .FindDetailedRoom(id, 
+                                                      updateRoomDTO.PropertyId, 
+                                                      DateTime.Now.ToUniversalTime().Date);
             if (room is null)
             {
                 throw new RoomNotFoundException(id);
             }
 
-            if (!String.Equals(room.Property.User.Username, username))
+            if (room.Property.UserId != user.Id)
             {
                 throw new InvalidRoomPermissionsExpection();
             }
@@ -216,6 +252,12 @@ namespace Service
             if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(updateRoomDTO.RoomTypeId);
+            }
+
+            if (room.RoomType.Adults > roomType.Adults ||
+                room.RoomType.Children > roomType.Children)
+            {
+                throw new InvalidRoomGuestAmountUpdateException();
             }
 
             room.RoomType = roomType;

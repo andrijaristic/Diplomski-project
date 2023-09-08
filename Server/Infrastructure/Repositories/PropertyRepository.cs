@@ -19,6 +19,7 @@ namespace Infrastructure.Repositories
             List<Property> properties = await _dbContext
                                                     .Properties
                                                     .AsNoTracking()
+                                                    .Where(p => p.IsVisible)
                                                     .OrderBy(p => p.AverageGrade)
                                                     .Take(5)
                                                     .Include(p => p.ThumbnailImage)
@@ -26,12 +27,12 @@ namespace Infrastructure.Repositories
             return properties;
         }
 
-        public async Task<Property> GetWithComments(Guid id)
+        public async Task<Property> GetWithRooms(Guid id)
         {
             Property property = await _dbContext
                                             .Properties
                                             .Where(p => p.Id == id)
-                                            .Include(p => p.Comments)
+                                            .Include(p => p.Rooms)
                                             .FirstOrDefaultAsync();
             return property;
         }
@@ -41,7 +42,9 @@ namespace Infrastructure.Repositories
             var source = _dbContext
                             .Properties
                             .AsNoTracking()
-                            .Include(p => p.Rooms)
+                            .Where(p => p.IsVisible)
+                            .Include(p => p.Rooms
+                            .Where(r => !r.IsDeleted))
                             .Include(p => p.RoomTypes)
                             .Include(p => p.Utilities)
                             .Include(p => p.ThumbnailImage)
@@ -176,7 +179,8 @@ namespace Infrastructure.Repositories
             Property property = await _dbContext
                                             .Properties
                                             .AsNoTracking()
-                                            .Where(p => p.Id == id)
+                                            .Where(p => p.Id == id &&
+                                                        p.IsVisible)
                                             .Include(p => p.Comments)
                                             .Include(p => p.ThumbnailImage)
                                             .Include(p => p.Images)

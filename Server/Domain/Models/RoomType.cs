@@ -15,5 +15,6 @@ namespace Domain.Models
         public Property Property { get; set; }
         public List<Room> Rooms { get; set; }   
         public List<SeasonalPricing> SeasonalPricing { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }
