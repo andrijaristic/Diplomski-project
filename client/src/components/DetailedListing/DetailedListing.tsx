@@ -101,7 +101,7 @@ const DetailedListing: FC = () => {
                   Prices & Booking
                 </StyledButton>
                 <StyledButton onClick={scrollToSection("reviews")}>
-                  Reviews
+                  Comments
                 </StyledButton>
               </Box>
             </Grid>
@@ -165,7 +165,7 @@ const DetailedListing: FC = () => {
                   <Typography
                     id="bookings"
                     variant="h4"
-                    sx={{ scrollMargin: "8rem" }}
+                    sx={{ scrollMargin: "8rem", scrollPadding: "8rem" }}
                   >
                     Bookings
                   </Typography>
@@ -187,7 +187,7 @@ const DetailedListing: FC = () => {
                   <Typography
                     id="reviews"
                     variant="h4"
-                    sx={{ scrollMargin: "8rem" }}
+                    sx={{ scrollMargin: "8rem", scrollPaddingTop: "8rem" }}
                   >
                     Comments
                   </Typography>

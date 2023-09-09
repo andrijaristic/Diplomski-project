@@ -43,3 +43,8 @@ export interface IEditRoom {
   roomTypeId: string;
   propertyId: string;
 }
+
+export interface IDeleteRoom {
+  roomId: string;
+  propertyId: string;
+}

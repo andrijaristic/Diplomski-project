@@ -188,7 +188,7 @@ namespace Service
                                     .FindDetailedRoom(id, 
                                                       deleteRoomDTO.PropertyId, 
                                                       DateTime.Now.ToUniversalTime().Date);
-            if (room is null)
+            if (room is null || room.IsDeleted)
             {
                 throw new RoomNotFoundException(id);
             }

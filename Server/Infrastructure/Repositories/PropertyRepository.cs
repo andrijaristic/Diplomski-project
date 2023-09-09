@@ -32,7 +32,8 @@ namespace Infrastructure.Repositories
             Property property = await _dbContext
                                             .Properties
                                             .Where(p => p.Id == id)
-                                            .Include(p => p.Rooms)
+                                            .Include(p => p.Rooms
+                                            .Where(r => !r.IsDeleted))
                                             .FirstOrDefaultAsync();
             return property;
         }

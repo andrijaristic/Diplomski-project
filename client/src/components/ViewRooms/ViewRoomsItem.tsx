@@ -10,14 +10,27 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { IRoom } from "../../shared/interfaces/roomInterfaces";
+import { useAppDispatch } from "../../store/hooks";
+import { deleteRoomAction } from "../../store/roomSlice";
 
 interface IProps {
   room: IRoom;
+  accommodationId: string;
+  isSelected: boolean;
   onPriceView: () => void;
   onEdit: () => void;
+  onRefresh: () => void;
 }
 
-const ViewRoomsItem: FC<IProps> = ({ room, onPriceView, onEdit }) => {
+const ViewRoomsItem: FC<IProps> = ({
+  room,
+  accommodationId,
+  isSelected,
+  onPriceView,
+  onRefresh,
+  onEdit,
+}) => {
+  const dispatch = useAppDispatch();
   const isReserved: boolean =
     room?.reservationAmount !== undefined && room?.reservationAmount > 0;
 
@@ -26,6 +39,16 @@ const ViewRoomsItem: FC<IProps> = ({ room, onPriceView, onEdit }) => {
   }, ${room?.roomType.children} ${
     room?.roomType.children === 1 ? "Child" : "Children"
   }`;
+
+  const handleDelete = async () => {
+    const response = await dispatch(
+      deleteRoomAction({ roomId: room.id, propertyId: accommodationId })
+    );
+
+    if (response) {
+      onRefresh();
+    }
+  };
 
   return (
     <Card
@@ -45,8 +68,16 @@ const ViewRoomsItem: FC<IProps> = ({ room, onPriceView, onEdit }) => {
               spacing={2}
             >
               <Stack>
-                <Typography variant="h5">{title}</Typography>
-                <Typography variant="caption">{`ID: ${room?.id}`}</Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ color: `${isSelected && "green"}` }}
+                >
+                  {title}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{ color: `${isSelected && "green"}` }}
+                >{`ID: ${room?.id}`}</Typography>
               </Stack>
               <Typography
                 variant="h5"
@@ -82,7 +113,7 @@ const ViewRoomsItem: FC<IProps> = ({ room, onPriceView, onEdit }) => {
             Edit room capacity
           </Button>
           {!isReserved && (
-            <Button variant="outlined" color="error">
+            <Button variant="outlined" color="error" onClick={handleDelete}>
               Delete room
             </Button>
           )}

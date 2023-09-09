@@ -85,7 +85,8 @@ namespace Infrastructure.Repositories
         {
             List<Room> rooms =  await _dbContext
                                             .Rooms
-                                            .Where(r => r.PropertyId == accommodationId)
+                                            .Where(r => !r.IsDeleted &&
+                                                         r.PropertyId == accommodationId)
                                             .Include(r => r.RoomType)
                                             .ThenInclude(rt => rt.SeasonalPricing)
                                             .Include(r => r.Reservations

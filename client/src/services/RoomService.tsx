@@ -4,6 +4,7 @@ import {
   INewRoom,
   IRoomSearch,
   IEditRoom,
+  IDeleteRoom,
 } from "../shared/interfaces/roomInterfaces";
 
 export const getFilteredRooms = async (roomSearchParams: IRoomSearch) => {
@@ -22,5 +23,13 @@ export const updateRoom = async (updateRoom: IEditRoom) => {
   return await axiosClient.put(`${API}/rooms/${updateRoom.roomId}`, {
     propertyId: updateRoom.propertyId,
     roomTypeId: updateRoom.roomTypeId,
+  });
+};
+
+export const deleteRoom = async (deleteRoom: IDeleteRoom) => {
+  return await axiosClient.delete(`${API}/rooms/${deleteRoom.roomId}`, {
+    data: {
+      propertyId: deleteRoom.propertyId,
+    },
   });
 };

@@ -2,6 +2,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   createRoom,
+  deleteRoom,
   getAccommodationRooms,
   getFilteredRooms,
   updateRoom,
@@ -12,6 +13,7 @@ import {
   IRoomSearch,
   IRoomSearchDisplay,
   IEditRoom,
+  IDeleteRoom,
 } from "../shared/interfaces/roomInterfaces";
 import { ApiCallState } from "../shared/types/enumerations";
 import { defaultErrorMessage } from "../constants/Constants";
@@ -61,6 +63,18 @@ export const getAccommodationRoomsAction = createAsyncThunk(
   async (accommodationId: string, thunkApi) => {
     try {
       const response = await getAccommodationRooms(accommodationId);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const deleteRoomAction = createAsyncThunk(
+  "rooms/deleteRoom",
+  async (deleteRoomData: IDeleteRoom, thunkApi) => {
+    try {
+      const response = await deleteRoom(deleteRoomData);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -156,6 +170,24 @@ const roomSlice = createSlice({
       state.apiState = ApiCallState.COMPLETED;
     });
     builder.addCase(updateRoomAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // DELETE ROOM
+    builder.addCase(deleteRoomAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(deleteRoomAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("Successfully deleted room");
+    });
+    builder.addCase(deleteRoomAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;
