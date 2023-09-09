@@ -2,15 +2,18 @@ import { FC } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
-  ButtonBase,
   Card,
   CardContent,
   CardMedia,
   Grid,
+  IconButton,
+  Stack,
+  Tooltip,
   Typography,
   styled,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import RoomIcon from "@mui/icons-material/Room";
 import StyledButton from "../UI/Styled/StyledButton";
 import { IAccommodationDisplay } from "../../shared/interfaces/accommodationInterfaces";
 
@@ -68,9 +71,9 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
         },
       }}
     >
-      <ButtonBase
-        onClick={handleClick}
+      <Box
         sx={{
+          position: "relative",
           display: "flex",
           flexDirection: "column",
         }}
@@ -80,8 +83,36 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
           height="260"
           alt="property-thumbnail"
           image={image}
-        ></CardMedia>
-      </ButtonBase>
+        />
+        <Tooltip title="Show location">
+          <Card
+            sx={{
+              position: "absolute",
+              top: 5,
+              right: 10,
+              borderRadius: 8,
+              backgroundColor: "nav.default",
+            }}
+          >
+            <IconButton size="medium" onClick={handleClick}>
+              <RoomIcon fontSize="inherit" color="info" />
+            </IconButton>
+          </Card>
+        </Tooltip>
+        {/* <Card
+          sx={{
+            position: "absolute",
+            top: 5,
+            right: 60,
+            borderRadius: 8,
+            backgroundColor: "nav.default",
+          }}
+        >
+          <IconButton size="medium">
+            <RoomIcon fontSize="inherit" color="info" />
+          </IconButton>
+        </Card> */}
+      </Box>
 
       <CardContent
         sx={{

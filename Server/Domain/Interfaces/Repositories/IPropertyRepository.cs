@@ -10,7 +10,7 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IPropertyRepository : IGenericRepository<Property>
     {
-        Task<List<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO);
+        Task<IEnumerable<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO);
         Task<List<Property>> GetHighestRatedAccommodations();
         Task<Property> GetPropertyWithOwner(Guid id);
         Task<Property> GetFullPropertyById (Guid id);

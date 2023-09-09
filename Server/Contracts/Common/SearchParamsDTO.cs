@@ -17,7 +17,7 @@ namespace Contracts.Common
         public string Country { get; set; }
         public string Area { get; set; }
         public string Sort { get; set; }    
-        public IEnumerable<Guid> Utilities { get; set; }
+        public List<Guid> Utilities { get; set; }
         public int Page { get; set; }
     }
 }

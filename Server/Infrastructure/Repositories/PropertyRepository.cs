@@ -4,6 +4,8 @@ using Domain.Models;
 using Domain.Interfaces.Repositories;
 using Domain.Enums;
 using System.Runtime.CompilerServices;
+using Google.Apis.Util;
+using Domain.Interfaces.Utilities.DataInitializers;
 
 namespace Infrastructure.Repositories
 {
@@ -39,7 +41,7 @@ namespace Infrastructure.Repositories
             return property;
         }
  
-        public Task<List<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO)
+        public Task<IEnumerable<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO)
         {
             var source = _dbContext
                             .Properties
@@ -144,14 +146,30 @@ namespace Infrastructure.Repositories
                             .Any(x => x.Price <= maxPrice)));
             }
 
+            IEnumerable<Property> filteredProperties = source.AsEnumerable();
             if (searchParamsDTO.Utilities != null &&
                 searchParamsDTO.Utilities.Any())
             {
-                source = source
-                            .Where(x => searchParamsDTO.Utilities
-                                                            .IntersectBy(x.Utilities
-                                                            .Select(util => util.Id), id => id)
-                            .Count() == searchParamsDTO.Utilities.Count());
+                //source = source
+                //            .Where(x => searchParamsDTO.Utilities
+                //                                            .IntersectBy(x.Utilities
+                //                                            .Select(util => util.Id), id => id)
+                //            .Count() == searchParamsDTO.Utilities.Count);
+                //var src = source.ToList();
+                //source = source
+                //            .Where(x => x.Utilities.Count() > 0 &&
+                //                        x.Utilities
+                //            .Any(y => searchParamsDTO.Utilities
+                //            .Contains(y.Id)));
+                //source = source
+                //            .Where(x => searchParamsDTO.Utilities
+                //            .Any(id => x.Utilities
+                //            .Any(y => y.Id == id)));
+                filteredProperties = filteredProperties
+                                            .Where(x => searchParamsDTO.Utilities
+                                            .All(id => x.Utilities
+                                            .Any(util => util.Id == id)))
+                                            .ToList();
             }
 
             if (!String.IsNullOrEmpty(searchParamsDTO.Sort) &&
@@ -160,21 +178,21 @@ namespace Infrastructure.Repositories
                 switch (sort)
                 {
                     case SortType.HighestPrice:
-                        source = source.OrderByDescending(x => x.StartingPrice);
+                        filteredProperties = filteredProperties.OrderByDescending(x => x.StartingPrice);
                         break;
                     case SortType.LowestPrice:
-                        source = source.OrderBy(x => x.StartingPrice);
+                        filteredProperties = filteredProperties.OrderBy(x => x.StartingPrice);
                         break;
                     case SortType.HighestRating:
-                        source = source.OrderByDescending(x => x.AverageGrade);
+                        filteredProperties = filteredProperties.OrderByDescending(x => x.AverageGrade);
                         break;
                     case SortType.LowestRating:
-                        source = source.OrderBy(x => x.AverageGrade);
+                        filteredProperties = filteredProperties.OrderBy(x => x.AverageGrade);
                         break;
                 }
             }
 
-            return source.ToListAsync();
+            return Task.FromResult(filteredProperties);
         }
 
         public async Task<Property> GetFullPropertyById(Guid id)
