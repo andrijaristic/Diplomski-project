@@ -27,6 +27,7 @@ import {
 import { clearSuccessfulReservation } from "../../store/reservationSlice";
 import DetailedListingComments from "./DetailedListingComments";
 import { grey } from "@mui/material/colors";
+import PricingTable from "./PricingTable";
 
 const noAmenitiesMessage: JSX.Element = (
   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -46,7 +47,7 @@ const DetailedListing: FC = () => {
   const accommodation = useAppSelector(
     (state) => state.accommodations.detailedAccommodation
   );
-
+  const roomTypes = useAppSelector((state) => state.roomTypes.roomTypes);
   const bookingRooms = useAppSelector((state) => state.rooms.bookingRooms);
 
   useEffect(() => {
@@ -77,6 +78,10 @@ const DetailedListing: FC = () => {
     images.push(accommodation?.thumbnailImage);
     accommodation?.images.map((image) => images.push(image));
   }
+
+  const roomTypesContent: JSX.Element[] = roomTypes?.map((roomType) => {
+    return <PricingTable key={roomType.id} edit={false} roomType={roomType} />;
+  });
 
   const handleRoomSearch = (booking: IRoomSearch) => {
     dispatch(getFilteredRoomsAction(booking));
@@ -175,6 +180,18 @@ const DetailedListing: FC = () => {
                     sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                   >
                     {bookingRoomsContent.length > 0 && bookingRoomsContent}
+                  </Box>
+                  <Box
+                    sx={{
+                      pt: 2,
+                      display: "flex",
+                      flexWrap: "wrap",
+                      flexGrow: 1,
+                      flexShrink: 1,
+                      gap: 2,
+                    }}
+                  >
+                    {roomTypesContent.length > 0 && roomTypesContent}
                   </Box>
                 </Box>
               </Card>

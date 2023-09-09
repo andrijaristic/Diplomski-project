@@ -48,7 +48,7 @@ export const lightTheme = createTheme({
       default: "#fafafa",
     },
     background: {
-      default: grey[100],
+      default: grey[200],
     },
     primary: {
       main: "#748ae2",

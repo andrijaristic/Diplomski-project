@@ -37,7 +37,7 @@ const style = {
 
 const getAmountOfDays = (startDate: Date, endDate: Date) => {
   const time = 1000 * 3600 * 24;
-  return (endDate.getTime() - startDate.getTime()) / time;
+  return ((endDate.getTime() - startDate.getTime()) / time).toFixed();
 };
 
 const ReservationModal: FC<IProps> = (props) => {
@@ -53,6 +53,7 @@ const ReservationModal: FC<IProps> = (props) => {
     new Date(props.room.arrivalDate),
     new Date(props.room.departureDate)
   );
+
   const pricings: JSX.Element[] = props?.room?.seasonalPricing.map(
     (pricing) => {
       return (

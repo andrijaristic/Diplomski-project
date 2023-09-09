@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Box, CssBaseline } from "@mui/material";
 import AppRoutes from "./routes/AppRoutes";
 import { lightTheme } from "./styles/theme";
+import { enGB } from "date-fns/locale";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         sx={{ backgroundColor: "background.default" }}
       >
         <CssBaseline />
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
           <AppRoutes />
           <ToastContainer theme="dark" limit={2} newestOnTop />
         </LocalizationProvider>

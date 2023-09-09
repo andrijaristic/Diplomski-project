@@ -15,7 +15,13 @@ import "leaflet/dist/leaflet.css";
 import Search from "./MapSearchBox";
 import UserInformationField from "../UserInformation/UserInformationField";
 import NewListingRoomsForm from "./NewListingRoomsForm";
+import FilterModalAmenity from "../FilterModal/FilterModalAmenity";
+import AddImagePicker from "../EditListing/AddImagePicker";
+import StyledButton from "../UI/Styled/StyledButton";
+import { createNewAccommodationAction } from "../../store/accommodationSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { ApiCallState, HookTypes } from "../../shared/types/enumerations";
+import { IJwt } from "../../shared/interfaces/userInterfaces";
 import {
   defaultCoordinateErrorMessage,
   defaultFormErrorMessage,
@@ -23,13 +29,7 @@ import {
   defaultLng,
   minTextInputLength,
 } from "../../constants/Constants";
-import AddImagePicker from "../EditListing/AddImagePicker";
-import StyledButton from "../UI/Styled/StyledButton";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { errorNotification } from "../../utils/toastNotificationUtil";
-import { IJwt } from "../../shared/interfaces/userInterfaces";
-import { createNewAccommodationAction } from "../../store/accommodationSlice";
-import FilterModalAmenity from "../FilterModal/FilterModalAmenity";
 
 const NewListing: FC = () => {
   const dispatch = useAppDispatch();
@@ -112,10 +112,8 @@ const NewListing: FC = () => {
       data.append("utilities", amenity);
     });
 
-    console.log(data);
-
     await dispatch(createNewAccommodationAction(data));
-    // setIndicator(true);
+    setIndicator(true);
   };
 
   const handleNextStep = (event: React.FormEvent<HTMLFormElement>) => {

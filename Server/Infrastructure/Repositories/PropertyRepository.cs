@@ -31,7 +31,8 @@ namespace Infrastructure.Repositories
         {
             Property property = await _dbContext
                                             .Properties
-                                            .Where(p => p.Id == id)
+                                            .AsNoTracking()
+                                            .Where(p => p.Id == id && !p.IsDeleted)
                                             .Include(p => p.Rooms
                                             .Where(r => !r.IsDeleted))
                                             .FirstOrDefaultAsync();
@@ -43,7 +44,8 @@ namespace Infrastructure.Repositories
             var source = _dbContext
                             .Properties
                             .AsNoTracking()
-                            .Where(p => p.IsVisible)
+                            .Where(p => p.IsVisible && 
+                                       !p.IsDeleted)
                             .Include(p => p.Rooms
                             .Where(r => !r.IsDeleted))
                             .Include(p => p.RoomTypes)
@@ -181,7 +183,8 @@ namespace Infrastructure.Repositories
                                             .Properties
                                             .AsNoTracking()
                                             .Where(p => p.Id == id &&
-                                                        p.IsVisible)
+                                                        p.IsVisible && 
+                                                       !p.IsDeleted)
                                             .Include(p => p.Comments)
                                             .Include(p => p.ThumbnailImage)
                                             .Include(p => p.Images)

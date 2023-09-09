@@ -13,7 +13,7 @@ namespace Domain.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public double AverageGrade { get; set; }
+        public double AverageGrade { get; set; } = 1;
         public AccommodationImage ThumbnailImage { get; set; }
         public List<AccommodationImage> Images { get; set; }
         public Guid UserId { get; set; }    
@@ -31,5 +31,6 @@ namespace Domain.Models
         public List<SavedProperty> SavedProperties { get; set; }
         public int StartingPrice { get; set; }
         public bool IsVisible { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
     }
 }

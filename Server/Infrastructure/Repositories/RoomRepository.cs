@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories
             source = source
                         .Where(x => (x.OccupiedDates
                         .Any(x => searchRoomDTO.ArrivalDate > x.DepartureDate &&
-                                    x.ArrivalDate > searchRoomDTO.DepartureDate)) || 
+                                    x.ArrivalDate < searchRoomDTO.DepartureDate)) || 
                         (x.OccupiedDates.Count == 0));
 
             var src2 = source.ToList();

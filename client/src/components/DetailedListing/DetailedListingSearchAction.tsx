@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { Box, FormLabel, TextField } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, DesktopDatePicker } from "@mui/x-date-pickers";
 import StyledButton from "../UI/Styled/StyledButton";
 import { errorNotification } from "../../utils/toastNotificationUtil";
 import { IRoomSearch } from "../../shared/interfaces/roomInterfaces";

@@ -7,7 +7,7 @@ interface IProps {
   avatarClickHandler: () => void;
   imageInput: React.RefObject<HTMLInputElement>;
   uploadHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onAdd: () => void;
+  onAdd?: () => void;
 }
 
 const AddImagePicker: FC<IProps> = (props) => {

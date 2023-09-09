@@ -97,9 +97,9 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
             <Grid item>
               <Typography variant="subtitle1">{`${new Date(
                 room?.arrivalDate
-              ).toLocaleDateString()} - ${new Date(
+              ).toLocaleDateString("en-GB")} - ${new Date(
                 room?.departureDate
-              ).toLocaleDateString()}`}</Typography>
+              ).toLocaleDateString("en-GB")}`}</Typography>
             </Grid>
           </Grid>
         </Grid>

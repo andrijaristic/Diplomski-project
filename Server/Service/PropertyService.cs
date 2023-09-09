@@ -240,50 +240,26 @@ namespace Service
                 throw new InvalidUserInPropertyException();
             }
 
-            // TODO?: Implement logical deletion
-            _unitOfWork.Properties.Remove(property);
+            //_unitOfWork.Properties.Remove(property);
+            property.IsDeleted = true;
             await _unitOfWork.Save();
         }
 
-        //public async Task<DisplayPropertyDTO> VerifyProperty(Guid id, bool isAccepted)
-        //{
-        //    Property property = await _unitOfWork
-        //                                    .Properties
-        //                                    .Find(id); 
-        //    if (property == null)
-        //    {
-        //        throw new PropertyNotFoundException(id);
-        //    }
-
-        //    if (property.IsVerified)
-        //    {
-        //        throw new PropertyAlreadyVerifiedException();
-        //    }
-
-        //    property.IsVerified = true;
-        //    property.VerificationStatus = isAccepted ? Domain.Enums.VerificationStatus.ACCEPTED : Domain.Enums.VerificationStatus.REJECTED;
-
-        //    await _unitOfWork.Save();
-
-        //    return _mapper.Map<DisplayPropertyDTO>(property);   
-        //}
-
         // Validations
-        // TODO: Add validations for images
 
-        private void ValidateNewProperty(NewPropertyDTO newPropertyDTO)
+        private static void ValidateNewProperty(NewPropertyDTO newPropertyDTO)
         {
             ValidateName(newPropertyDTO.Name);
             ValidateDescription(newPropertyDTO.Description);
         }
 
-        private void ValidateUpdateProperty(UpdateBasicPropertyInformationDTO updatePropertyDTO)
+        private static void ValidateUpdateProperty(UpdateBasicPropertyInformationDTO updatePropertyDTO)
         {
             ValidateName(updatePropertyDTO.Name);
             ValidateDescription(updatePropertyDTO.Description);
         }
 
-        private void ValidateName(string name)
+        private static void ValidateName(string name)
         {
             if (String.IsNullOrWhiteSpace(name))
             {
@@ -291,7 +267,7 @@ namespace Service
             }
         }
 
-        private void ValidateDescription(string description)
+        private static void ValidateDescription(string description)
         {
             if (String.IsNullOrWhiteSpace(description))
             {
