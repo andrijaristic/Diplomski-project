@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import {
@@ -8,19 +8,72 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Logout } from "@mui/icons-material";
-import PersonIcon from "@mui/icons-material/Person";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { logout } from "../../../store/userSlice";
+import { useAppSelector } from "../../../store/hooks";
 import { IJwt } from "../../../shared/interfaces/userInterfaces";
+import PersonIcon from "@mui/icons-material/Person";
+import EnhancedEncryptionIcon from "@mui/icons-material/EnhancedEncryption";
+import MessageIcon from "@mui/icons-material/Message";
+import BedIcon from "@mui/icons-material/Bed";
+import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+
+type NavItem = {
+  title: string;
+  to: string;
+  icon: JSX.Element;
+};
+
+const generateNavigationItems = (userType: string, isVerified: boolean) => {
+  const items: NavItem[] = [];
+
+  items.push({ title: "Account", to: `/account`, icon: <PersonIcon /> });
+  items.push({
+    title: "Change password",
+    to: `/account/change-password`,
+    icon: <EnhancedEncryptionIcon />,
+  });
+  items.push({
+    title: "Comments",
+    to: `/account/comments`,
+    icon: <MessageIcon />,
+  });
+  items.push({
+    title: "Reservations",
+    to: `/account/reservations`,
+    icon: <BedIcon />,
+  });
+
+  if (userType === "PROPERTYOWNER" && isVerified) {
+    items.push({
+      title: "My listings",
+      to: `/account/my-listings`,
+      icon: <MapsHomeWorkIcon />,
+    });
+  }
+
+  if (userType === "ADMIN") {
+    items.push({
+      title: "Unverified users",
+      to: "/account/unverified-users",
+      icon: <PeopleAltIcon color="error" />,
+    });
+  }
+
+  return items;
+};
 
 const AvatarWithOptions: FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.user.token);
+  const user = useAppSelector((state) => state.user.user);
+
+  const items: NavItem[] = useMemo(() => {
+    return generateNavigationItems(user?.role || "", user?.isVerified || false);
+  }, [user?.role, user?.isVerified]);
 
   const { firstName, lastName } = jwtDecode<IJwt>(token ? token : "");
 
@@ -35,15 +88,17 @@ const AvatarWithOptions: FC = () => {
     setAnchorEl(null);
   };
 
-  const handleAccountClick = () => {
-    navigate("/account");
+  const handleAccountClick = (to: string) => () => {
+    navigate(to);
     setAnchorEl(null);
   };
 
-  const logoutHandler = () => {
-    dispatch(logout());
-    setAnchorEl(null);
-  };
+  const content: JSX.Element[] = items?.map((item) => (
+    <MenuItem key={item.to} onClick={handleAccountClick(item.to)}>
+      <ListItemIcon>{item.icon}</ListItemIcon>
+      {item.title}
+    </MenuItem>
+  ));
 
   return (
     <>
@@ -57,8 +112,9 @@ const AvatarWithOptions: FC = () => {
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
+            sx={{ textTransform: "capitalize" }}
           >
-            <Typography>{`${firstName} ${lastName}`}</Typography>
+            <Typography variant="h6">{`${firstName} ${lastName}`}</Typography>
           </Button>
         </Box>
       </Tooltip>
@@ -97,19 +153,9 @@ const AvatarWithOptions: FC = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleAccountClick}>
-          <ListItemIcon>
-            <PersonIcon fontSize="medium" />
-          </ListItemIcon>
-          Account
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={logoutHandler}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        <Stack divider={<Divider orientation="horizontal" flexItem />}>
+          {content}
+        </Stack>
       </Menu>
     </>
   );

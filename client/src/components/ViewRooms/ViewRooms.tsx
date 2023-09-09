@@ -56,7 +56,7 @@ const ViewRooms: FC<IProps> = ({ id }) => {
   return (
     <Box
       sx={{
-        p: 12,
+        p: 8,
         pt: 8,
         display: "flex",
         flexDirection: "row-reverse",
@@ -67,7 +67,7 @@ const ViewRooms: FC<IProps> = ({ id }) => {
         sx={{
           borderRadius: 4,
           height: 640,
-          width: "24%",
+          width: 500,
           border: `1px solid ${grey[400]}`,
         }}
       >
@@ -78,8 +78,8 @@ const ViewRooms: FC<IProps> = ({ id }) => {
       </Card>
       <Card
         sx={{
-          width: "80%",
-          minWidth: "50%",
+          width: "70%",
+          minWidth: "40%",
           height: 680,
           overflow: "auto",
           borderRadius: 4,

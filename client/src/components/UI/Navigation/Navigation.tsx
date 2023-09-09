@@ -1,11 +1,10 @@
 import React, { FC, useMemo } from "react";
-import { NavLink } from "react-router-dom";
-import { useAppSelector } from "../../../store/hooks";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   AppBar,
   Box,
   Button,
-  Link,
   Divider,
   List,
   ListItem,
@@ -15,6 +14,7 @@ import {
 } from "@mui/material";
 import Logo from "../Logo/Logo";
 import AvatarWithOptions from "../Avatar/AvatarWithOptions";
+import { logout } from "../../../store/userSlice";
 
 interface IItem {
   name: string;
@@ -37,6 +37,7 @@ const generateNavItems = (
 };
 
 const Navigation: FC = () => {
+  const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const user = useAppSelector((state) => state.user.user);
   const isVerifiedOwner = user?.role === "PROPERTYOWNER" && user?.isVerified;
@@ -57,6 +58,10 @@ const Navigation: FC = () => {
     );
   });
 
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <>
       <AppBar
@@ -65,10 +70,11 @@ const Navigation: FC = () => {
           display: "flex",
           justifyContent: "center",
           height: "6rem",
-          backgroundColor: "background.default",
+          backgroundColor: "nav.default",
         }}
       >
         <Toolbar
+          disableGutters
           sx={{
             display: "flex",
             alignItems: "center",
@@ -96,6 +102,7 @@ const Navigation: FC = () => {
               >
                 <AvatarWithOptions />
                 <Button
+                  onClick={handleLogout}
                   sx={{
                     fontSize: 18,
                     color: "secondary.main",
@@ -118,6 +125,7 @@ const Navigation: FC = () => {
                   <Button
                     sx={{
                       fontSize: 18,
+                      color: "secondary.main",
                       ":hover": {
                         bgcolor: "secondary.main",
                         color: "white",
@@ -131,6 +139,7 @@ const Navigation: FC = () => {
                   <Button
                     sx={{
                       fontSize: 18,
+                      color: "secondary.main",
                       ":hover": {
                         bgcolor: "secondary.main",
                         color: "white",

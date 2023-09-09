@@ -3,21 +3,25 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Box, CssBaseline } from "@mui/material";
 import AppRoutes from "./routes/AppRoutes";
 import { lightTheme } from "./styles/theme";
-import { CssBaseline } from "@mui/material";
 
 function App() {
   return (
-    <main className="container light">
-      <CssBaseline />
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={lightTheme}>
+      <Box
+        component="main"
+        className="container light"
+        sx={{ backgroundColor: "background.default" }}
+      >
+        <CssBaseline />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <AppRoutes />
           <ToastContainer theme="dark" limit={2} newestOnTop />
-        </ThemeProvider>
-      </LocalizationProvider>
-    </main>
+        </LocalizationProvider>
+      </Box>
+    </ThemeProvider>
   );
 }
 

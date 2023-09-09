@@ -61,8 +61,8 @@ const Home: FC = () => {
   return (
     <Fade in>
       <Box component="form" onSubmit={handleSearch}>
-        <section className={styles.image}>
-          <div className={styles.image__filter}>
+        <Box className={styles.image}>
+          <Box className={styles.image__filter}>
             <TextField
               variant="outlined"
               type="search"
@@ -101,8 +101,8 @@ const Home: FC = () => {
             <StyledButton submit sx={{ height: "3.5rem" }}>
               Search
             </StyledButton>
-          </div>
-        </section>
+          </Box>
+        </Box>
         <section className={styles.card}>{content}</section>
       </Box>
     </Fade>

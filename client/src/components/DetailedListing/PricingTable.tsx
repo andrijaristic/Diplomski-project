@@ -117,9 +117,9 @@ const PricingTable: FC<IProps> = ({
       </TableContainer>
     );
   } else {
-    const title = `${roomType?.adults} ${
+    const title = `${roomType?.adults || "0"} ${
       roomType?.adults === 1 ? "Adult" : "Adults"
-    }, ${roomType?.children} ${
+    }, ${roomType?.children || "0"} ${
       roomType?.children === 1 ? "Child" : "Children"
     }`;
     return (

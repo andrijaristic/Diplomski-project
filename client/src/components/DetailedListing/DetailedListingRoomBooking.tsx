@@ -1,5 +1,13 @@
 import { FC, useEffect, useState } from "react";
-import { Box, Button, Card, Divider, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { IRoomSearchDisplay } from "../../shared/interfaces/roomInterfaces";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { useParams } from "react-router-dom";
@@ -20,7 +28,6 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
   const dispatch = useAppDispatch();
   const stripeUrl = useAppSelector((state) => state.reservations.stripeUrl);
   const token = useAppSelector((state) => state.user.token);
-  const { id: userId } = jwtDecode<IJwt>(token ? token : "");
   const { id: propertyId } = useParams();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -38,6 +45,10 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
   }, [stripeUrl]);
 
   const handleOnlinePayment = () => {
+    if (!token) {
+      return;
+    }
+    const { id: userId } = jwtDecode<IJwt>(token ? token : "");
     const newReservation: INewReservation = {
       userId: userId,
       propertyId: propertyId ? propertyId : "",
@@ -51,6 +62,11 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
   };
 
   const handleInPersonPayment = () => {
+    if (!token) {
+      return;
+    }
+
+    const { id: userId } = jwtDecode<IJwt>(token ? token : "");
     const newReservation: INewReservation = {
       userId: userId,
       propertyId: propertyId ? propertyId : "",
@@ -64,10 +80,9 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
   };
 
   return (
-    <Card
-      sx={{ width: "60%", borderRadius: 2, p: 1, border: "1px solid black" }}
-    >
-      <Grid container direction="row">
+    <Card sx={{ width: "60%", borderRadius: 2, border: "1px solid black" }}>
+      <Paper sx={{ height: 4, bgcolor: "secondary.main" }} />
+      <Grid container direction="row" sx={{ p: 1 }}>
         <Grid item xs={9}>
           <Grid container direction="column">
             <Box sx={{ width: "fit-content" }}>
@@ -97,13 +112,18 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
               height: "100%",
             }}
           >
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <Typography sx={{ ml: "auto", mr: 1 }}>Price</Typography>
               <Typography sx={{ ml: "auto", mr: 1 }}>${room?.price}</Typography>
             </Box>
-            <Typography sx={{ ml: "auto", mr: 1 }}>
-              <Button onClick={handleModalToggle}>Make reservation</Button>
-            </Typography>
+            <Button onClick={handleModalToggle} disabled={token === null}>
+              Make reservation
+            </Button>
             {isOpen && (
               <ReservationModal
                 open={isOpen}

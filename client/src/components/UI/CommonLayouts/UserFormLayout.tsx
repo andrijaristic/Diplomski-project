@@ -20,7 +20,14 @@ const UserFormLayout: FC = () => {
             }}
           />
         </Grid>
-        <Grid item lg={4} md={6} sm={8} xs={12}>
+        <Grid
+          item
+          lg={4}
+          md={6}
+          sm={8}
+          xs={12}
+          sx={{ backgroundColor: "nav.default" }}
+        >
           <Outlet />
         </Grid>
       </Grid>

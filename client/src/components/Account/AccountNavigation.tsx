@@ -12,10 +12,7 @@ const generateNavigationItems = (userType: string, isVerified: boolean) => {
   const items: NavItem[] = [];
 
   items.push({ title: "account", to: `/account` });
-  items.push({
-    title: "change password",
-    to: `/account/change-password`,
-  });
+  items.push({ title: "change password", to: `/account/change-password` });
   items.push({ title: "comments", to: `/account/comments` });
   items.push({ title: "reservations", to: `/account/reservations` });
 

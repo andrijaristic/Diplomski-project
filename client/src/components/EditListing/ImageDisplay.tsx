@@ -82,6 +82,12 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
             size="small"
             onClick={handleNext}
             disabled={activeStep === maxSteps - 1}
+            sx={{
+              ":hover": {
+                bgcolor: "secondary.main",
+                color: "white",
+              },
+            }}
           >
             Next
             {theme.direction === "rtl" ? (
@@ -97,6 +103,12 @@ const ImageDisplay: FC<IProps> = ({ edit = false, images, onDelete }) => {
             variant="outlined"
             onClick={handleBack}
             disabled={activeStep === 0}
+            sx={{
+              ":hover": {
+                bgcolor: "secondary.main",
+                color: "white",
+              },
+            }}
           >
             {theme.direction === "rtl" ? (
               <KeyboardArrowRight />

@@ -103,7 +103,7 @@ const Listings: FC = () => {
 
   return (
     <Fade in>
-      <Grid container>
+      <Grid container sx={{ pb: 4 }}>
         <Grid item xs={9}>
           <Grid container direction="column" sx={{ pt: 8, pl: 3 }}>
             <Grid item>

@@ -82,13 +82,5 @@ namespace Web.API.Controllers
             await _propertyService.DeleteProperty(id, User.Identity.Name);
             return NoContent();
         }
-
-        //[HttpPut("{id}/verify")]
-        //[Authorize(Roles = "admin")]
-        //public async Task<IActionResult> VerifyAccommodation(Guid id, [FromBody] VerifyPropertyDTO verifyPropertyDTO)
-        //{
-        //    DisplayPropertyDTO displayPropertyDTO = await _propertyService.VerifyProperty(id, verifyPropertyDTO.IsAccepted);
-        //    return Ok(displayPropertyDTO);
-        //}
     }
 }
