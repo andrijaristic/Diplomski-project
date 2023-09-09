@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   AppBar,
@@ -71,6 +71,7 @@ const Navigation: FC = () => {
           justifyContent: "center",
           height: "6rem",
           backgroundColor: "nav.default",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
         <Toolbar
