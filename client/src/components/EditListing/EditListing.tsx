@@ -1,5 +1,5 @@
 import React, { FC, useRef, useState } from "react";
-import { Box, Button, Divider, Fade, Grid, Typography } from "@mui/material";
+import { Box, Divider, Fade, Grid, Typography } from "@mui/material";
 import { HookTypes } from "../../shared/types/enumerations";
 import PricingTable from "../DetailedListing/PricingTable";
 import UserInformationField from "../UserInformation/UserInformationField";
@@ -13,49 +13,39 @@ import { IJwt } from "../../shared/interfaces/userInterfaces";
 import {
   IAccommodationBasicInformation,
   IAddAccommodationImage,
+  IDeleteAccomodationImage,
 } from "../../shared/interfaces/accommodationInterfaces";
 import {
   addAccommodationImageAction,
+  deleteAccommodationImageAction,
   updateBasicAccommodationInformationAction,
 } from "../../store/accommodationSlice";
 import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
+import { IUpdateRoomType } from "../../shared/interfaces/roomTypeInterfaces";
+import { IUpdateSeasonalPricing } from "../../shared/interfaces/seasonalPricingInterfaces";
+import { updateRoomTypeAction } from "../../store/roomTypeSlice";
 
 const EditListingPage: FC = () => {
   const dispatch = useAppDispatch();
-  const { id: propertyId } = useParams();
+  const { id: accommodationId } = useParams();
   const token = useAppSelector((state) => state.user.token);
   const accommodation = useAppSelector(
     (state) => state.accommodations.detailedAccommodation
   );
+  const roomTypes = useAppSelector((state) => state.roomTypes.roomTypes);
 
-  const { id: userId } = jwtDecode<IJwt>(token ? token : "");
+  const { id: userId } = jwtDecode<IJwt>(token ?? "");
 
   const imageInput = useRef<HTMLInputElement>(null);
   const [displayImage, setDisplayImage] = useState<string | undefined>("");
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
 
-  const pricingTables: JSX.Element[] | undefined =
-    accommodation?.roomTypes?.map((roomType) => (
-      <Box
-        component="form"
-        onSubmit={handlePriceEditSubmit}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          height: "fit-content",
-        }}
-      >
-        <PricingTable edit={true} roomType={roomType} />
-        <Button type="submit" sx={{ ml: "auto", pt: 1 }}>
-          Submit price changes
-        </Button>
-      </Box>
-    ));
-
   const images: IAccommodationImage[] = [];
   if (accommodation?.thumbnailImage) {
-    images.push(accommodation?.thumbnailImage);
     accommodation?.images.map((image) => images.push(image));
+    if (images.length === 0) {
+      images.push(accommodation?.thumbnailImage);
+    }
   }
 
   const imageUploadHandler = () => {
@@ -92,11 +82,21 @@ const EditListingPage: FC = () => {
     data.append("image", uploadedImage);
 
     const addAccommodationImage: IAddAccommodationImage = {
-      propertyId: propertyId ? propertyId : "",
+      accommodationId: accommodationId ?? "",
       data: data,
     };
 
     dispatch(addAccommodationImageAction(addAccommodationImage));
+  };
+
+  const handleImageDelete = (imageId: string) => {
+    const deleteImage: IDeleteAccomodationImage = {
+      accommodationId: accommodationId ?? "",
+      imageId: imageId ?? "",
+      userId: userId ?? "",
+    };
+
+    dispatch(deleteAccommodationImageAction(deleteImage));
   };
 
   const handleEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -111,7 +111,7 @@ const EditListingPage: FC = () => {
     }
 
     const basicInformation: IAccommodationBasicInformation = {
-      propertyId: propertyId ? propertyId : "",
+      accommodationId: accommodationId ?? "",
       userId: userId,
       name: name.toString().trim(),
       description: description.toString().trim(),
@@ -120,16 +120,44 @@ const EditListingPage: FC = () => {
     dispatch(updateBasicAccommodationInformationAction(basicInformation));
   };
 
-  const handlePriceEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handlePriceEditSubmit =
+    (roomTypeId: string) => (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    // Extracts all prices from table
-    const data = new FormData(event.currentTarget);
-    const pricings: any[] = []; // proper type
-    for (const kvp of data.entries()) {
-      pricings.push({ id: kvp[0], price: kvp[1] });
-    }
-  };
+      // Extracts all prices from table
+      const data = new FormData(event.currentTarget);
+      const pricings: IUpdateSeasonalPricing[] = []; // proper type
+      for (const kvp of data.entries()) {
+        pricings.push({ id: kvp[0], price: kvp[1] as string });
+      }
+
+      const updateRoomType: IUpdateRoomType = {
+        roomTypeId: roomTypeId,
+        seasonalPrices: pricings,
+      };
+
+      dispatch(updateRoomTypeAction(updateRoomType));
+    };
+
+  const pricingTables: JSX.Element[] | undefined = roomTypes?.map(
+    (roomType) => (
+      <Box
+        component="form"
+        key={roomType.id}
+        onSubmit={handlePriceEditSubmit(roomType.id)}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "fit-content",
+        }}
+      >
+        <PricingTable edit={true} roomType={roomType} />
+        <StyledButton submit sx={{ ml: "auto", mt: 1 }}>
+          Submit price changes
+        </StyledButton>
+      </Box>
+    )
+  );
 
   return (
     <Fade in>
@@ -147,7 +175,7 @@ const EditListingPage: FC = () => {
           <Grid item>
             <UserInformationField
               id="name"
-              label="Property listing title"
+              label="Accommodation listing name"
               defaultValue={accommodation?.name}
               disabled={true}
               type={HookTypes.TEXT}
@@ -156,7 +184,7 @@ const EditListingPage: FC = () => {
           <Grid item>
             <UserInformationField
               id="description"
-              label="Property listing title"
+              label="Accommodation listing description"
               defaultValue={accommodation?.description}
               disabled={true}
               type={HookTypes.TEXT}
@@ -170,12 +198,13 @@ const EditListingPage: FC = () => {
 
         <Divider />
         <Grid item sx={{ pt: 2 }}>
+          <Typography variant="h4">Room pricings</Typography>
           <Box
             sx={{
+              pt: 2,
               pb: 2,
               display: "flex",
               flexWrap: "wrap",
-              justifyContent: "space-around",
               flexGrow: 1,
               flexShrink: 1,
               gap: 1,
@@ -196,7 +225,7 @@ const EditListingPage: FC = () => {
         </Grid>
         <Divider />
         <Grid item sx={{ display: "flex" }}>
-          <ImageDisplay edit images={images} />
+          <ImageDisplay edit images={images} onDelete={handleImageDelete} />
           <AddImagePicker
             header
             image={displayImage}

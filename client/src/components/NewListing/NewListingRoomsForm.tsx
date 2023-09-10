@@ -35,8 +35,8 @@ function getMonths() {
     const month = i;
     months.push({
       monthName: getMonthName(month),
-      from: new Date(date.getFullYear(), month, 1),
-      to: new Date(date.getFullYear(), month + 1, 0),
+      from: new Date(date.getFullYear(), month, 1, 12, 0, 0, 0),
+      to: new Date(date.getFullYear(), month + 1, 0, 12, 0, 0, 0),
     });
   }
 
@@ -92,10 +92,10 @@ const NewListingRoomsForm: FC = () => {
     }
 
     const newRoomType: INewRoomType = {
-      adults: adults,
-      children: children,
-      amountOfRooms: amountOfRooms,
-      propertyId: accommodationId,
+      adults: parseInt(adults as string) ?? 1,
+      children: parseInt(children as string) ?? 1,
+      amountOfRooms: parseInt(amountOfRooms as string) ?? 1,
+      accommodationId: accommodationId ?? "",
       seasonalPricing: seasonalPricings,
     };
 

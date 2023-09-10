@@ -4,15 +4,17 @@ import { grey } from "@mui/material/colors";
 
 interface IProps {
   message: string;
+  secondary?: string;
 }
 
-const EmptyArrayMessage: FC<IProps> = ({ message }) => {
+const EmptyArrayMessage: FC<IProps> = ({ message, secondary }) => {
   return (
     <Card
       sx={{
         p: 2,
         pt: 1,
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         borderRadius: 4,
         height: "fit-content",
@@ -21,6 +23,9 @@ const EmptyArrayMessage: FC<IProps> = ({ message }) => {
     >
       <Typography variant="h3" color="info">
         {message}
+      </Typography>
+      <Typography variant="h4" color="info">
+        {secondary}
       </Typography>
     </Card>
   );

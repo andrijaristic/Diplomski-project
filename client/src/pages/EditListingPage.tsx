@@ -5,6 +5,7 @@ import LoadingModal from "../components/UI/Modal/LoadingModal";
 import { ApiCallState } from "../shared/types/enumerations";
 import { useParams } from "react-router-dom";
 import { getAccommodationByIdAction } from "../store/accommodationSlice";
+import { getRoomTypesForAccommodationAction } from "../store/roomTypeSlice";
 
 const EditListingPage: FC = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +14,8 @@ const EditListingPage: FC = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    dispatch(getAccommodationByIdAction(id ? id : ""));
+    dispatch(getAccommodationByIdAction(id ?? ""));
+    dispatch(getRoomTypesForAccommodationAction(id ?? ""));
   }, [id, dispatch]);
   return (
     <>

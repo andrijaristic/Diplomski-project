@@ -9,6 +9,7 @@ import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import AccountNavigationDrawerItem from "./AccountNavigationDrawerItem";
 import { useLocation, useNavigate } from "react-router-dom";
+import EmptyArrayMessage from "../UI/EmptyArrayMessage/EmptyArrayMessage";
 
 type NavItem = {
   title: string;
@@ -47,7 +48,7 @@ const generateNavigationItems = (userType: string, isVerified: boolean) => {
     index: index++,
   });
 
-  if (userType === "PROPERTYOWNER" && isVerified) {
+  if (userType === "OWNER" && isVerified) {
     items.push({
       title: "My listings",
       to: `/account/my-listings`,

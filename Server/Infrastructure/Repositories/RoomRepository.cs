@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         {
             var source = _dbContext
                             .Rooms
-                            .Where(r => r.PropertyId == searchRoomDTO.PropertyId)
+                            .Where(r => r.AccommodationId == searchRoomDTO.AmenityId)
                             .Include(r => r.OccupiedDates)
                             .Include(r => r.RoomType)
                             .ThenInclude(rt => rt.SeasonalPricing)
@@ -50,11 +50,11 @@ namespace Infrastructure.Repositories
             return source.ToListAsync();
         }
 
-        public async Task<Room> FindByIdAndProperty(Guid roomId, Guid propertyId)
+        public async Task<Room> FindByIdAndAccommodation(Guid roomId, Guid propertyId)
         {
             Room room = await _dbContext
                                     .Rooms
-                                    .Where(r => r.Id == roomId && r.PropertyId == propertyId)
+                                    .Where(r => r.Id == roomId && r.AccommodationId == propertyId)
                                     .Include(r => r.OccupiedDates)
                                     .Include(r => r.RoomType)
                                     .ThenInclude(rt => rt.SeasonalPricing)
@@ -67,11 +67,11 @@ namespace Infrastructure.Repositories
             Room room = await _dbContext
                                     .Rooms
                                     .Where(r => r.Id == id &&
-                                                r.PropertyId == propertyId)
+                                                r.AccommodationId == propertyId)
                                     .Include(r => r.Reservations
                                     .Where(rs => rs.DepartureDate.Date >= date))
                                     .Include(r => r.RoomType)
-                                    .Include(r => r.Property)
+                                    .Include(r => r.Accommodation)
                                     .FirstOrDefaultAsync();
             return room;
         }
@@ -81,7 +81,7 @@ namespace Infrastructure.Repositories
             List<Room> rooms = await _dbContext
                                             .Rooms
                                             .Where(r => !r.IsDeleted &&
-                                                         r.PropertyId == accommodationId)
+                                                         r.AccommodationId == accommodationId)
                                             .Include(r => r.RoomType)
                                             .ThenInclude(rt => rt.SeasonalPricing)
                                             .Include(r => r.Reservations

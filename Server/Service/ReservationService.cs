@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Contracts.ReservationDTOs;
-using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.AccommodationExceptions;
 using Domain.Exceptions.ReservationExceptions;
 using Domain.Exceptions.RoomExceptions;
 using Domain.Interfaces.Repositories;
@@ -30,14 +30,14 @@ namespace Service
             foreach (var displayReservationDTO in displayReservationDTOs)
             {
                 Accommodation property = await _unitOfWork
-                                                .Properties
-                                                .Find(displayReservationDTO.PropertyId);
+                                                    .Accommodations
+                                                    .Find(displayReservationDTO.AmenityId);
                 if (property is null)
                 {
-                    throw new PropertyNotFoundException(displayReservationDTO.PropertyId);
+                    throw new AccommodationNotFoundException(displayReservationDTO.AmenityId);
                 }
 
-                displayReservationDTO.PropertyName = property.Name;
+                displayReservationDTO.AmenityName = property.Name;
             }
 
             return displayReservationDTOs;
@@ -46,16 +46,16 @@ namespace Service
         public async Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO, bool online)
         {
             bool propertyExists = await _unitOfWork
-                                            .Properties
-                                            .Find(newReservationDTO.PropertyId) != null;
+                                                .Accommodations
+                                                .Find(newReservationDTO.PropertyId) != null;
             if (!propertyExists)
             {
-                throw new PropertyNotFoundException(newReservationDTO.PropertyId);
+                throw new AccommodationNotFoundException(newReservationDTO.PropertyId);
             }
 
             Room room = await _unitOfWork
                                     .Rooms
-                                    .FindByIdAndProperty(newReservationDTO.RoomId,
+                                    .FindByIdAndAccommodation(newReservationDTO.RoomId,
                                                         newReservationDTO.PropertyId);
             if (room is null)
             {

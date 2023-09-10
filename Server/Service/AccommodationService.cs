@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Contracts.AccommodationDTOs;
 using Contracts.Common;
-using Domain.Exceptions.PropertyExceptions;
-using Domain.Exceptions.PropertyUtilityExceptions;
+using Domain.Exceptions.AccommodationExceptions;
+using Domain.Exceptions.AmenityExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -39,29 +39,29 @@ namespace Service
             }
 
             Accommodation accommodation = await _unitOfWork
-                                                .Properties
-                                                .GetWithFavorites(accommodationId);
+                                                        .Accommodations
+                                                        .GetWithFavorites(accommodationId);
             if (accommodation is null)
             {
-                throw new PropertyNotFoundException(accommodationId);
+                throw new AccommodationNotFoundException(accommodationId);
             }
 
-            SavedProperty? savedProperty = accommodation
-                                            .SavedProperties
-                                            .FirstOrDefault(sp => sp.UserId == user.Id &&
-                                                            sp.PropertyId == accommodation.Id);
+            SavedAccommodation? savedProperty = accommodation
+                                                        .SavedAccommodations
+                                                        .FirstOrDefault(sp => sp.UserId == user.Id &&
+                                                                        sp.AccommodationId == accommodation.Id);
             if (savedProperty is null)
             {
-                savedProperty = new SavedProperty()
+                savedProperty = new SavedAccommodation()
                 {
                     UserId = user.Id,
-                    PropertyId = accommodation.Id
+                    AccommodationId = accommodation.Id
                 };
-                accommodation.SavedProperties.Add(savedProperty);
+                accommodation.SavedAccommodations.Add(savedProperty);
             }
             else
             {
-                accommodation.SavedProperties.Remove(savedProperty);
+                accommodation.SavedAccommodations.Remove(savedProperty);
             }
 
             await _unitOfWork.Save();
@@ -70,8 +70,8 @@ namespace Service
         public async Task<PagedListDTO<DisplayAccommodationDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO, string username)
         {
             IEnumerable<Accommodation> accommodations = await _unitOfWork
-                                                        .Properties
-                                                        .GetFilteredAcccommodations(searchParamsDTO);
+                                                                    .Accommodations
+                                                                    .GetFilteredAcccommodations(searchParamsDTO);
             if (accommodations == null)
             {
                 throw new InvalidSearchParamsException();
@@ -100,7 +100,7 @@ namespace Service
                     dtos.Items
                         .Where(item => item.Id == accommodation.Id)
                         .First().IsSaved = accommodation
-                                                .SavedProperties
+                                                .SavedAccommodations
                                                 .Any(acc => acc.UserId == user.Id);
                 }
             }
@@ -111,27 +111,27 @@ namespace Service
         public async Task<List<AccommodationPreviewDTO>> GetHighestRatedAccommodations()
         {
             List<Accommodation> accommodations = await _unitOfWork
-                                                    .Properties
-                                                    .GetHighestRatedAccommodations();
+                                                            .Accommodations
+                                                            .GetHighestRatedAccommodations();
             return _mapper.Map<List<AccommodationPreviewDTO>>(accommodations);
         }
 
         public async Task<List<DisplayAccommodationDTO>> GetUserAccommodations(Guid userId)
         {
             List<Accommodation> accommodations = await _unitOfWork
-                                                    .Properties
-                                                    .GetUserAccommodations(userId);
+                                                            .Accommodations
+                                                            .GetUserAccommodations(userId);
             return _mapper.Map<List<DisplayAccommodationDTO>>(accommodations);
         }
 
         public async Task<DetailedAccommodationDTO> GetById(Guid id)
         {
             Accommodation accommodation = await _unitOfWork
-                                            .Properties
-                                            .GetFullAccommodationById(id);
+                                                        .Accommodations
+                                                        .GetFullAccommodationById(id);
             if (accommodation is null)
             {
-                throw new PropertyNotFoundException(id);
+                throw new AccommodationNotFoundException(id);
             }
 
             for (int i = 0; i < accommodation.Images.Count; i++)
@@ -157,15 +157,15 @@ namespace Service
 
             if (user.Id != addAccommodationImageDTO.UserId)
             {
-                throw new InvalidUserIdInNewPropertyException();
+                throw new InvalidUserIdInNewAccommodationException();
             }
 
             Accommodation accommodation = await _unitOfWork
-                                            .Properties
-                                            .GetFullAccommodationById(id);
+                                                    .Accommodations
+                                                    .GetFullAccommodationById(id);
             if (accommodation is null)
             {
-                throw new PropertyNotFoundException(id);
+                throw new AccommodationNotFoundException(id);
             }
 
             AccommodationImage image = new AccommodationImage()
@@ -174,17 +174,61 @@ namespace Service
                                         _settings.Value.DefaultImagePath :
                                         await ImageHelper.SaveImage(addAccommodationImageDTO.Image,
                                                                     accommodation.Id,
-                                                                    _hostEnvironment.ContentRootPath)
+                                                                    _hostEnvironment.ContentRootPath),
             };
 
             if (accommodation.Images.Count == 5)
             {
-                throw new PropertyImageAmountExceededException();
+                throw new AccommodationImageAmountExceededException();
             }
 
             accommodation.Images.Add(image);
             await _unitOfWork.Save();
 
+            return _mapper.Map<DetailedAccommodationDTO>(accommodation);
+        }
+
+        public async Task<DetailedAccommodationDTO> DeleteAccommodationImage(Guid accomodationId, DeleteImageDTO deleteImageDTO, string username)
+        {
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (user.Id != deleteImageDTO.UserId)
+            {
+                throw new InvalidUserIdInNewAccommodationException();
+            }
+
+            Accommodation accommodation = await _unitOfWork
+                                                    .Accommodations
+                                                    .GetFullAccommodationById(accomodationId);
+            if (accommodation is null)
+            {
+                throw new AccommodationNotFoundException(accomodationId);
+            }
+
+            if (accommodation.ThumbnailImage.Id == deleteImageDTO.ImageId)
+            {
+                throw new InvalidImageDeletePermission();
+            }
+
+            AccommodationImage? image = accommodation
+                                                .Images
+                                                .Where(x => x.Id == deleteImageDTO.ImageId)
+                                                .FirstOrDefault();
+            if (image is not null)
+            {
+                accommodation.Images.Remove(image);
+                ImageHelper.DeleteImage(image.ImageURL, _hostEnvironment.ContentRootPath);
+
+                _unitOfWork.AccommodationImages.Remove(image);
+            }
+
+            await _unitOfWork.Save();
             return _mapper.Map<DetailedAccommodationDTO>(accommodation);
         }
 
@@ -202,12 +246,12 @@ namespace Service
 
             if (user.Id != newAccommodationDTO.UserId)
             {
-                throw new InvalidUserIdInNewPropertyException();
+                throw new InvalidUserIdInNewAccommodationException();
             }
 
             if (user.Role != Domain.Enums.UserType.OWNER)
             {
-                throw new InvalidPropertyUserRoleException();
+                throw new InvalidAccomodationUserRoleException();
             }
 
             if (!user.IsVerified || user.VerificationStatus == Domain.Enums.VerificationStatus.REJECTED)
@@ -216,34 +260,36 @@ namespace Service
             }
 
 
-            Accommodation property = _mapper.Map<Accommodation>(newAccommodationDTO);
-            property.Utilities = new List<Amenity>();
-            foreach (Guid utilityId in newAccommodationDTO.Utilities)
+            Accommodation accommodation = _mapper.Map<Accommodation>(newAccommodationDTO);
+            accommodation.Amenities = new List<Amenity>();
+            foreach (Guid utilityId in newAccommodationDTO.Amenities)
             {
                 Amenity utility = await _unitOfWork
-                                                    .PropertyUtilities
+                                                    .Amenities
                                                     .Find(utilityId);
                 if (utility is null)
                 {
-                    throw new UtilityNotFoundException(utilityId);
+                    throw new AmenityNotFoundException(utilityId);
                 }
-                property.Utilities.Add(utility);
+                accommodation.Amenities.Add(utility);
             }
 
-            await _unitOfWork.Properties.Add(property);
+            await _unitOfWork.Accommodations.Add(accommodation);
 
-            property.ThumbnailImage = new AccommodationImage()
+            AccommodationImage thumbnailImage = new AccommodationImage()
             {
                 ImageURL = newAccommodationDTO.ThumbnailImage is null ?
                                         _settings.Value.DefaultImagePath :
                                         await ImageHelper.SaveImage(newAccommodationDTO.ThumbnailImage,
-                                                                    property.Id,
+                                                                    accommodation.Id,
                                                                     _hostEnvironment.ContentRootPath)
             };
 
+            accommodation.ThumbnailImage = thumbnailImage;
+            accommodation.Images.Add(thumbnailImage);
             await _unitOfWork.Save();
 
-            return _mapper.Map<DisplayAccommodationDTO>(property);
+            return _mapper.Map<DisplayAccommodationDTO>(accommodation);
         }
 
         public async Task<DisplayAccommodationDTO> UpdateBasicAccommodationInformation(Guid id, UpdateBasicAccommodationInformationDTO updatePropertyDTO, string username)
@@ -251,11 +297,11 @@ namespace Service
             ValidateUpdateProperty(updatePropertyDTO);
 
             Accommodation property = await _unitOfWork
-                                            .Properties
+                                            .Accommodations
                                             .Find(id);
             if (property is null)
             {
-                throw new PropertyNotFoundException(id);
+                throw new AccommodationNotFoundException(id);
             }
 
             User user = await _unitOfWork
@@ -268,7 +314,7 @@ namespace Service
 
             if (user.Id != updatePropertyDTO.UserId)
             {
-                throw new InvalidUserInPropertyException();
+                throw new InvalidUserInAccommodationException();
             }
 
             property.Name = updatePropertyDTO.Name.Trim();
@@ -282,11 +328,11 @@ namespace Service
         public async Task DeleteAccommodation(Guid id, string username)
         {
             Accommodation property = await _unitOfWork
-                                            .Properties
+                                            .Accommodations
                                             .Find(id);
             if (property == null)
             {
-                throw new PropertyNotFoundException(id);
+                throw new AccommodationNotFoundException(id);
             }
 
             User user = await _unitOfWork
@@ -299,7 +345,7 @@ namespace Service
 
             if (user.Id != property.UserId)
             {
-                throw new InvalidUserInPropertyException();
+                throw new InvalidUserInAccommodationException();
             }
 
             //_unitOfWork.Properties.Remove(property);
@@ -325,7 +371,7 @@ namespace Service
         {
             if (String.IsNullOrWhiteSpace(name))
             {
-                throw new InvalidPropertyNameException(name);
+                throw new InvalidAccommodationNameException(name);
             }
         }
 
@@ -333,7 +379,7 @@ namespace Service
         {
             if (String.IsNullOrWhiteSpace(description))
             {
-                throw new InvalidPropertyDescriptionException(description);
+                throw new InvalidAccommodationDescriptionException(description);
             }
         }
     }

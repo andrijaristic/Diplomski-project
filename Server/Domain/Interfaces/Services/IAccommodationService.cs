@@ -14,6 +14,7 @@ namespace Domain.Interfaces.Services
         Task DeleteAccommodation(Guid id, string username);
         Task<DetailedAccommodationDTO> GetById(Guid id);
         Task<DetailedAccommodationDTO> AddAccommodationImage(Guid id, AddAccommodationImageDTO addPropertyImageDTO, string username);
+        Task<DetailedAccommodationDTO> DeleteAccommodationImage(Guid imageId, DeleteImageDTO deleteImageDTO, string username);
         Task ToggleAccommodationFavoriteStatus(Guid accommodationId, string username);
     }
 }

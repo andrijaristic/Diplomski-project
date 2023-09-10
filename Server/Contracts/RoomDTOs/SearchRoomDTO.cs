@@ -2,7 +2,7 @@
 {
     public class SearchRoomDTO
     {
-        public Guid PropertyId { get; set; }
+        public Guid AmenityId { get; set; }
         public int Adults { get; set; }
         public int Children { get; set; }
         public DateTime ArrivalDate { get; set; }

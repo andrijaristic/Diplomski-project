@@ -9,10 +9,12 @@ import {
 import {
   createNewRoomType,
   getRoomTypesForAccommodation,
+  updateRoomType,
 } from "../services/RoomTypeService";
 import {
   INewRoomType,
   IRoomTypeDisplay,
+  IUpdateRoomType,
 } from "../shared/interfaces/roomTypeInterfaces";
 
 export interface RoomTypeState {
@@ -42,6 +44,18 @@ export const getRoomTypesForAccommodationAction = createAsyncThunk(
   async (id: string, thunkApi) => {
     try {
       const response = await getRoomTypesForAccommodation(id);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const updateRoomTypeAction = createAsyncThunk(
+  "roomTypes/updateRoomType",
+  async (updatRoomTypeData: IUpdateRoomType, thunkApi) => {
+    try {
+      const response = await updateRoomType(updatRoomTypeData);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -100,6 +114,24 @@ const roomTypeSlice = createSlice({
         errorNotification(error);
       }
     );
+
+    // UPDATE ROOM TYPE
+    builder.addCase(updateRoomTypeAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(updateRoomTypeAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("Successfully updated room type price list");
+    });
+    builder.addCase(updateRoomTypeAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
   },
 });
 

@@ -7,7 +7,7 @@ namespace Contracts.RoomTypeDTOs
         public Guid Id { get; set; }
         public int Adults { get; set; }
         public int Children { get; set; }
-        public Guid PropertyId { get; set; }
+        public Guid AccommodationId { get; set; }
         public int AmountOfRooms { get; set; }
         public List<NewSeasonalPricingDTO> SeasonalPricing { get; set; }
     }

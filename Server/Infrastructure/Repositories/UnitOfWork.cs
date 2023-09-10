@@ -6,33 +6,36 @@ namespace Infrastructure.Repositories
     {
         private readonly ProjectDbContext _dbContext;
         public IUserRepository Users { get; set; }
-        public IAccommodationRepository Properties { get; set; }
+        public IAccommodationRepository Accommodations { get; set; }
         public IReservationRepository Reservations { get; set; }
         public IRoomRepository Rooms { get; set; }
         public IRoomTypeRepository RoomTypes { get; set; }
         public ICommentRepository Comments { get; }
-        public IAmenityRepository PropertyUtilities { get; set; }
+        public IAmenityRepository Amenities { get; set; }
         public IReservedDaysRepository ReservedDays { get; set; }
+        public IAccommodationImageRepository AccommodationImages { get; set; }
 
         public UnitOfWork(ProjectDbContext dbContext,
                           IUserRepository users,
-                          IAccommodationRepository properties,
+                          IAccommodationRepository accommodations,
                           IReservationRepository reservations,
                           IRoomRepository rooms,
                           IRoomTypeRepository roomTypes,
                           ICommentRepository comments,
-                          IAmenityRepository propertyUtilities,
-                          IReservedDaysRepository reservedDays)
+                          IAmenityRepository amenities,
+                          IReservedDaysRepository reservedDays,
+                          IAccommodationImageRepository accommodationImages)
         {
             _dbContext = dbContext;
             Users = users;
-            Properties = properties;
+            Accommodations = accommodations;
             Reservations = reservations;
             Rooms = rooms;
             RoomTypes = roomTypes;
             Comments = comments;
-            PropertyUtilities = propertyUtilities;
+            Amenities = amenities;
             ReservedDays = reservedDays;
+            AccommodationImages = accommodationImages;
         }
 
         public async Task Save()

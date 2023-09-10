@@ -6,6 +6,7 @@ namespace Domain.Exceptions.RoomExceptions
     {
         public InvalidRoomSearchDatesException() : base("Arrival date cannot be after departure date and vice versa")
         {
+
         }
     }
 }

@@ -4,3 +4,8 @@ export interface ISeasonalPricing {
   endDate: Date;
   price: number;
 }
+
+export interface IUpdateSeasonalPricing {
+  id: string;
+  price: string;
+}

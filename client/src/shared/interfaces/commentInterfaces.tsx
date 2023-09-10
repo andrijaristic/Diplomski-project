@@ -1,7 +1,7 @@
 export interface IComment {
   id: string;
-  propertyId: string;
-  propertyName: string;
+  accommodationId: string;
+  accommodationName: string;
   userFullName: string;
   grade: number;
   header: string;
@@ -10,7 +10,7 @@ export interface IComment {
 }
 
 export interface INewComment {
-  propertyId: string;
+  accommodationId: string;
   header: string;
   content: string;
   grade: number;

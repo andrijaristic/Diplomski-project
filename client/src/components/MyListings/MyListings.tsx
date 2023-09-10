@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import MyListingsItem from "./MyListingsItem";
 import StyledButton from "../UI/Styled/StyledButton";
 import { useAppSelector } from "../../store/hooks";
+import EmptyArrayMessage from "../UI/EmptyArrayMessage/EmptyArrayMessage";
 
 const MyListings: FC = () => {
   const navigate = useNavigate();
@@ -40,7 +41,14 @@ const MyListings: FC = () => {
         Create new property listing
       </StyledButton>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {content.length > 0 && content}
+        {content.length > 0 ? (
+          content
+        ) : (
+          <EmptyArrayMessage
+            message="Oops! You don't have any accommodations listed"
+            secondary="Try posting some by clicking on the provided button!"
+          />
+        )}
       </Box>
     </Box>
   );

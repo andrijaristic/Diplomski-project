@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
                                     .Comments
                                     .AsNoTracking()
                                     .Where(x => x.UserId == userId &&
-                                                x.PropertyId == accommodationId)
+                                                x.AccommodationId == accommodationId)
                                     .FirstOrDefaultAsync() != null;
 
             return exists;
@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
             List<Comment> comments = await _dbContext
                                                 .Comments
                                                 .AsNoTracking()
-                                                .Where(x => x.PropertyId == accommodationId)
+                                                .Where(x => x.AccommodationId == accommodationId)
                                                 .ToListAsync();
             return comments;
         }
@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories
                                                 .Comments
                                                 .AsNoTracking()
                                                 .Where(x => x.UserId == userId)
-                                                .Include(x => x.Property)
+                                                .Include(x => x.Accommodation)
                                                 .ToListAsync();
             return comments;
         }

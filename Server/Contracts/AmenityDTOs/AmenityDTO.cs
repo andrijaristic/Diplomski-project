@@ -1,8 +1,8 @@
 ﻿namespace Contracts.AmenityDTOs
 {
-    public class DisplayAmenityDTO
+    public class AmenityDTO
     {
         public Guid Id { get; set; }
-        public string Utility { get; set; }
+        public string AccommodationAmenity { get; set; }
     }
 }

@@ -47,7 +47,7 @@ const generateNavigationItems = (userType: string, isVerified: boolean) => {
     icon: <BedIcon />,
   });
 
-  if (userType === "PROPERTYOWNER" && isVerified) {
+  if (userType === "OWNER" && isVerified) {
     items.push({
       title: "My listings",
       to: `/account/my-listings`,

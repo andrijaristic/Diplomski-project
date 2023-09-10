@@ -6,6 +6,7 @@ namespace Domain.Exceptions.CommentExceptions
     {
         public InvalidCommentContentException() : base("Comment content must not be empty")
         {
+
         }
     }
 }

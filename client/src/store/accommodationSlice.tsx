@@ -5,6 +5,7 @@ import {
   IAccommodationBasicInformation,
   IAccommodationDisplay,
   IAddAccommodationImage,
+  IDeleteAccomodationImage,
   ISearchParams,
 } from "../shared/interfaces/accommodationInterfaces";
 import { ApiCallState } from "../shared/types/enumerations";
@@ -16,6 +17,7 @@ import {
 import {
   addAccommodationImage,
   createNewAccommodation,
+  deleteAccomodationImage,
   getAccommodationById,
   getAccommodations,
   getHighestRatedAccommodations,
@@ -126,6 +128,18 @@ export const addAccommodationImageAction = createAsyncThunk(
   async (accommodationImage: IAddAccommodationImage, thunkApi) => {
     try {
       const response = await addAccommodationImage(accommodationImage);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const deleteAccommodationImageAction = createAsyncThunk(
+  "accommodations/deleteImage",
+  async (accommodationImage: IDeleteAccomodationImage, thunkApi) => {
+    try {
+      const response = await deleteAccomodationImage(accommodationImage);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -318,6 +332,31 @@ const accommodationSlice = createSlice({
       }
       errorNotification(error);
     });
+
+    // DELETE ACCOMMODATION IMAGE
+    builder.addCase(deleteAccommodationImageAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(
+      deleteAccommodationImageAction.fulfilled,
+      (state, action) => {
+        state.apiState = ApiCallState.COMPLETED;
+        state.detailedAccommodation = action.payload;
+        successNotification("Successfully deleted accommodation image!");
+      }
+    );
+    builder.addCase(
+      deleteAccommodationImageAction.rejected,
+      (state, action) => {
+        state.apiState = ApiCallState.REJECTED;
+
+        let error: string = defaultErrorMessage;
+        if (typeof action.payload === "string") {
+          error = action.payload;
+        }
+        errorNotification(error);
+      }
+    );
 
     // TOGGLE FAVORITE
     builder.addCase(toggleFavoriteStatusAction.rejected, (state, action) => {

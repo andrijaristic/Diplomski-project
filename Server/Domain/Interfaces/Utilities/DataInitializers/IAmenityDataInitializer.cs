@@ -1,6 +1,6 @@
 ﻿namespace Domain.Interfaces.Utilities.DataInitializers
 {
-    public interface IUtilityDataInitializer
+    public interface IAmenityDataInitializer
     {
         void InitializeData();
     }

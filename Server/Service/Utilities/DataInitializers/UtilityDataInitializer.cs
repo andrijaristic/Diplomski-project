@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Service.Utilities.DataInitializers
 {
-    public class UtilityDataInitializer : IUtilityDataInitializer
+    public class UtilityDataInitializer : IAmenityDataInitializer
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOptions<AppSettings> _settings;
@@ -19,7 +19,7 @@ namespace Service.Utilities.DataInitializers
         }
         public void InitializeData()
         {
-            Task<IEnumerable<Amenity>> task = _unitOfWork.PropertyUtilities.GetAll();
+            Task<IEnumerable<Amenity>> task = _unitOfWork.Amenities.GetAll();
             task.Wait();
 
             List<AccommodationAmenities> propertyUtilities = Enum.GetValues<AccommodationAmenities>().ToList();
@@ -40,7 +40,7 @@ namespace Service.Utilities.DataInitializers
                     AccommodationAmenity = util
                 };
 
-                _unitOfWork.PropertyUtilities.Add(newPropertyUtility).Wait();
+                _unitOfWork.Amenities.Add(newPropertyUtility).Wait();
                 _unitOfWork.Save().Wait();
             }
         }

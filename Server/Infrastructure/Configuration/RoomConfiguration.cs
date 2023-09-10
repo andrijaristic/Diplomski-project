@@ -12,7 +12,7 @@ namespace Infrastructure.Configuration
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.HasOne(x => x.Property)
+            builder.HasOne(x => x.Accommodation)
                    .WithMany(x => x.Rooms)
                    .OnDelete(DeleteBehavior.NoAction);
 

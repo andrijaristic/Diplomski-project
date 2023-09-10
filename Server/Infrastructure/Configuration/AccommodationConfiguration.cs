@@ -18,36 +18,38 @@ namespace Infrastructure.Configuration
 
             builder.Property(x => x.AverageGrade).HasPrecision(1, 2);
 
+            builder.Property(x => x.AverageGrade).HasDefaultValue(1);
+
             builder.HasOne(x => x.User)
-                   .WithMany(x => x.Properties)
+                   .WithMany(x => x.Accommodations)
                    .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(x => x.Comments)
-                   .WithOne(x => x.Property)
-                   .HasForeignKey(x => x.PropertyId)
+                   .WithOne(x => x.Accommodation)
+                   .HasForeignKey(x => x.AccommodationId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.Rooms)
-                   .WithOne(x => x.Property)
-                   .HasForeignKey(x => x.PropertyId)
+                   .WithOne(x => x.Accommodation)
+                   .HasForeignKey(x => x.AccommodationId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.RoomTypes)
-                   .WithOne(x => x.Property)
-                   .HasForeignKey(x => x.PropertyId)
+                   .WithOne(x => x.Accommodation)
+                   .HasForeignKey(x => x.AccommodationId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.Reservations)
-                   .WithOne(x => x.Property)
-                   .HasForeignKey(x => x.PropertyId)
+                   .WithOne(x => x.Accommodation)
+                   .HasForeignKey(x => x.AccommodationId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.SavedProperties)
-                   .WithOne(x => x.Property)
-                   .HasForeignKey(x => x.PropertyId)
+            builder.HasMany(x => x.SavedAccommodations)
+                   .WithOne(x => x.Accommodation)
+                   .HasForeignKey(x => x.AccommodationId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(x => x.Utilities)
+            builder.HasMany(x => x.Amenities)
                    .WithMany(x => x.Accommodations);
         }
     }

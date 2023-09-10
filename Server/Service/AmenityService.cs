@@ -16,13 +16,13 @@ namespace Service
             _mapper = mapper;
         }
 
-        public async Task<List<DisplayAmenityDTO>> GetAll()
+        public async Task<List<AmenityDTO>> GetAll()
         {
             IEnumerable<Amenity> amenities = await _unitOfWork
-                                                                 .PropertyUtilities
-                                                                 .GetAll();
+                                                        .Amenities
+                                                        .GetAll();
 
-            return _mapper.Map<List<DisplayAmenityDTO>>(amenities);
+            return _mapper.Map<List<AmenityDTO>>(amenities);
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public class DeleteRoomDTO
     {
-        public Guid PropertyId { get; set; }
+        public Guid AmenityId { get; set; }
     }
 }

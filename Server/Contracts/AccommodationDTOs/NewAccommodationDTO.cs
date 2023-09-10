@@ -10,7 +10,7 @@ namespace Contracts.AccommodationDTOs
         public string Area { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public List<Guid> Utilities { get; set; }
+        public List<Guid> Amenities { get; set; }
         public Guid UserId { get; set; }
         public IFormFile ThumbnailImage { get; set; }
     }

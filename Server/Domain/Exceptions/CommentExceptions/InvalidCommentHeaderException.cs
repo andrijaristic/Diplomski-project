@@ -6,6 +6,7 @@ namespace Domain.Exceptions.CommentExceptions
     {
         public InvalidCommentHeaderException() : base("Comment title must not be empty")
         {
+
         }
     }
 }

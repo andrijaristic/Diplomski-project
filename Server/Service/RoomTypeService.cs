@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Contracts.RoomTypeDTOs;
 using Contracts.SeasonalPricingDTOs;
-using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.AccommodationExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
@@ -31,10 +31,12 @@ namespace Service
 
         public async Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO, string username)
         {
-            Accommodation property = await _unitOfWork.Properties.Find(newRoomTypeDTO.PropertyId);
-            if (property is null)
+            Accommodation accommodation = await _unitOfWork
+                                                        .Accommodations
+                                                        .Find(newRoomTypeDTO.AccommodationId);
+            if (accommodation is null)
             {
-                throw new PropertyNotFoundException(newRoomTypeDTO.PropertyId);
+                throw new AccommodationNotFoundException(newRoomTypeDTO.AccommodationId);
             }
 
             User user = await _unitOfWork.Users.FindByUsername(username);
@@ -43,9 +45,9 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            if (property.UserId != user.Id)
+            if (accommodation.UserId != user.Id)
             {
-                throw new InvalidUserInPropertyException();
+                throw new InvalidUserInAccommodationException();
             }
 
             ValidateNewRoomType(newRoomTypeDTO);
@@ -55,13 +57,17 @@ namespace Service
 
             for (int i = 0; i < newRoomTypeDTO.AmountOfRooms; i++)
             {
-                roomType.Rooms.Add(new Room() { PropertyId = roomType.PropertyId });
+                roomType.Rooms.Add(new Room() { AccommodationId = roomType.AccommodationId });
             }
 
             int seasonalPricingMin = roomType.SeasonalPricing.Min(x => x.Price);
-            property.StartingPrice = property.StartingPrice > seasonalPricingMin ? seasonalPricingMin :
-                                                                                   property.StartingPrice;
-            property.IsVisible = true;
+            if (accommodation.StartingPrice == 0 || 
+               (accommodation.StartingPrice > 0 && accommodation.StartingPrice > seasonalPricingMin))
+            {
+                accommodation.StartingPrice = seasonalPricingMin;
+            }
+
+            accommodation.IsVisible = true;
 
             await _unitOfWork.RoomTypes.Add(roomType);
             await _unitOfWork.Save();
@@ -79,12 +85,23 @@ namespace Service
                 throw new RoomTypeNotFoundException(id);
             }
 
-            if (roomType.Property is null)
+            Accommodation accommodation = await _unitOfWork
+                                                    .Accommodations
+                                                    .Find(roomType.AccommodationId);
+            if (accommodation is null)
             {
-                throw new PropertyNotFoundException(roomType.PropertyId);
+                throw new AccommodationNotFoundException(roomType.AccommodationId);
             }
 
-            if (!String.Equals(roomType.Property.User.Username, username))
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (roomType.Accommodation.UserId != user.Id)
             {
                 throw new InvalidRoomTypePermissionsException();
             }
@@ -97,6 +114,15 @@ namespace Service
                     roomType.SeasonalPricing[i].Price = updateRoomTypeDTO.SeasonalPrices[i].Price;
                 }
             }
+
+            int seasonalPricingMin = roomType.SeasonalPricing.Min(x => x.Price);
+            if (accommodation.StartingPrice == 0 ||
+               (accommodation.StartingPrice > 0 && accommodation.StartingPrice > seasonalPricingMin))
+            {
+                accommodation.StartingPrice = seasonalPricingMin;
+            }
+
+            await _unitOfWork.Save();
 
             return _mapper.Map<DisplayRoomTypeDTO>(roomType);
         }
@@ -111,12 +137,20 @@ namespace Service
                 throw new RoomTypeNotFoundException(id);
             }
 
-            if (roomType.Property is null)
+            if (roomType.Accommodation is null)
             {
-                throw new PropertyNotFoundException(roomType.PropertyId);
+                throw new AccommodationNotFoundException(roomType.AccommodationId);
             }
 
-            if (!String.Equals(roomType.Property.User.Username, username))
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (roomType.Accommodation.UserId != user.Id)
             {
                 throw new InvalidRoomTypePermissionsException();
             }

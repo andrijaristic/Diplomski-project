@@ -17,9 +17,9 @@
         public List<Comment> Comments { get; set; }
         public List<Room> Rooms { get; set; }
         public List<RoomType> RoomTypes { get; set; }
-        public List<Amenity> Utilities { get; set; }
+        public List<Amenity> Amenities { get; set; }
         public List<Reservation> Reservations { get; set; }
-        public List<SavedProperty> SavedProperties { get; set; }
+        public List<SavedAccommodation> SavedAccommodations { get; set; }
         public int StartingPrice { get; set; }
         public bool IsVisible { get; set; } = false;
         public bool IsDeleted { get; set; } = false;

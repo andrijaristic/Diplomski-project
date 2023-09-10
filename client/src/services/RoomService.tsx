@@ -21,7 +21,7 @@ export const getAccommodationRooms = async (accommodationId: string) => {
 
 export const updateRoom = async (updateRoom: IEditRoom) => {
   return await axiosClient.put(`${API}/rooms/${updateRoom.roomId}`, {
-    propertyId: updateRoom.propertyId,
+    accommodationId: updateRoom.accommodationId,
     roomTypeId: updateRoom.roomTypeId,
   });
 };
@@ -29,7 +29,7 @@ export const updateRoom = async (updateRoom: IEditRoom) => {
 export const deleteRoom = async (deleteRoom: IDeleteRoom) => {
   return await axiosClient.delete(`${API}/rooms/${deleteRoom.roomId}`, {
     data: {
-      propertyId: deleteRoom.propertyId,
+      accommodationId: deleteRoom.accommodationId,
     },
   });
 };

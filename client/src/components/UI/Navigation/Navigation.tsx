@@ -40,7 +40,7 @@ const Navigation: FC = () => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const user = useAppSelector((state) => state.user.user);
-  const isVerifiedOwner = user?.role === "PROPERTYOWNER" && user?.isVerified;
+  const isVerifiedOwner = user?.role === "OWNER" && user?.isVerified;
 
   const items = useMemo(() => {
     return generateNavItems(isLoggedIn, isVerifiedOwner);

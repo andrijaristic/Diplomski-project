@@ -6,6 +6,7 @@ namespace Domain.Exceptions.RoomExceptions
     {
         public InvalidRoomGuestAmountUpdateException() : base("Room cannot be changed to have smaller capacity")
         {
+
         }
     }
 }

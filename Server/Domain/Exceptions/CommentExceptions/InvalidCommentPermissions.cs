@@ -6,6 +6,7 @@ namespace Domain.Exceptions.CommentExceptions
     {
         public InvalidCommentPermissions() : base("User has never completed a reservation")
         {
+
         }
     }
 }

@@ -109,7 +109,7 @@ const NewListing: FC = () => {
     data.append("latitude", coords.lat.toString());
     data.append("longitude", coords.lng.toString());
     checkedAmenities.forEach((amenity) => {
-      data.append("utilities", amenity);
+      data.append("amenities", amenity);
     });
 
     await dispatch(createNewAccommodationAction(data));
@@ -159,7 +159,7 @@ const NewListing: FC = () => {
   // Fixes map not rendering properly on load
   // by forcing it to resize
   const ResizeMap = () => {
-    const map = useMap();
+    const map: L.Map = useMap();
     map._onResize();
     return null;
   };
@@ -188,7 +188,7 @@ const NewListing: FC = () => {
       }
       id={amenity.id}
       key={amenity.id}
-      name={amenity.utility}
+      name={amenity.accommodationAmenity}
       onChange={handleAmenitiesCheckChange(amenity.id)}
     />
   ));

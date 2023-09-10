@@ -3,8 +3,8 @@
     public class DisplayReservationDTO
     {
         public Guid Id { get; set; }
-        public Guid PropertyId { get; set; }
-        public string PropertyName { get; set; }
+        public Guid AmenityId { get; set; }
+        public string AmenityName { get; set; }
         public DateTime ArrivalDate { get; set; }
         public DateTime DepartureDate { get; set; }
         public double Price { get; set; }

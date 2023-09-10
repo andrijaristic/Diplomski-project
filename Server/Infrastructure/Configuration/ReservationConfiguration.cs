@@ -17,7 +17,7 @@ namespace Infrastructure.Configuration
             builder.HasOne(x => x.User)
                    .WithMany(x => x.Reservations);
 
-            builder.HasOne(x => x.Property)
+            builder.HasOne(x => x.Accommodation)
                    .WithMany(x => x.Reservations);
 
             builder.HasOne(x => x.Room)

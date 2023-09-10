@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
             Reservation reservation = await _dbContext
                                                     .Reservations
                                                     .Where(x => x.UserId == userId &&
-                                                                x.PropertyId == accommodationId &&
+                                                                x.AccommodationId == accommodationId &&
                                                                 x.DepartureDate.Date <= date.Date)
                                                     .FirstOrDefaultAsync();
             return reservation;

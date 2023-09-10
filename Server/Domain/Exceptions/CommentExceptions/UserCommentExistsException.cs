@@ -6,6 +6,7 @@ namespace Domain.Exceptions.CommentExceptions
     {
         public UserCommentExistsException() : base("User has already made comment for this accommodation")
         {
+
         }
     }
 }

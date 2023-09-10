@@ -6,7 +6,7 @@ namespace Service.Helpers
     {
         public static async Task<string> SaveImage(IFormFile imageFile, Guid id, string rootPath)
         {
-            string imageName = new string(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            string imageName = new string(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(20).ToArray()).Replace(' ', '-');
             imageName = imageName + id.ToString() + Path.GetExtension(imageFile.FileName);
             var imagePath = Path.Combine(rootPath, "../Infrastructure/Images", imageName);
 

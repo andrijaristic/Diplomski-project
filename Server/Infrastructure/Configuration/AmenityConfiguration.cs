@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configuration
 {
-    public class PropertyUtilityConfiguration : IEntityTypeConfiguration<Amenity>
+    public class AmenityConfiguration : IEntityTypeConfiguration<Amenity>
     {
         public void Configure(EntityTypeBuilder<Amenity> builder)
         {
@@ -20,7 +20,7 @@ namespace Infrastructure.Configuration
                     );
 
             builder.HasMany(x => x.Accommodations)
-                   .WithMany(x => x.Utilities);
+                   .WithMany(x => x.Amenities);
         }
     }
 }

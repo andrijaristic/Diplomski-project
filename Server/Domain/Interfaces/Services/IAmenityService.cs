@@ -4,6 +4,6 @@ namespace Domain.Interfaces.Services
 {
     public interface IAmenityService
     {
-        Task<List<DisplayAmenityDTO>> GetAll();
+        Task<List<AmenityDTO>> GetAll();
     }
 }

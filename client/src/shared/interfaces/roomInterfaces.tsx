@@ -17,7 +17,7 @@ export interface IRoomSearchDisplay {
 }
 
 export interface IRoomSearch {
-  propertyId: string;
+  accommodationId: string;
   adults: number;
   children: number;
   arrivalDate: string;
@@ -34,17 +34,17 @@ export interface IRoomModal {
 
 export interface INewRoom {
   amountOfRooms: number;
-  propertyId: string;
+  accommodationId: string;
   roomTypeId: string;
 }
 
 export interface IEditRoom {
   roomId: string;
   roomTypeId: string;
-  propertyId: string;
+  accommodationId: string;
 }
 
 export interface IDeleteRoom {
   roomId: string;
-  propertyId: string;
+  accommodationId: string;
 }

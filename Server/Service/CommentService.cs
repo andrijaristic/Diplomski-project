@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Contracts.CommentDTOs;
 using Domain.Exceptions.CommentExceptions;
-using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.AccommodationExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -32,11 +32,11 @@ namespace Service
             }
 
             Accommodation property = await _unitOfWork
-                                            .Properties
-                                            .Find(newCommentDTO.PropertyId);
+                                                .Accommodations
+                                                .Find(newCommentDTO.PropertyId);
             if (property is null)
             {
-                throw new PropertyNotFoundException(newCommentDTO.PropertyId);
+                throw new AccommodationNotFoundException(newCommentDTO.PropertyId);
             }
 
             Reservation reservation = await _unitOfWork
@@ -97,11 +97,11 @@ namespace Service
             foreach (var displayCommentDTO in displayCommentDTOs)
             {
                 Accommodation property = await _unitOfWork
-                                                .Properties
-                                                .Find(displayCommentDTO.PropertyId);
+                                                    .Accommodations
+                                                    .Find(displayCommentDTO.PropertyId);
                 if (property is null)
                 {
-                    throw new PropertyNotFoundException(displayCommentDTO.PropertyId);
+                    throw new AccommodationNotFoundException(displayCommentDTO.PropertyId);
                 }
 
                 displayCommentDTO.PropertyName = property.Name;

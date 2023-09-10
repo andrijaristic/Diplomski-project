@@ -47,7 +47,7 @@ const ReservationsList: FC = () => {
       key={reservation.id}
       reservation={reservation}
       onCancel={handleReservationCancel(reservation?.id)}
-      onNavigate={handleAccommodationNavigateion(reservation?.propertyId)}
+      onNavigate={handleAccommodationNavigateion(reservation?.accommodationId)}
     />
   ));
 

@@ -28,7 +28,7 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
   const dispatch = useAppDispatch();
   const stripeUrl = useAppSelector((state) => state.reservations.stripeUrl);
   const token = useAppSelector((state) => state.user.token);
-  const { id: propertyId } = useParams();
+  const { id: accommodationId } = useParams();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -51,7 +51,7 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
     const { id: userId } = jwtDecode<IJwt>(token ? token : "");
     const newReservation: INewReservation = {
       userId: userId,
-      propertyId: propertyId ? propertyId : "",
+      accommodationId: accommodationId ?? "",
       roomId: room?.id,
       price: room?.price,
       arrivalDate: new Date(room?.arrivalDate).toISOString(),
@@ -69,7 +69,7 @@ const DetailedListingRoomBooking: FC<IProps> = ({ room }) => {
     const { id: userId } = jwtDecode<IJwt>(token ? token : "");
     const newReservation: INewReservation = {
       userId: userId,
-      propertyId: propertyId ? propertyId : "",
+      accommodationId: accommodationId ?? "",
       roomId: room?.id,
       price: room?.price,
       arrivalDate: new Date(room?.arrivalDate).toISOString(),

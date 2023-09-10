@@ -4,6 +4,7 @@ import { API } from "../constants/Constants";
 import {
   IAccommodationBasicInformation,
   IAddAccommodationImage,
+  IDeleteAccomodationImage,
   ISearchParams,
 } from "../shared/interfaces/accommodationInterfaces";
 
@@ -36,7 +37,7 @@ export const updateBasicAccommodationInformation = async (
   basicAccommodationInformation: IAccommodationBasicInformation
 ) => {
   return await axiosClient.put(
-    `${API}/accommodations/${basicAccommodationInformation.propertyId}`,
+    `${API}/accommodations/${basicAccommodationInformation.accommodationId}`,
     {
       name: basicAccommodationInformation.name,
       description: basicAccommodationInformation.description,
@@ -49,8 +50,22 @@ export const addAccommodationImage = async (
   accommodationImage: IAddAccommodationImage
 ) => {
   return await axiosClient.post(
-    `${API}/accommodations/${accommodationImage.propertyId}/add-image`,
+    `${API}/accommodations/${accommodationImage.accommodationId}/add-image`,
     accommodationImage.data
+  );
+};
+
+export const deleteAccomodationImage = async (
+  accommodationImage: IDeleteAccomodationImage
+) => {
+  return await axiosClient.delete(
+    `${API}/accommodations/${accommodationImage.accommodationId}/delete-image`,
+    {
+      data: {
+        imageId: accommodationImage.imageId,
+        userId: accommodationImage.userId,
+      },
+    }
   );
 };
 

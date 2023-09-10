@@ -11,7 +11,7 @@
         public string Country { get; set; }
         public string Area { get; set; }
         public string Sort { get; set; }
-        public List<Guid> Utilities { get; set; }
+        public List<Guid> Amenities { get; set; }
         public int Page { get; set; }
     }
 }

@@ -4,6 +4,9 @@ namespace Domain.Exceptions.ReservationExceptions
 {
     public class ReservationIsPaidForException : BadRequestException
     {
-        public ReservationIsPaidForException() : base("Reservation is already paid for.") { }
+        public ReservationIsPaidForException() : base("Reservation is already paid for.") 
+        {
+        
+        }
     }
 }

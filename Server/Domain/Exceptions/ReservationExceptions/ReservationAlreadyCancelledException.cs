@@ -4,6 +4,9 @@ namespace Domain.Exceptions.ReservationExceptions
 {
     public class ReservationAlreadyCancelledException : BadRequestException
     {
-        public ReservationAlreadyCancelledException() : base("Reservation is already cancelled.") { }
+        public ReservationAlreadyCancelledException() : base("Reservation is already cancelled.") 
+        {
+        
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
                                             .Where(p => p.Id == id &&
                                                         p.IsVisible &&
                                                        !p.IsDeleted)
-                                            .Include(p => p.SavedProperties)
+                                            .Include(p => p.SavedAccommodations)
                                             .FirstOrDefaultAsync();
             return property;
         }
@@ -61,9 +61,9 @@ namespace Infrastructure.Repositories
                             .Include(p => p.Rooms
                             .Where(r => !r.IsDeleted))
                             .Include(p => p.RoomTypes)
-                            .Include(p => p.Utilities)
+                            .Include(p => p.Amenities)
                             .Include(p => p.ThumbnailImage)
-                            .Include(p => p.SavedProperties)
+                            .Include(p => p.SavedAccommodations)
                             .OrderByDescending(p => p.StartingPrice)
                             .AsQueryable();
 
@@ -159,12 +159,12 @@ namespace Infrastructure.Repositories
             }
 
             IEnumerable<Accommodation> filteredProperties = source.AsEnumerable();
-            if (searchParamsDTO.Utilities != null &&
-                searchParamsDTO.Utilities.Any())
+            if (searchParamsDTO.Amenities != null &&
+                searchParamsDTO.Amenities.Any())
             {
                 filteredProperties = filteredProperties
-                                            .Where(x => searchParamsDTO.Utilities
-                                            .All(id => x.Utilities
+                                            .Where(x => searchParamsDTO.Amenities
+                                            .All(id => x.Amenities
                                             .Any(util => util.Id == id)))
                                             .ToList();
             }
@@ -196,14 +196,13 @@ namespace Infrastructure.Repositories
         {
             Accommodation property = await _dbContext
                                             .Accommodations
-                                            .AsNoTracking()
                                             .Where(p => p.Id == id &&
                                                         p.IsVisible &&
                                                        !p.IsDeleted)
                                             .Include(p => p.Comments)
                                             .Include(p => p.ThumbnailImage)
                                             .Include(p => p.Images)
-                                            .Include(p => p.Utilities)
+                                            .Include(p => p.Amenities)
                                             .FirstOrDefaultAsync();
             return property;
         }

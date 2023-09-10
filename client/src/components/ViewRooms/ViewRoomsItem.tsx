@@ -42,7 +42,7 @@ const ViewRoomsItem: FC<IProps> = ({
 
   const handleDelete = async () => {
     const response = await dispatch(
-      deleteRoomAction({ roomId: room.id, propertyId: accommodationId })
+      deleteRoomAction({ roomId: room.id, accommodationId: accommodationId })
     );
 
     if (response) {

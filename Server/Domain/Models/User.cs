@@ -16,8 +16,8 @@ namespace Domain.Models
         public VerificationStatus VerificationStatus { get; set; } = VerificationStatus.PENDING;
         public bool IsVerified { get; set; } = false;
         public List<Comment> Comments { get; set; }
-        public List<Accommodation> Properties { get; set; }
-        public List<SavedProperty> SavedProperties { get; set; }
+        public List<Accommodation> Accommodations { get; set; }
+        public List<SavedAccommodation> SavedAccommodations { get; set; }
         public List<Reservation> Reservations { get; set; }
     }
 }

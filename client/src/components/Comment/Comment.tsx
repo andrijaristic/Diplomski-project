@@ -12,7 +12,7 @@ interface IProps {
 const Comment: FC<IProps> = ({ flag = false, comment }) => {
   const navigate = useNavigate();
   const handleNavigation = () => {
-    navigate(`/listings/${comment?.propertyId}`);
+    navigate(`/listings/${comment?.accommodationId}`);
   };
 
   return (
@@ -22,7 +22,7 @@ const Comment: FC<IProps> = ({ flag = false, comment }) => {
           {!flag ? (
             <Typography variant="h6">{comment?.userFullName}</Typography>
           ) : (
-            <Typography variant="h6">{comment?.propertyName}</Typography>
+            <Typography variant="h6">{comment?.accommodationName}</Typography>
           )}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="subtitle1">{comment?.grade}</Typography>

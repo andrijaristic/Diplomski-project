@@ -8,8 +8,8 @@ namespace Service.Mapping
     {
         public RoomTypeMappingProfile()
         {
-            CreateMap<DisplayRoomTypeDTO, RoomType>().ReverseMap();
-            CreateMap<NewRoomTypeDTO, RoomType>().ReverseMap();
+            CreateMap<RoomType, DisplayRoomTypeDTO>().ReverseMap();
+            CreateMap<RoomType, NewRoomTypeDTO>().ReverseMap();
             CreateMap<RoomType, RoomTypeMinimalDTO>().ReverseMap();
         }
     }

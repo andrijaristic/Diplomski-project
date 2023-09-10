@@ -1,22 +1,22 @@
+using System.Text;
+using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Stripe;
 using AutoMapper;
-using Domain.Interfaces.Repositories;
+using Domain.Models.AppSettings;
 using Domain.Interfaces.Services;
 using Domain.Interfaces.Utilities;
+using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Utilities.DataInitializers;
-using Domain.Models.AppSettings;
 using Infrastructure;
 using Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Service;
 using Service.Mapping;
 using Service.Utilities;
 using Service.Utilities.DataInitializers;
-using Stripe;
-using System.Text;
 using Web.API.Middleware;
 
 string _cors = "cors";
@@ -108,7 +108,7 @@ builder.Services.AddScoped<IAmenityService, AmenityService>();
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
 builder.Services.AddScoped<IEmailUtility, EmailUtility>();
 builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
-builder.Services.AddScoped<IUtilityDataInitializer, UtilityDataInitializer>();
+builder.Services.AddScoped<IAmenityDataInitializer, UtilityDataInitializer>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
@@ -118,11 +118,12 @@ builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddScoped<IReservedDaysRepository, ReservedDaysRepository>();
+builder.Services.AddScoped<IAccommodationImageRepository, AccommodationImageRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("BookingDatabase"),
+        builder.Configuration.GetConnectionString("AccommodationProviderDb"),
         b => b.MigrationsAssembly("Web.API"))
     );
 
@@ -148,7 +149,7 @@ using (var scope = app.Services.CreateScope())
     context.Database.EnsureCreated();
 
     scope.ServiceProvider.GetRequiredService<IUserDataInitializer>().InitializeData();
-    scope.ServiceProvider.GetRequiredService<IUtilityDataInitializer>().InitializeData();
+    scope.ServiceProvider.GetRequiredService<IAmenityDataInitializer>().InitializeData();
 }
 
 // Configure the HTTP request pipeline.

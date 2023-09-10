@@ -37,7 +37,7 @@ const DetailedListingSearchAction: FC<IProps> = ({ onSearch }) => {
     }
 
     const booking: IRoomSearch = {
-      propertyId: id ? id : "",
+      accommodationId: id ?? "",
       arrivalDate: new Date(checkinDate.setHours(12, 0, 0, 0)).toISOString(),
       departureDate: new Date(checkoutDate.setHours(12, 0, 0, 0)).toISOString(),
       adults: parseInt(adults as string),

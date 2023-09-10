@@ -12,9 +12,9 @@ namespace Infrastructure
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<SeasonalPricing> SeasonalPricings { get; set; }
-        public DbSet<SavedProperty> SavedProperties { get; set; }
+        public DbSet<SavedAccommodation> SavedAccommodations { get; set; }
         public DbSet<ReservedDays> ReservedDays { get; set; }
-        public DbSet<Amenity> PropertyUtilities { get; set; }
+        public DbSet<Amenity> Amenities { get; set; }
 
         public ProjectDbContext(DbContextOptions options) : base(options) { }
 

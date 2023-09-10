@@ -6,6 +6,7 @@ namespace Domain.Exceptions.RoomExceptions
     {
         public InsufficientRoomsException() : base("Accommodation will not have any more rooms left. Deletion unavailable")
         {
+
         }
     }
 }

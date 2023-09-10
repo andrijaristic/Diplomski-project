@@ -24,7 +24,7 @@ const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const user = useAppSelector((state) => state.user.user);
 
-  const isOwner = user?.role === "PROPERTYOWNER" && user?.isVerified;
+  const isOwner = user?.role === "OWNER" && user?.isVerified;
   const isAdmin = user?.role === "ADMIN";
 
   return (

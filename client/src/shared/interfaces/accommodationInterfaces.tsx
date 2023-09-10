@@ -32,7 +32,7 @@ export interface IAccommodation {
   thumbnailImage: IAccommodationImage;
   images: IAccommodationImage[];
   comments: IComment[];
-  utilities: IAmenity[];
+  amenities: IAmenity[];
   roomTypes: IRoomTypeDisplay[];
   startingPrice: number;
 }
@@ -49,15 +49,20 @@ export interface INewAccommodation {
 }
 
 export interface IAccommodationBasicInformation {
-  propertyId: string;
+  accommodationId: string;
   userId: string;
   name: string;
   description: string;
 }
 
 export interface IAddAccommodationImage {
-  propertyId: string;
+  accommodationId: string;
   data: FormData;
+}
+export interface IDeleteAccomodationImage {
+  accommodationId: string;
+  imageId: string;
+  userId: string;
 }
 
 export interface ISearchParams {

@@ -4,6 +4,9 @@ namespace Domain.Exceptions.ReservationExceptions
 {
     public class RoomAlreadyOccupiedException : BadRequestException
     {
-        public RoomAlreadyOccupiedException() : base($"Room is already occupied for these dates") { }
+        public RoomAlreadyOccupiedException() : base($"Room is already occupied for these dates") 
+        {
+        
+        }
     }
 }

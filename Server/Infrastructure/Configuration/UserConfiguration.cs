@@ -32,7 +32,7 @@ namespace Infrastructure.Configuration
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(x => x.Properties)
+            builder.HasMany(x => x.Accommodations)
                    .WithOne(x => x.User)
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
@@ -42,7 +42,7 @@ namespace Infrastructure.Configuration
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.SavedProperties)
+            builder.HasMany(x => x.SavedAccommodations)
                    .WithOne(x => x.User)
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.NoAction);

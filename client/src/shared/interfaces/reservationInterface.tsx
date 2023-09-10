@@ -5,8 +5,8 @@ export interface IReservationDisplay {
   price: number;
   arrivalDate: Date;
   departureDate: Date;
-  propertyName: string;
-  propertyId: string;
+  accommodationName: string;
+  accommodationId: string;
 }
 
 export interface IReservationDetailed {
@@ -15,14 +15,14 @@ export interface IReservationDetailed {
   price: number;
   arrivalDate: string;
   departureDate: string;
-  propertyName: string;
-  propertyId: number;
+  accommodationName: string;
+  accommodationId: string;
   room: IRoom;
 }
 
 export interface INewReservation {
   userId: string;
-  propertyId: string;
+  accommodationId: string;
   roomId: string;
   price: number;
   arrivalDate: string;

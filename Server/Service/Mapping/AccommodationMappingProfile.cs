@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Contracts.AccommodationDTOs;
 using Domain.Models;
+using Contracts.AccommodationDTOs;
 
 namespace Service.Mapping
 {
@@ -8,8 +8,8 @@ namespace Service.Mapping
     {
         public AccommodationMappingProfile()
         {
-            CreateMap<Accommodation, NewAccommodationDTO>().ForMember(dest => dest.ThumbnailImage, opt => opt.Ignore())
-                                                 .ForMember(dest => dest.Utilities, opt => opt.Ignore())
+            CreateMap<NewAccommodationDTO, Accommodation>().ForMember(dest => dest.ThumbnailImage, opt => opt.Ignore())
+                                                 .ForMember(dest => dest.Amenities, opt => opt.Ignore())
                                                  .ReverseMap();
             CreateMap<Accommodation, DisplayAccommodationDTO>().ForMember(
                     dest => dest.Comments,

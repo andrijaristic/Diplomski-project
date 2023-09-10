@@ -19,7 +19,7 @@ namespace Web.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAllAmenities()
         {
-            List<DisplayAmenityDTO> displayAmenityDTOs = await _amenityService.GetAll();
+            List<AmenityDTO> displayAmenityDTOs = await _amenityService.GetAll();
             return Ok(displayAmenityDTOs);
         }
     }

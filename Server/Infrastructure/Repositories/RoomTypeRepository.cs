@@ -16,8 +16,8 @@ namespace Infrastructure.Repositories
             List<RoomType> roomTypes = await _dbContext
                                                     .RoomTypes
                                                     .AsNoTracking()
-                                                    .Where(rt => rt.PropertyId == accommodationId)
-                                                    .Include(rt => rt.Property)
+                                                    .Where(rt => rt.AccommodationId == accommodationId)
+                                                    .Include(rt => rt.Accommodation)
                                                     .Include(rt => rt.SeasonalPricing)
                                                     .ToListAsync();
 
@@ -28,11 +28,10 @@ namespace Infrastructure.Repositories
         {
             RoomType roomType = await _dbContext
                                             .RoomTypes
-                                            .AsNoTracking()
                                             .Where(rt => rt.Id == id)
                                             .Include(sp => sp.SeasonalPricing)
                                             .Include(r => r.Rooms)
-                                            .Include(p => p.Property)
+                                            .Include(p => p.Accommodation)
                                             .FirstOrDefaultAsync();
             return roomType;
         }

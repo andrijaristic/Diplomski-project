@@ -91,7 +91,7 @@ const AddRooms: FC = () => {
 
     const newRoom: INewRoom = {
       amountOfRooms: parseInt(amountOfRooms as string),
-      propertyId: accommodationId ? accommodationId : "",
+      accommodationId: accommodationId ? accommodationId : "",
       roomTypeId: roomTypes[selectedRoomType]?.id,
     };
 
@@ -140,7 +140,7 @@ const AddRooms: FC = () => {
       adults: adults,
       children: children,
       amountOfRooms: amountOfRooms,
-      propertyId: accommodationId,
+      accommodationId: accommodationId,
       seasonalPricing: seasonalPricings,
     };
 

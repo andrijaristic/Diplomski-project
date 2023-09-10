@@ -19,10 +19,10 @@ import {
 } from "../../store/commentSlice";
 
 interface IProps {
-  propertyId: string;
+  accommodationId: string;
 }
 
-const NewCommentForm: FC<IProps> = ({ propertyId }) => {
+const NewCommentForm: FC<IProps> = ({ accommodationId }) => {
   const dispatch = useAppDispatch();
   const [rating, setRating] = useState<number | null>(defaultRating);
   const [ratingTouched, setRatingTouched] = useState<boolean>(false);
@@ -34,8 +34,8 @@ const NewCommentForm: FC<IProps> = ({ propertyId }) => {
     }
 
     dispatch(clearAccommodationComments());
-    dispatch(getAccommodationCommentsAction(propertyId));
-  }, [dispatch, refresh, propertyId]);
+    dispatch(getAccommodationCommentsAction(accommodationId));
+  }, [dispatch, refresh, accommodationId]);
 
   const handleRatingChange = (newValue: number | null) => {
     setRatingTouched(true);
@@ -59,7 +59,7 @@ const NewCommentForm: FC<IProps> = ({ propertyId }) => {
     }
 
     const newComment: INewComment = {
-      propertyId: propertyId,
+      accommodationId: accommodationId,
       header: header.toString().trim(),
       content: content.toString().trim(),
       grade: rating ? rating : defaultRating,

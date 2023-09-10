@@ -62,7 +62,7 @@ namespace Web.API.Controllers
                     Currency = "usd",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
-                        Name = $"{displayReservationDTO.PropertyName} Reservation"
+                        Name = $"{displayReservationDTO.AmenityName} Reservation"
                     },
                 },
                 Quantity = 1

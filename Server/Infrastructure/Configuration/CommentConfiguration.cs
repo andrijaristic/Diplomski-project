@@ -16,7 +16,7 @@ namespace Infrastructure.Configuration
                    .WithMany(x => x.Comments)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(x => x.Property)
+            builder.HasOne(x => x.Accommodation)
                    .WithMany(x => x.Comments)
                    .OnDelete(DeleteBehavior.NoAction);
         }

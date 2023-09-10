@@ -89,7 +89,7 @@ const RoomEditModal: FC<IProps> = ({
 
     const editRoom: IEditRoom = {
       roomId: roomId,
-      propertyId: accommodationId,
+      accommodationId: accommodationId,
       roomTypeId: selectedRoomType,
     };
 

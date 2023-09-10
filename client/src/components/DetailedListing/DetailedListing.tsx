@@ -57,9 +57,12 @@ const DetailedListing: FC = () => {
     }
   }, [dispatch, successfulReservation]);
 
-  const utilities: JSX.Element[] | undefined = accommodation?.utilities?.map(
-    (utility) => (
-      <DetailedListingAmenity key={utility.id} name={utility.utility} />
+  const utilities: JSX.Element[] | undefined = accommodation?.amenities?.map(
+    (amenity) => (
+      <DetailedListingAmenity
+        key={amenity.id}
+        name={amenity.accommodationAmenity}
+      />
     )
   );
 
@@ -75,8 +78,10 @@ const DetailedListing: FC = () => {
 
   const images: IAccommodationImage[] = [];
   if (accommodation?.thumbnailImage) {
-    images.push(accommodation?.thumbnailImage);
     accommodation?.images.map((image) => images.push(image));
+    if (images.length === 0) {
+      images.push(accommodation?.thumbnailImage);
+    }
   }
 
   const roomTypesContent: JSX.Element[] = roomTypes?.map((roomType) => {
@@ -211,7 +216,9 @@ const DetailedListing: FC = () => {
                   <Divider />
                   {isLoggedIn && (
                     <NewCommentForm
-                      propertyId={accommodation?.id ? accommodation?.id : ""}
+                      accommodationId={
+                        accommodation?.id ? accommodation?.id : ""
+                      }
                     />
                   )}
                   <Box

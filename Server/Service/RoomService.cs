@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Contracts.RoomDTOs;
 using Contracts.SeasonalPricingDTOs;
-using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.AccommodationExceptions;
 using Domain.Exceptions.RoomExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
 using Domain.Exceptions.UserExceptions;
@@ -33,16 +33,16 @@ namespace Service
             }
 
             Accommodation property = await _unitOfWork
-                                            .Properties
-                                            .Find(accommodationId);
+                                                .Accommodations
+                                                .Find(accommodationId);
             if (property is null)
             {
-                throw new PropertyNotFoundException(accommodationId);
+                throw new AccommodationNotFoundException(accommodationId);
             }
 
             if (property.UserId != user.Id)
             {
-                throw new InvalidUserInPropertyException();
+                throw new InvalidUserInAccommodationException();
             }
 
             List<Room> rooms = await _unitOfWork
@@ -133,11 +133,11 @@ namespace Service
         public async Task<DisplayRoomDTO> CreateRoom(NewRoomDTO newRoomDTO, string username)
         {
             Accommodation property = await _unitOfWork
-                                            .Properties
-                                            .Find(newRoomDTO.PropertyId);
+                                                .Accommodations
+                                                .Find(newRoomDTO.AmenityId);
             if (property is null)
             {
-                throw new PropertyNotFoundException(newRoomDTO.PropertyId);
+                throw new AccommodationNotFoundException(newRoomDTO.AmenityId);
             }
 
             User user = await _unitOfWork.Users.FindByUsername(username);
@@ -148,7 +148,7 @@ namespace Service
 
             if (property.UserId != user.Id)
             {
-                throw new InvalidUserInPropertyException();
+                throw new InvalidUserInAccommodationException();
             }
 
             RoomType roomType = await _unitOfWork
@@ -186,7 +186,7 @@ namespace Service
             Room room = await _unitOfWork
                                     .Rooms
                                     .FindDetailedRoom(id,
-                                                      deleteRoomDTO.PropertyId,
+                                                      deleteRoomDTO.AmenityId,
                                                       DateTime.Now.ToUniversalTime().Date);
             if (room is null || room.IsDeleted)
             {
@@ -194,11 +194,11 @@ namespace Service
             }
 
             Accommodation property = await _unitOfWork
-                                            .Properties
-                                            .GetWithRooms(room.PropertyId);
+                                                .Accommodations
+                                                .GetWithRooms(room.AccommodationId);
             if (property is null)
             {
-                throw new PropertyNotFoundException(room.PropertyId);
+                throw new AccommodationNotFoundException(room.AccommodationId);
             }
 
             if (property.UserId != user.Id)
@@ -234,14 +234,14 @@ namespace Service
             Room room = await _unitOfWork
                                     .Rooms
                                     .FindDetailedRoom(id,
-                                                      updateRoomDTO.PropertyId,
+                                                      updateRoomDTO.AmenityId,
                                                       DateTime.Now.ToUniversalTime().Date);
             if (room is null)
             {
                 throw new RoomNotFoundException(id);
             }
 
-            if (room.Property.UserId != user.Id)
+            if (room.Accommodation.UserId != user.Id)
             {
                 throw new InvalidRoomPermissionsExpection();
             }

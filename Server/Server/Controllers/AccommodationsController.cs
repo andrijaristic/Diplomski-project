@@ -79,6 +79,14 @@ namespace Web.API.Controllers
             return Ok(detailedAccommodationDTO);
         }
 
+        [HttpDelete("{id}/delete-image")]
+        [Authorize(Roles = "owner")]
+        public async Task<IActionResult> DeleteAccommodationImage(Guid id, [FromBody] DeleteImageDTO deleteImageDTO)
+        {
+            DetailedAccommodationDTO detailedAccomodationDTO = await _accommodationService.DeleteAccommodationImage(id, deleteImageDTO, User.Identity.Name);
+            return Ok(detailedAccomodationDTO);
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "owner")]
         public async Task<IActionResult> DeleteAccommodation(Guid id)

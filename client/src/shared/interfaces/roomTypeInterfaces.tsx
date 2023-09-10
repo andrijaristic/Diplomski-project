@@ -1,12 +1,15 @@
-import { ISeasonalPricing } from "./seasonalPricingInterfaces";
+import {
+  ISeasonalPricing,
+  IUpdateSeasonalPricing,
+} from "./seasonalPricingInterfaces";
 
 export interface INewRoomType {
   id: string;
   adults: number;
   children: number;
-  propertyId: string;
+  accommodationId: string;
   amountOfRooms: number;
-  seasonalPricings: ISeasonalPricing[];
+  seasonalPricing: ISeasonalPricing[];
 }
 
 export interface IRoomTypeDisplay {
@@ -20,4 +23,9 @@ export interface IRoomTypeAddDisplay {
   id: string;
   startDate: Date;
   endDate: Date;
+}
+
+export interface IUpdateRoomType {
+  roomTypeId: string;
+  seasonalPrices: IUpdateSeasonalPricing[];
 }
