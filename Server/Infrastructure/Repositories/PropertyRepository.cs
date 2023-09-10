@@ -16,12 +16,25 @@ namespace Infrastructure.Repositories
 
         }
 
+        public async Task<Property> GetWithFavorites(Guid id)
+        {
+            Property property = await _dbContext
+                                            .Properties
+                                            .Where(p => p.Id == id &&
+                                                        p.IsVisible &&
+                                                       !p.IsDeleted)
+                                            .Include(p => p.SavedProperties)
+                                            .FirstOrDefaultAsync();
+            return property;
+        }
+
         public async Task<List<Property>> GetHighestRatedAccommodations()
         {
             List<Property> properties = await _dbContext
                                                     .Properties
                                                     .AsNoTracking()
-                                                    .Where(p => p.IsVisible)
+                                                    .Where(p => p.IsVisible &&
+                                                               !p.IsDeleted)
                                                     .OrderBy(p => p.AverageGrade)
                                                     .Take(5)
                                                     .Include(p => p.ThumbnailImage)
@@ -53,6 +66,7 @@ namespace Infrastructure.Repositories
                             .Include(p => p.RoomTypes)
                             .Include(p => p.Utilities)
                             .Include(p => p.ThumbnailImage)
+                            .Include(p => p.SavedProperties)
                             .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchParamsDTO.ArrivalDate))
@@ -150,21 +164,6 @@ namespace Infrastructure.Repositories
             if (searchParamsDTO.Utilities != null &&
                 searchParamsDTO.Utilities.Any())
             {
-                //source = source
-                //            .Where(x => searchParamsDTO.Utilities
-                //                                            .IntersectBy(x.Utilities
-                //                                            .Select(util => util.Id), id => id)
-                //            .Count() == searchParamsDTO.Utilities.Count);
-                //var src = source.ToList();
-                //source = source
-                //            .Where(x => x.Utilities.Count() > 0 &&
-                //                        x.Utilities
-                //            .Any(y => searchParamsDTO.Utilities
-                //            .Contains(y.Id)));
-                //source = source
-                //            .Where(x => searchParamsDTO.Utilities
-                //            .Any(id => x.Utilities
-                //            .Any(y => y.Id == id)));
                 filteredProperties = filteredProperties
                                             .Where(x => searchParamsDTO.Utilities
                                             .All(id => x.Utilities

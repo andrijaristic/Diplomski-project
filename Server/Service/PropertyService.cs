@@ -13,6 +13,7 @@ using Domain.Interfaces.Services;
 using Domain.Exceptions.PropertyUtilityExceptions;
 using Contracts.PropertyUtilityDTOs;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.AccessControl;
 
 namespace Service
 {
@@ -30,7 +31,46 @@ namespace Service
             _hostEnvironment = hostEnvironment;
         }
 
-        public async Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO)
+        public async Task ToggleAccommodationFavoriteStatus(Guid accommodationId, string username)
+        {
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            Property accommodation = await _unitOfWork
+                                                .Properties
+                                                .GetWithFavorites(accommodationId);
+            if (accommodation is null) 
+            {
+                throw new PropertyNotFoundException(accommodationId);
+            }
+
+            SavedProperty? savedProperty = accommodation
+                                            .SavedProperties
+                                            .FirstOrDefault(sp => sp.UserId == user.Id &&
+                                                            sp.PropertyId == accommodation.Id);
+            if (savedProperty is null)
+            {
+                savedProperty = new SavedProperty()
+                {
+                    UserId = user.Id,
+                    PropertyId = accommodation.Id
+                };
+                accommodation.SavedProperties.Add(savedProperty);
+            } 
+            else
+            {
+                accommodation.SavedProperties.Remove(savedProperty);
+            }
+
+            await _unitOfWork.Save();
+        }
+
+        public async Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO, string username)
         {
             IEnumerable<Property> accommodations = await _unitOfWork
                                                         .Properties
@@ -40,10 +80,35 @@ namespace Service
                 throw new InvalidSearchParamsException();
             }
 
-            return PaginationHelper<Property, DisplayPropertyDTO>.CreatePagedListDTO(accommodations,
-                                                                                     searchParamsDTO.Page,
-                                                                                     _settings.Value.AccommodationsPageSize,
-                                                                                     _mapper);
+            PagedListDTO<DisplayPropertyDTO> dtos =  
+                PaginationHelper<Property, DisplayPropertyDTO>
+                .CreatePagedListDTO(accommodations,
+                                    searchParamsDTO.Page,
+                                    _settings.Value.AccommodationsPageSize,
+                                    _mapper);
+
+            if (username is not null)
+            {
+                User user = await _unitOfWork
+                                        .Users
+                                        .FindByUsername(username);
+
+                if (user is null)
+                {
+                    return dtos;
+                }
+
+                foreach (Property accommodation in accommodations)
+                {
+                    dtos.Items
+                        .Where(item => item.Id == accommodation.Id)
+                        .First().IsSaved = accommodation
+                                                .SavedProperties
+                                                .Any(acc => acc.UserId == user.Id);
+                }
+            }
+
+            return dtos;
         }
 
         public async Task<List<PropertyPreviewDTO>> GetHighestRatedAccommodations()

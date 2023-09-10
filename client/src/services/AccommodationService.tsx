@@ -53,3 +53,7 @@ export const addAccommodationImage = async (
     accommodationImage.data
   );
 };
+
+export const toggleFavoriteStatus = async (id: string) => {
+  return await axiosClient.put(`${API}/properties/${id}/toggle-favorite`);
+};

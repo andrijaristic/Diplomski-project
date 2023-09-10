@@ -12,6 +12,7 @@ namespace Contracts.PropertyDTOs
         public int Comments { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public bool IsSaved { get; set; }
         public AccommodationImageDTO ThumbnailImage { get; set; }  
     }
 }

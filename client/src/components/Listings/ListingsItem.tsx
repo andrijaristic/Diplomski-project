@@ -1,21 +1,26 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
   CardContent,
   CardMedia,
+  Checkbox,
   Grid,
   IconButton,
-  Stack,
   Tooltip,
   Typography,
   styled,
 } from "@mui/material";
+import { red } from "@mui/material/colors";
 import StarIcon from "@mui/icons-material/Star";
 import RoomIcon from "@mui/icons-material/Room";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
 import StyledButton from "../UI/Styled/StyledButton";
 import { IAccommodationDisplay } from "../../shared/interfaces/accommodationInterfaces";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { toggleFavoriteStatusAction } from "../../store/accommodationSlice";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   ...theme.typography,
@@ -33,8 +38,19 @@ interface IProps {
 }
 
 const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+
+  const [checked, setChecked] = useState<boolean>(accommodation?.isSaved);
+
+  const handleCheck = () => {
+    setChecked((prevState) => !prevState);
+    dispatch(toggleFavoriteStatusAction(accommodation?.id));
+  };
+
   const handleNavigationClick = () => {
     navigate(`${pathname}/${accommodation?.id}`);
   };
@@ -99,19 +115,32 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
             </IconButton>
           </Card>
         </Tooltip>
-        {/* <Card
-          sx={{
-            position: "absolute",
-            top: 5,
-            right: 60,
-            borderRadius: 8,
-            backgroundColor: "nav.default",
-          }}
-        >
-          <IconButton size="medium">
-            <RoomIcon fontSize="inherit" color="info" />
-          </IconButton>
-        </Card> */}
+        {isLoggedIn && (
+          <Tooltip title="Favorite listing">
+            <Card
+              sx={{
+                position: "absolute",
+                top: 5,
+                right: 60,
+                borderRadius: 8,
+                backgroundColor: "nav.default",
+              }}
+            >
+              <Checkbox
+                checked={checked}
+                onChange={handleCheck}
+                icon={<FavoriteBorder />}
+                checkedIcon={<Favorite />}
+                sx={{
+                  color: red[800],
+                  "&.Mui-checked": {
+                    color: red[600],
+                  },
+                }}
+              />
+            </Card>
+          </Tooltip>
+        )}
       </Box>
 
       <CardContent

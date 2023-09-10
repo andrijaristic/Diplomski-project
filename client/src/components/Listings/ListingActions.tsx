@@ -29,7 +29,7 @@ const ListingActions: FC<IProps> = ({ sort, onChange }) => {
       >
         Filters (opens modal)
       </StyledButton>
-      <Box sx={{ ml: "auto", mr: 1, display: "flex", alignItems: "center" }}>
+      <Box sx={{ ml: "auto", mr: 3, display: "flex", alignItems: "center" }}>
         <Typography sx={{ mr: 1 }}>Sort by</Typography>
         <Select id="sortSelect" value={sort} onChange={onChange}>
           <MenuItem value="HighestPrice">Highest Price</MenuItem>

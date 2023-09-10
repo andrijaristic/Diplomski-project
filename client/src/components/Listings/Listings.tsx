@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLng } from "leaflet-geosearch/dist/providers/provider.js";
 import {
   Box,
+  Divider,
   Fade,
   Grid,
   Pagination,
@@ -107,7 +108,10 @@ const Listings: FC = () => {
         <Grid item xs={9}>
           <Grid container direction="column" sx={{ pt: 8, pl: 3 }}>
             <Grid item>
-              <Typography variant="h2">Property listings</Typography>
+              <Typography variant="h2" component="h1">
+                Find your accommodation
+              </Typography>
+              <Divider sx={{ width: "98%", pt: 1 }} />
             </Grid>
             <Grid
               item

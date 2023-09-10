@@ -13,6 +13,7 @@ export interface IAccommodationDisplay {
   longitude: number;
   country?: string;
   area?: string;
+  isSaved: boolean;
   thumbnailImage: IAccommodationImage;
 }
 

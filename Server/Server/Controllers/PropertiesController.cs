@@ -23,7 +23,7 @@ namespace Web.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAcccommodations([FromQuery] SearchParamsDTO searchParamsDTO)
         {
-            PagedListDTO<DisplayPropertyDTO> pagedAccommodations = await _propertyService.GetAccommodations(searchParamsDTO);
+            PagedListDTO<DisplayPropertyDTO> pagedAccommodations = await _propertyService.GetAccommodations(searchParamsDTO, User.Identity.Name);
             return Ok(pagedAccommodations);
         }
 
@@ -80,6 +80,14 @@ namespace Web.API.Controllers
         public async Task<IActionResult> DeleteAccommodation(Guid id)
         {
             await _propertyService.DeleteProperty(id, User.Identity.Name);
+            return NoContent();
+        }
+
+        [HttpPut("{id}/toggle-favorite")]
+        [Authorize]
+        public async Task<IActionResult> ToggleFavorite(Guid id)
+        {
+            await _propertyService.ToggleAccommodationFavoriteStatus(id, User.Identity.Name);
             return NoContent();
         }
     }
