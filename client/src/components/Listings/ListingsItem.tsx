@@ -45,7 +45,9 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
 
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
 
-  const [checked, setChecked] = useState<boolean>(accommodation?.isSaved);
+  const [checked, setChecked] = useState<boolean>(
+    accommodation?.isSaved || false
+  );
 
   const handleCheck = () => {
     setChecked((prevState) => !prevState);

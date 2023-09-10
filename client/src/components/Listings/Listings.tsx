@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLng } from "leaflet-geosearch/dist/providers/provider.js";
@@ -49,7 +49,7 @@ const Listings: FC = () => {
   });
   const [searchParams, setSearchParams] = useSearchParams();
   const [sortOption, setSortOption] = useState<string>(
-    searchParams?.get("sort") ? searchParams?.get("sort") : "HighestPrice"
+    searchParams?.get("sort") ?? "HighestPrice"
   );
 
   const handleSortingChange = (event: SelectChangeEvent) => {

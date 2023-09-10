@@ -58,7 +58,7 @@ export const getAccommodationsAction = createAsyncThunk(
 
 export const getHighestRatedAccommodationsAction = createAsyncThunk(
   "accommodations/getHighestRated",
-  async (id, thunkApi) => {
+  async (_, thunkApi) => {
     try {
       const response = await getHighestRatedAccommodations();
       return thunkApi.fulfillWithValue(response.data);
@@ -320,11 +320,6 @@ const accommodationSlice = createSlice({
     });
 
     // TOGGLE FAVORITE
-    builder.addCase(toggleFavoriteStatusAction.pending, (state) => {});
-    builder.addCase(
-      toggleFavoriteStatusAction.fulfilled,
-      (state, action) => {}
-    );
     builder.addCase(toggleFavoriteStatusAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 

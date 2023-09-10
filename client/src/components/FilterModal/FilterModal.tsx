@@ -54,27 +54,31 @@ const FilterModal: FC<IProps> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [priceRange, setPriceRange] = useState<number[]>([
-    searchParams.get("minPrice") ? parseInt(searchParams.get("minPrice")) : min,
-    searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")) : max,
+    searchParams.get("minPrice")
+      ? parseInt(searchParams.get("minPrice") as string)
+      : min,
+    searchParams.get("maxPrice")
+      ? parseInt(searchParams.get("maxPrice") as string)
+      : max,
   ]);
   const [checkinDate, setCheckinDate] = useState<Date | null>(
     searchParams.get("arrivalDate")
-      ? new Date(searchParams.get("arrivalDate"))
+      ? new Date(searchParams.get("arrivalDate") as string)
       : null
   );
   const [checkoutDate, setCheckoutDate] = useState<Date | null>(
     searchParams.get("arrivalDate")
-      ? new Date(searchParams.get("departureDate"))
+      ? new Date(searchParams.get("departureDate") as string)
       : null
   );
   const [adults, setAdults] = useState<number>(
     searchParams.get("adults")
-      ? parseInt(searchParams.get("adults"))
+      ? parseInt(searchParams.get("adults") as string)
       : defaultGuests
   );
   const [children, setChildren] = useState<number>(
     searchParams.get("children")
-      ? parseInt(searchParams.get("children"))
+      ? parseInt(searchParams.get("children") as string)
       : defaultGuests
   );
   const [checkedAmenities, setCheckedAmenities] = useState<string[]>(
@@ -129,7 +133,7 @@ const FilterModal: FC<IProps> = (props) => {
       adults: adults !== defaultGuests ? adults.toString() : "",
       children: children !== defaultGuests ? children.toString() : "",
       utilities: checkedAmenities,
-      sort: searchParams?.get("sort") ? searchParams?.get("sort") : "",
+      sort: searchParams?.get("sort") ?? "",
       page: page,
     };
 
