@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Domain.Models;
 using Contracts.CommentDTOs;
-using Domain.Interfaces.Services;
-using Domain.Interfaces.Repositories;
-using Domain.Exceptions.UserExceptions;
 using Domain.Exceptions.CommentExceptions;
 using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.UserExceptions;
+using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
+using Domain.Models;
 
 namespace Service
 {
@@ -52,7 +52,7 @@ namespace Service
             bool commentExists = await _unitOfWork
                                             .Comments
                                             .CheckIfCommentByUserForAccommodationExists(property.Id, user.Id);
-            if (commentExists) 
+            if (commentExists)
             {
                 throw new UserCommentExistsException();
             }
@@ -92,7 +92,7 @@ namespace Service
             List<Comment> comments = await _unitOfWork
                                                 .Comments
                                                 .GetUserComments(userId);
-            List<DisplayCommentDTO> displayCommentDTOs =_mapper.Map<List<DisplayCommentDTO>>(comments);
+            List<DisplayCommentDTO> displayCommentDTOs = _mapper.Map<List<DisplayCommentDTO>>(comments);
 
             foreach (var displayCommentDTO in displayCommentDTOs)
             {

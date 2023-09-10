@@ -24,7 +24,7 @@ namespace Service
                            IUnitOfWork unitOfWork,
                            IAuthUtility authUtility,
                            IOptions<AppSettings> settings,
-                           IEmailUtility emailUtility) 
+                           IEmailUtility emailUtility)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -59,7 +59,7 @@ namespace Service
             User user = await _unitOfWork
                                     .Users
                                     .FindByUsername(loginDTO.Username);
-            if(user == null)
+            if (user == null)
             {
                 throw new InvalidUsernameException();
             }
@@ -118,7 +118,7 @@ namespace Service
                     Country = _settings.Value.DefaultCountry,
                     PhoneNumber = _settings.Value.DefaultPhoneNumber,
                     Role = userType,
-                    IsVerified = userType != UserType.PROPERTYOWNER,
+                    IsVerified = userType != UserType.OWNER,
                 };
 
                 user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
@@ -140,17 +140,17 @@ namespace Service
         public async Task<DisplayUserDTO> CreateUser(NewUserDTO newUserDTO)
         {
             bool exists = await _unitOfWork.Users.FindByUsername(newUserDTO.Username) != null;
-            if (exists) 
+            if (exists)
             {
                 throw new UserUsernameExistsException();
             }
 
             ValidateNewUser(newUserDTO);
 
-            User user = _mapper.Map<User>(newUserDTO); 
+            User user = _mapper.Map<User>(newUserDTO);
             user.Password = BCrypt.Net.BCrypt.HashPassword(newUserDTO.Password, BCrypt.Net.BCrypt.GenerateSalt());
 
-            user.IsVerified = user.Role != UserType.PROPERTYOWNER;
+            user.IsVerified = user.Role != UserType.OWNER;
             user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.PENDING;
 
             await _unitOfWork.Users.Add(user);
@@ -220,7 +220,7 @@ namespace Service
                 throw new UserByIdNotFoundException(id);
             }
 
-            if (user.Role != UserType.PROPERTYOWNER)
+            if (user.Role != UserType.OWNER)
             {
                 throw new InvalidRoleForVerificationException(user.Role.ToString());
             }
@@ -231,7 +231,7 @@ namespace Service
             }
 
             user.IsVerified = isAccepted;
-            user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED : 
+            user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED :
                                                    VerificationStatus.REJECTED;
 
             await _unitOfWork.Save();
@@ -264,7 +264,7 @@ namespace Service
 
         private void ValidateUsername(string username)
         {
-            if (string.IsNullOrWhiteSpace(username) || 
+            if (string.IsNullOrWhiteSpace(username) ||
                 username.Length <= _settings.Value.MinUsernameLength)
             {
                 throw new InvalidUsernameException();
@@ -273,7 +273,7 @@ namespace Service
 
         private void ValidatePassword(string password)
         {
-            if (string.IsNullOrWhiteSpace(password) || 
+            if (string.IsNullOrWhiteSpace(password) ||
                 password.Length <= _settings.Value.MinPasswordLength)
             {
                 throw new InvalidPasswordException();
@@ -309,7 +309,7 @@ namespace Service
             Regex phoneNumberRegex = new Regex(_settings.Value.PhoneNumberRegex,
                                                RegexOptions.Compiled);
 
-            if (string.IsNullOrWhiteSpace(phoneNumber) || 
+            if (string.IsNullOrWhiteSpace(phoneNumber) ||
                 !phoneNumberRegex.Match(phoneNumber).Success)
             {
                 throw new InvalidInputFieldException(nameof(phoneNumber).ToUpper());
@@ -321,7 +321,7 @@ namespace Service
             Regex emailRegex = new Regex(_settings.Value.EmailRegex,
                                          RegexOptions.Compiled);
 
-            if (string.IsNullOrWhiteSpace(email) || 
+            if (string.IsNullOrWhiteSpace(email) ||
                 !emailRegex.Match(email).Success)
             {
                 throw new InvalidInputFieldException(nameof(email).ToUpper());

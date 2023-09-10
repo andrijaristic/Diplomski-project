@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using AutoMapper;
-using Domain.Models;
-using Domain.Models.AppSettings;
+﻿using AutoMapper;
+using Contracts.AccommodationDTOs;
 using Contracts.Common;
-using Service.Helpers;
 using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.PropertyUtilityExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using Domain.Exceptions.PropertyUtilityExceptions;
-using Contracts.AccommodationDTOs;
+using Domain.Models;
+using Domain.Models.AppSettings;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Service.Helpers;
 
 namespace Service
 {
@@ -41,7 +41,7 @@ namespace Service
             Accommodation accommodation = await _unitOfWork
                                                 .Properties
                                                 .GetWithFavorites(accommodationId);
-            if (accommodation is null) 
+            if (accommodation is null)
             {
                 throw new PropertyNotFoundException(accommodationId);
             }
@@ -58,7 +58,7 @@ namespace Service
                     PropertyId = accommodation.Id
                 };
                 accommodation.SavedProperties.Add(savedProperty);
-            } 
+            }
             else
             {
                 accommodation.SavedProperties.Remove(savedProperty);
@@ -77,7 +77,7 @@ namespace Service
                 throw new InvalidSearchParamsException();
             }
 
-            PagedListDTO<DisplayAccommodationDTO> dtos =  
+            PagedListDTO<DisplayAccommodationDTO> dtos =
                 PaginationHelper<Accommodation, DisplayAccommodationDTO>
                 .CreatePagedListDTO(accommodations,
                                     searchParamsDTO.Page,
@@ -137,12 +137,12 @@ namespace Service
             for (int i = 0; i < accommodation.Images.Count; i++)
             {
                 accommodation.Images[i].ImageURL = accommodation.Images[i].ImageURL
-                                                      .StartsWith("https://") ? 
-                                                            accommodation.Images[i].ImageURL : 
+                                                      .StartsWith("https://") ?
+                                                            accommodation.Images[i].ImageURL :
                                                             _settings.Value.DefaultImagePath + accommodation.Images[i].ImageURL;
             }
 
-            return _mapper.Map<DetailedAccommodationDTO>(accommodation);   
+            return _mapper.Map<DetailedAccommodationDTO>(accommodation);
         }
 
         public async Task<DetailedAccommodationDTO> AddAccommodationImage(Guid id, AddAccommodationImageDTO addAccommodationImageDTO, string username)
@@ -172,12 +172,12 @@ namespace Service
             {
                 ImageURL = addAccommodationImageDTO.Image is null ?
                                         _settings.Value.DefaultImagePath :
-                                        await ImageHelper.SaveImage(addAccommodationImageDTO.Image, 
-                                                                    accommodation.Id, 
+                                        await ImageHelper.SaveImage(addAccommodationImageDTO.Image,
+                                                                    accommodation.Id,
                                                                     _hostEnvironment.ContentRootPath)
             };
 
-            if (accommodation.Images.Count == 5) 
+            if (accommodation.Images.Count == 5)
             {
                 throw new PropertyImageAmountExceededException();
             }
@@ -205,7 +205,7 @@ namespace Service
                 throw new InvalidUserIdInNewPropertyException();
             }
 
-            if (user.Role != Domain.Enums.UserType.PROPERTYOWNER)
+            if (user.Role != Domain.Enums.UserType.OWNER)
             {
                 throw new InvalidPropertyUserRoleException();
             }
@@ -217,10 +217,10 @@ namespace Service
 
 
             Accommodation property = _mapper.Map<Accommodation>(newAccommodationDTO);
-            property.Utilities = new List<PropertyUtility>();
+            property.Utilities = new List<Amenity>();
             foreach (Guid utilityId in newAccommodationDTO.Utilities)
             {
-                PropertyUtility utility = await _unitOfWork
+                Amenity utility = await _unitOfWork
                                                     .PropertyUtilities
                                                     .Find(utilityId);
                 if (utility is null)
@@ -232,18 +232,18 @@ namespace Service
 
             await _unitOfWork.Properties.Add(property);
 
-            property.ThumbnailImage = new AccommodationImage() 
+            property.ThumbnailImage = new AccommodationImage()
             {
                 ImageURL = newAccommodationDTO.ThumbnailImage is null ?
                                         _settings.Value.DefaultImagePath :
-                                        await ImageHelper.SaveImage(newAccommodationDTO.ThumbnailImage, 
-                                                                    property.Id, 
+                                        await ImageHelper.SaveImage(newAccommodationDTO.ThumbnailImage,
+                                                                    property.Id,
                                                                     _hostEnvironment.ContentRootPath)
             };
 
             await _unitOfWork.Save();
 
-            return _mapper.Map<DisplayAccommodationDTO>(property); 
+            return _mapper.Map<DisplayAccommodationDTO>(property);
         }
 
         public async Task<DisplayAccommodationDTO> UpdateBasicAccommodationInformation(Guid id, UpdateBasicAccommodationInformationDTO updatePropertyDTO, string username)
@@ -266,8 +266,8 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            if (user.Id != updatePropertyDTO.UserId) 
-            { 
+            if (user.Id != updatePropertyDTO.UserId)
+            {
                 throw new InvalidUserInPropertyException();
             }
 

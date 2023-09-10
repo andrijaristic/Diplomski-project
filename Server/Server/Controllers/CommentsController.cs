@@ -17,7 +17,7 @@ namespace Web.API.Controllers
 
         [HttpGet("user/{id}")]
         [Authorize]
-        public async Task<IActionResult> GetUserComments(Guid id) 
+        public async Task<IActionResult> GetUserComments(Guid id)
         {
             List<DisplayCommentDTO> displayCommentDTOs = await _commentsService.GetUserComments(id);
             return Ok(displayCommentDTOs);
@@ -25,10 +25,10 @@ namespace Web.API.Controllers
 
         [HttpGet("accommodation/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAccommodationComments(Guid id) 
+        public async Task<IActionResult> GetAccommodationComments(Guid id)
         {
             List<DisplayCommentDTO> displayCommentDTOs = await _commentsService.GetAccommodationComments(id);
-            return Ok(displayCommentDTOs); 
+            return Ok(displayCommentDTOs);
         }
 
         [HttpPost]

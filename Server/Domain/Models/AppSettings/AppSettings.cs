@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Models.AppSettings
+﻿namespace Domain.Models.AppSettings
 {
     public class AppSettings
     {
         public string SecretKey { get; set; }
         public string StripeSecretKey { get; set; }
-        public string StripePublishableKey { get;set; }
+        public string StripePublishableKey { get; set; }
         public string GoogleClientId { get; set; }
         public string DefaultPassword { get; set; }
         public string DefaultPhoneNumber { get; set; }

@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Contracts.ReservationDTOs;
-using Domain.Models;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.ReservationExceptions;
 using Domain.Exceptions.RoomExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using Contracts.CommentDTOs;
-using Contracts.RoomDTOs;
+using Domain.Models;
 
 namespace Service
 {
@@ -50,14 +48,14 @@ namespace Service
             bool propertyExists = await _unitOfWork
                                             .Properties
                                             .Find(newReservationDTO.PropertyId) != null;
-            if (!propertyExists) 
+            if (!propertyExists)
             {
                 throw new PropertyNotFoundException(newReservationDTO.PropertyId);
             }
 
             Room room = await _unitOfWork
                                     .Rooms
-                                    .FindByIdAndProperty(newReservationDTO.RoomId, 
+                                    .FindByIdAndProperty(newReservationDTO.RoomId,
                                                         newReservationDTO.PropertyId);
             if (room is null)
             {
@@ -119,7 +117,7 @@ namespace Service
             Reservation reservation = await _unitOfWork
                                                 .Reservations
                                                 .FindByIdWithUser(id);
-            if (reservation is null) 
+            if (reservation is null)
             {
                 throw new ReservationNotFoundException(id);
             }
@@ -143,10 +141,10 @@ namespace Service
 
             ReservedDays reservedDays = await _unitOfWork
                                                     .ReservedDays
-                                                    .FindByDatesAndRoom(reservation.ArrivalDate, 
+                                                    .FindByDatesAndRoom(reservation.ArrivalDate,
                                                                         reservation.DepartureDate,
                                                                         reservation.RoomId);
-            if (reservedDays != null) 
+            if (reservedDays != null)
             {
                 _unitOfWork.ReservedDays.Remove(reservedDays);
             }

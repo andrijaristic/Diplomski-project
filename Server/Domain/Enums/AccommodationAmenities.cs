@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums
 {
-    public enum PropertyUtilities
+    public enum AccommodationAmenities
     {
         Wifi,
         Parking,

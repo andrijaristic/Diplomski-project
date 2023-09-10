@@ -48,7 +48,7 @@ namespace Infrastructure.Configuration
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.Utilities)
-                   .WithMany(x => x.Properties);
+                   .WithMany(x => x.Accommodations);
         }
     }
 }

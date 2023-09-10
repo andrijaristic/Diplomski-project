@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Contracts.AccommodationDTOs;
 using Contracts.Common;
-using Contracts.AccommodationDTOs;
 using Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Web.API.Controllers
 {
@@ -34,7 +34,7 @@ namespace Web.API.Controllers
         }
 
         [HttpGet("user/{id}")]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> GetUserAccommodations(Guid id)
         {
             List<DisplayAccommodationDTO> displayAccommodationDTOs = await _accommodationService.GetUserAccommodations(id);
@@ -50,7 +50,7 @@ namespace Web.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> CreateAccommodation([FromForm] NewAccommodationDTO newAccommodationDTO)
         {
             DisplayAccommodationDTO displayAccommodationDTO = await _accommodationService.CreateAccommodation(newAccommodationDTO, User.Identity.Name);
@@ -58,7 +58,7 @@ namespace Web.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> UpdateAccommodation(Guid id, [FromBody] UpdateBasicAccommodationInformationDTO updateAccommodationDTO)
         {
             DisplayAccommodationDTO displayAccommodationDTO = await _accommodationService
@@ -69,7 +69,7 @@ namespace Web.API.Controllers
         }
 
         [HttpPost("{id}/add-image")]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> AddAccommodationImage(Guid id, [FromForm] AddAccommodationImageDTO addPropertyImageDTO)
         {
             DetailedAccommodationDTO detailedAccommodationDTO = await _accommodationService
@@ -80,7 +80,7 @@ namespace Web.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> DeleteAccommodation(Guid id)
         {
             await _accommodationService.DeleteAccommodation(id, User.Identity.Name);

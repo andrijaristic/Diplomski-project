@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using Domain.Models;
 using Contracts.RoomDTOs;
-using Domain.Interfaces.Services;
-using Domain.Interfaces.Repositories;
-using Domain.Exceptions.PropertyExceptions;
-using Domain.Exceptions.RoomTypeExceptions;
-using Domain.Exceptions.RoomExceptions;
 using Contracts.SeasonalPricingDTOs;
+using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.RoomExceptions;
+using Domain.Exceptions.RoomTypeExceptions;
 using Domain.Exceptions.UserExceptions;
+using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
+using Domain.Models;
 
 namespace Service
 {
@@ -45,7 +45,7 @@ namespace Service
                 throw new InvalidUserInPropertyException();
             }
 
-            List<Room> rooms =  await _unitOfWork
+            List<Room> rooms = await _unitOfWork
                                             .Rooms
                                             .GetForAccommodation(accommodationId, DateTime.Now.ToUniversalTime().Date);
             List<DisplayRoomDTO> displayRoomDTOs = _mapper.Map<List<DisplayRoomDTO>>(rooms);
@@ -84,7 +84,7 @@ namespace Service
 
             List<SeasonalPricing> dtoPricings = new List<SeasonalPricing>();
             foreach (Room room in rooms)
-            { 
+            {
                 SeasonalPricing pricing = room
                                             .RoomType
                                             .SeasonalPricing
@@ -177,7 +177,7 @@ namespace Service
         {
             User user = await _unitOfWork
                                     .Users
-                                    .FindByUsername(username);    
+                                    .FindByUsername(username);
             if (user is null)
             {
                 throw new UserNotFoundException(username);
@@ -185,8 +185,8 @@ namespace Service
 
             Room room = await _unitOfWork
                                     .Rooms
-                                    .FindDetailedRoom(id, 
-                                                      deleteRoomDTO.PropertyId, 
+                                    .FindDetailedRoom(id,
+                                                      deleteRoomDTO.PropertyId,
                                                       DateTime.Now.ToUniversalTime().Date);
             if (room is null || room.IsDeleted)
             {
@@ -233,8 +233,8 @@ namespace Service
 
             Room room = await _unitOfWork
                                     .Rooms
-                                    .FindDetailedRoom(id, 
-                                                      updateRoomDTO.PropertyId, 
+                                    .FindDetailedRoom(id,
+                                                      updateRoomDTO.PropertyId,
                                                       DateTime.Now.ToUniversalTime().Date);
             if (room is null)
             {

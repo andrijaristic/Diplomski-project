@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Domain.Models;
 using Contracts.AmenityDTOs;
-using Domain.Interfaces.Services;
 using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
+using Domain.Models;
 
 namespace Service
 {
@@ -18,9 +18,9 @@ namespace Service
 
         public async Task<List<DisplayAmenityDTO>> GetAll()
         {
-           IEnumerable<PropertyUtility> amenities = await _unitOfWork
-                                                                .PropertyUtilities
-                                                                .GetAll();
+            IEnumerable<Amenity> amenities = await _unitOfWork
+                                                                 .PropertyUtilities
+                                                                 .GetAll();
 
             return _mapper.Map<List<DisplayAmenityDTO>>(amenities);
         }

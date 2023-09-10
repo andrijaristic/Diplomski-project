@@ -1,19 +1,11 @@
 ﻿using Contracts.UserDTOs;
 using Domain.Enums;
 using Domain.Interfaces.Utilities;
-using Domain.Models;
-using Domain.Models.AppSettings;
 using Google.Apis.Auth;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Runtime;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Utilities
 {
@@ -37,7 +29,7 @@ namespace Service.Utilities
                               expires: DateTime.Now.AddMinutes(duration),
                               signingCredentials: signInCredentials
                         );
-            
+
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
 
@@ -61,7 +53,8 @@ namespace Service.Utilities
 
 
                 return socialMediaDTO;
-            } catch
+            }
+            catch
             {
                 return null;
             }

@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Interfaces.Repositories;
 using Domain.Models;
-using Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
     public class CommentRepository : GenericRepository<Comment>, ICommentRepository
     {
-        public CommentRepository(ProjectDbContext _dbContext) : base(_dbContext) 
+        public CommentRepository(ProjectDbContext _dbContext) : base(_dbContext)
         {
 
         }

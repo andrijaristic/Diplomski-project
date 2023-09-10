@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const createAxiosClient = (options: any) => {
+type AxiosType = {
+  headers: object;
+};
+
+const createAxiosClient = (options: AxiosType) => {
   const client = axios.create(options);
 
   client.interceptors.request.use(
@@ -22,4 +26,6 @@ const createAxiosClient = (options: any) => {
   return client;
 };
 
-export const axiosClient = createAxiosClient({ headers: {} });
+export const axiosClient = createAxiosClient({
+  headers: {},
+});

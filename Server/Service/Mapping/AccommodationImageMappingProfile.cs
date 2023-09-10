@@ -6,7 +6,7 @@ namespace Service.Mapping
 {
     public class AccommodationImageMappingProfile : Profile
     {
-        public AccommodationImageMappingProfile(string defaultImagePath) 
+        public AccommodationImageMappingProfile(string defaultImagePath)
         {
             CreateMap<AccommodationImage, AccommodationImageDTO>().ForMember(
                 dest => dest.ImageURL,

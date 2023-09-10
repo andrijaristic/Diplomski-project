@@ -14,7 +14,7 @@ namespace Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public RoomTypeService(IUnitOfWork unitOfWork, IMapper mapper) 
+        public RoomTypeService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -59,7 +59,7 @@ namespace Service
             }
 
             int seasonalPricingMin = roomType.SeasonalPricing.Min(x => x.Price);
-            property.StartingPrice = property.StartingPrice > seasonalPricingMin ? seasonalPricingMin : 
+            property.StartingPrice = property.StartingPrice > seasonalPricingMin ? seasonalPricingMin :
                                                                                    property.StartingPrice;
             property.IsVisible = true;
 
@@ -69,7 +69,7 @@ namespace Service
             return _mapper.Map<DisplayRoomTypeDTO>(roomType);
         }
 
-        public async Task<DisplayRoomTypeDTO> UpdateRoomType(Guid id,UpdateRoomTypeDTO updateRoomTypeDTO, string username)
+        public async Task<DisplayRoomTypeDTO> UpdateRoomType(Guid id, UpdateRoomTypeDTO updateRoomTypeDTO, string username)
         {
             RoomType roomType = await _unitOfWork
                                             .RoomTypes
@@ -136,7 +136,7 @@ namespace Service
 
         private static void ValidateAmountOfRooms(int rooms)
         {
-            if (rooms <= 0) 
+            if (rooms <= 0)
             {
                 throw new InvalidAmountOfRoomsException();
             }
@@ -183,7 +183,7 @@ namespace Service
                 throw new InvalidMonthAmountException();
             }
 
-            foreach(var price in pricings)
+            foreach (var price in pricings)
             {
                 if (price.Price <= 0)
                 {

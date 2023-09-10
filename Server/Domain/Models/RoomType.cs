@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Models
+﻿namespace Domain.Models
 {
     public class RoomType
     {
@@ -13,7 +7,7 @@ namespace Domain.Models
         public int Children { get; set; }
         public Guid PropertyId { get; set; }
         public Accommodation Property { get; set; }
-        public List<Room> Rooms { get; set; }   
+        public List<Room> Rooms { get; set; }
         public List<SeasonalPricing> SeasonalPricing { get; set; }
         public bool IsDeleted { get; set; } = false;
     }

@@ -136,7 +136,7 @@ builder.Services.AddSingleton(new MapperConfiguration(mc =>
     mc.AddProfile(new CommentMappingProfile());
     mc.AddProfile(new SeasonalPricingMappingProfile());
     mc.AddProfile(new AccommodationImageMappingProfile(builder.Configuration.GetSection("AppSettings")["DefaultImagePath"]));
-    mc.AddProfile(new PropertyUtilityMappingProfile());
+    mc.AddProfile(new AmenityMappingProfile());
 }).CreateMapper());
 
 var app = builder.Build();

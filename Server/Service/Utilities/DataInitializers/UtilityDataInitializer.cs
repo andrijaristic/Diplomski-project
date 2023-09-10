@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Options;
-using Domain.Enums;
-using Domain.Models;
-using Domain.Models.AppSettings;
+﻿using Domain.Enums;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Utilities.DataInitializers;
+using Domain.Models;
+using Domain.Models.AppSettings;
+using Microsoft.Extensions.Options;
 
 namespace Service.Utilities.DataInitializers
 {
@@ -19,10 +19,10 @@ namespace Service.Utilities.DataInitializers
         }
         public void InitializeData()
         {
-            Task<IEnumerable<PropertyUtility>> task = _unitOfWork.PropertyUtilities.GetAll();
+            Task<IEnumerable<Amenity>> task = _unitOfWork.PropertyUtilities.GetAll();
             task.Wait();
 
-            List<PropertyUtilities> propertyUtilities = Enum.GetValues<PropertyUtilities>().ToList();
+            List<AccommodationAmenities> propertyUtilities = Enum.GetValues<AccommodationAmenities>().ToList();
             if (task.Result.Count() == propertyUtilities.Count)
             {
                 return;
@@ -30,14 +30,14 @@ namespace Service.Utilities.DataInitializers
 
             foreach (var util in propertyUtilities)
             {
-                if (task.Result.Any(x => x.Utility == util))
+                if (task.Result.Any(x => x.AccommodationAmenity == util))
                 {
                     continue;
                 }
 
-                PropertyUtility newPropertyUtility = new PropertyUtility()
+                Amenity newPropertyUtility = new Amenity()
                 {
-                    Utility = util
+                    AccommodationAmenity = util
                 };
 
                 _unitOfWork.PropertyUtilities.Add(newPropertyUtility).Wait();

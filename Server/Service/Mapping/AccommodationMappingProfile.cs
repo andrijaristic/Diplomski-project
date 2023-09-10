@@ -6,7 +6,7 @@ namespace Service.Mapping
 {
     public class AccommodationMappingProfile : Profile
     {
-        public AccommodationMappingProfile() 
+        public AccommodationMappingProfile()
         {
             CreateMap<Accommodation, NewAccommodationDTO>().ForMember(dest => dest.ThumbnailImage, opt => opt.Ignore())
                                                  .ForMember(dest => dest.Utilities, opt => opt.Ignore())

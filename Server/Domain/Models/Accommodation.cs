@@ -8,8 +8,8 @@
         public double AverageGrade { get; set; } = 1;
         public AccommodationImage ThumbnailImage { get; set; }
         public List<AccommodationImage> Images { get; set; }
-        public Guid UserId { get; set; }    
-        public User User { get; set; }  
+        public Guid UserId { get; set; }
+        public User User { get; set; }
         public string Country { get; set; }
         public string Area { get; set; }
         public double Latitude { get; set; }
@@ -17,7 +17,7 @@
         public List<Comment> Comments { get; set; }
         public List<Room> Rooms { get; set; }
         public List<RoomType> RoomTypes { get; set; }
-        public List<PropertyUtility> Utilities { get; set; }
+        public List<Amenity> Utilities { get; set; }
         public List<Reservation> Reservations { get; set; }
         public List<SavedProperty> SavedProperties { get; set; }
         public int StartingPrice { get; set; }

@@ -7,7 +7,7 @@
         public Guid PropertyId { get; set; }
         public Guid RoomId { get; set; }
         public double Price { get; set; }
-        public DateTime ArrivalDate { get; set; }   
+        public DateTime ArrivalDate { get; set; }
         public DateTime DepartureDate { get; set; }
 
     }

@@ -1,6 +1,4 @@
-﻿using Contracts.RoomTypeDTOs;
-
-namespace Contracts.RoomDTOs
+﻿namespace Contracts.RoomDTOs
 {
     public class NewRoomDTO
     {

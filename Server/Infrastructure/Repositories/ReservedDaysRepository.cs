@@ -1,19 +1,14 @@
 ﻿using Domain.Interfaces.Repositories;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
     public class ReservedDaysRepository : GenericRepository<ReservedDays>, IReservedDaysRepository
     {
-        public ReservedDaysRepository(ProjectDbContext _dbContext) : base(_dbContext) 
+        public ReservedDaysRepository(ProjectDbContext _dbContext) : base(_dbContext)
         {
-        
+
         }
 
         public async Task<ReservedDays> FindByDatesAndRoom(DateTime arrivalDate, DateTime departureDate, Guid roomId)

@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.Options;
-using MimeKit;
-using MailKit.Security;
-using MailKit.Net.Smtp;
+﻿using Domain.Interfaces.Utilities;
 using Domain.Models.AppSettings;
-using Domain.Interfaces.Utilities;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Options;
+using MimeKit;
 
 namespace Service.Utilities
 {
     public class EmailUtility : IEmailUtility
     {
         private readonly IOptions<AppSettings> _settings;
-        public EmailUtility(IOptions<AppSettings> settings) 
+        public EmailUtility(IOptions<AppSettings> settings)
         {
             _settings = settings;
         }

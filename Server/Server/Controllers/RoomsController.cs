@@ -24,15 +24,15 @@ namespace Web.API.Controllers
         }
 
         [HttpGet("accommodation/{id}")]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> GetRoomsForAccommodation(Guid id)
         {
             List<DisplayRoomDTO> displayRoomDTOs = await _roomService.GetRoomsForAccommodation(id, User.Identity.Name);
-            return Ok(displayRoomDTOs); 
+            return Ok(displayRoomDTOs);
         }
 
         [HttpPost]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> CreateRoom([FromBody] NewRoomDTO newRoomDTO)
         {
             DisplayRoomDTO displayRoomDTO = await _roomService.CreateRoom(newRoomDTO, User.Identity.Name);
@@ -40,7 +40,7 @@ namespace Web.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> UpdateRoomInformation(Guid id, [FromBody] UpdateRoomDTO updateRoomDTO)
         {
             DisplayRoomDTO displayRoomDTO = await _roomService.UpdateRoom(id, updateRoomDTO, User.Identity.Name);
@@ -48,7 +48,7 @@ namespace Web.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "propertyowner")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> DeleteRoom(Guid id, [FromBody] DeleteRoomDTO deleteRoomDTO)
         {
             await _roomService.DeleteRoom(id, deleteRoomDTO, User.Identity.Name);

@@ -2,11 +2,6 @@
 using Domain.Interfaces.Repositories;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -39,14 +34,14 @@ namespace Infrastructure.Repositories
             source = source
                         .Where(x => (x.OccupiedDates
                         .Any(x => searchRoomDTO.ArrivalDate > x.DepartureDate &&
-                                    x.ArrivalDate < searchRoomDTO.DepartureDate)) || 
+                                    x.ArrivalDate < searchRoomDTO.DepartureDate)) ||
                         (x.OccupiedDates.Count == 0));
 
             var src2 = source.ToList();
 
 
             source = source
-                        .Where(x => x.RoomType.Adults >= searchRoomDTO.Adults && 
+                        .Where(x => x.RoomType.Adults >= searchRoomDTO.Adults &&
                                     x.RoomType.Children >= searchRoomDTO.Children);
 
             var src3 = source.ToList();
@@ -83,7 +78,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Room>> GetForAccommodation(Guid accommodationId, DateTime date)
         {
-            List<Room> rooms =  await _dbContext
+            List<Room> rooms = await _dbContext
                                             .Rooms
                                             .Where(r => !r.IsDeleted &&
                                                          r.PropertyId == accommodationId)

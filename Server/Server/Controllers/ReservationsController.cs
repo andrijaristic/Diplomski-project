@@ -2,10 +2,8 @@
 using Domain.Interfaces.Services;
 using Domain.Models.AppSettings;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Stripe;
 using Stripe.Checkout;
 
 namespace Web.API.Controllers
