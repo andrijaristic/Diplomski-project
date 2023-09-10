@@ -2,16 +2,10 @@
 using Contracts.CommentDTOs;
 using Contracts.PropertyUtilityDTOs;
 using Contracts.RoomTypeDTOs;
-using Contracts.SeasonalPricingDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Contracts.PropertyDTOs
+namespace Contracts.AccommodationDTOs
 {
-    public class DetailedPropertyDTO
+    public class DetailedAccommodationDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

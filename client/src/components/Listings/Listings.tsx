@@ -109,7 +109,7 @@ const Listings: FC = () => {
   return (
     <Fade in>
       <Grid container sx={{ pb: 4 }}>
-        <Grid item xs={9}>
+        <Grid item xs={12} md={9}>
           <Grid container direction="column" sx={{ pt: 8, pl: 3 }}>
             <Grid item>
               <Typography variant="h2" component="h1">
@@ -172,7 +172,7 @@ const Listings: FC = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={0} md={3}>
           <Box sx={{ position: "fixed", height: "100%", width: "25%" }}>
             <MapContainer
               id="map"

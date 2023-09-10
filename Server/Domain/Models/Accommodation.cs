@@ -1,14 +1,6 @@
-﻿using Domain.Enums;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Models
+﻿namespace Domain.Models
 {
-    public class Property
+    public class Accommodation
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -27,7 +19,6 @@ namespace Domain.Models
         public List<RoomType> RoomTypes { get; set; }
         public List<PropertyUtility> Utilities { get; set; }
         public List<Reservation> Reservations { get; set; }
-        // EF Core .Include() from SavedProperty table
         public List<SavedProperty> SavedProperties { get; set; }
         public int StartingPrice { get; set; }
         public bool IsVisible { get; set; } = false;

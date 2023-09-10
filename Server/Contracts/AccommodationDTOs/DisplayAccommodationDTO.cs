@@ -1,9 +1,8 @@
 ﻿using Contracts.AccommodationImageDTOs;
-using Contracts.CommentDTOs;
 
-namespace Contracts.PropertyDTOs
+namespace Contracts.AccommodationDTOs
 {
-    public class DisplayPropertyDTO
+    public class DisplayAccommodationDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

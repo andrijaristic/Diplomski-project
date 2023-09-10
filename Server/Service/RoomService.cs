@@ -32,7 +32,7 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            Property property = await _unitOfWork
+            Accommodation property = await _unitOfWork
                                             .Properties
                                             .Find(accommodationId);
             if (property is null)
@@ -132,7 +132,7 @@ namespace Service
 
         public async Task<DisplayRoomDTO> CreateRoom(NewRoomDTO newRoomDTO, string username)
         {
-            Property property = await _unitOfWork
+            Accommodation property = await _unitOfWork
                                             .Properties
                                             .Find(newRoomDTO.PropertyId);
             if (property is null)
@@ -193,7 +193,7 @@ namespace Service
                 throw new RoomNotFoundException(id);
             }
 
-            Property property = await _unitOfWork
+            Accommodation property = await _unitOfWork
                                             .Properties
                                             .GetWithRooms(room.PropertyId);
             if (property is null)

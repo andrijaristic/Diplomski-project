@@ -31,7 +31,7 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            Property property = await _unitOfWork
+            Accommodation property = await _unitOfWork
                                             .Properties
                                             .Find(newCommentDTO.PropertyId);
             if (property is null)
@@ -96,7 +96,7 @@ namespace Service
 
             foreach (var displayCommentDTO in displayCommentDTOs)
             {
-                Property property = await _unitOfWork
+                Accommodation property = await _unitOfWork
                                                 .Properties
                                                 .Find(displayCommentDTO.PropertyId);
                 if (property is null)

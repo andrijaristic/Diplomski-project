@@ -3,22 +3,19 @@ using Contracts.Common;
 using Domain.Models;
 using Domain.Interfaces.Repositories;
 using Domain.Enums;
-using System.Runtime.CompilerServices;
-using Google.Apis.Util;
-using Domain.Interfaces.Utilities.DataInitializers;
 
 namespace Infrastructure.Repositories
 {
-    public class PropertyRepository : GenericRepository<Property>, IPropertyRepository
+    public class AccommodationRepository : GenericRepository<Accommodation>, IAccommodationRepository
     {
-        public PropertyRepository(ProjectDbContext _dbContext) : base(_dbContext)
+        public AccommodationRepository(ProjectDbContext _dbContext) : base(_dbContext)
         {
 
         }
 
-        public async Task<Property> GetWithFavorites(Guid id)
+        public async Task<Accommodation> GetWithFavorites(Guid id)
         {
-            Property property = await _dbContext
+            Accommodation property = await _dbContext
                                             .Properties
                                             .Where(p => p.Id == id &&
                                                         p.IsVisible &&
@@ -28,9 +25,9 @@ namespace Infrastructure.Repositories
             return property;
         }
 
-        public async Task<List<Property>> GetHighestRatedAccommodations()
+        public async Task<List<Accommodation>> GetHighestRatedAccommodations()
         {
-            List<Property> properties = await _dbContext
+            List<Accommodation> properties = await _dbContext
                                                     .Properties
                                                     .AsNoTracking()
                                                     .Where(p => p.IsVisible &&
@@ -42,9 +39,9 @@ namespace Infrastructure.Repositories
             return properties;
         }
 
-        public async Task<Property> GetWithRooms(Guid id)
+        public async Task<Accommodation> GetWithRooms(Guid id)
         {
-            Property property = await _dbContext
+            Accommodation property = await _dbContext
                                             .Properties
                                             .AsNoTracking()
                                             .Where(p => p.Id == id && !p.IsDeleted)
@@ -54,7 +51,7 @@ namespace Infrastructure.Repositories
             return property;
         }
  
-        public Task<IEnumerable<Property>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO)
+        public Task<IEnumerable<Accommodation>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO)
         {
             var source = _dbContext
                             .Properties
@@ -161,7 +158,7 @@ namespace Infrastructure.Repositories
                             .Any(x => x.Price <= maxPrice)));
             }
 
-            IEnumerable<Property> filteredProperties = source.AsEnumerable();
+            IEnumerable<Accommodation> filteredProperties = source.AsEnumerable();
             if (searchParamsDTO.Utilities != null &&
                 searchParamsDTO.Utilities.Any())
             {
@@ -195,9 +192,9 @@ namespace Infrastructure.Repositories
             return Task.FromResult(filteredProperties);
         }
 
-        public async Task<Property> GetFullPropertyById(Guid id)
+        public async Task<Accommodation> GetFullAccommodationById(Guid id)
         {
-            Property property = await _dbContext
+            Accommodation property = await _dbContext
                                             .Properties
                                             .AsNoTracking()
                                             .Where(p => p.Id == id &&
@@ -211,9 +208,9 @@ namespace Infrastructure.Repositories
             return property;
         }
 
-        public async Task<Property> GetPropertyWithOwner(Guid id)
+        public async Task<Accommodation> GetAccommodationWithOwner(Guid id)
         {
-            Property property = await _dbContext
+            Accommodation property = await _dbContext
                                             .Properties
                                             .AsNoTracking()
                                             .Where(p => p.Id == id)                             
@@ -222,9 +219,9 @@ namespace Infrastructure.Repositories
             return property;
         }
 
-        public async Task<List<Property>> GetUserAccommodations(Guid userId)
+        public async Task<List<Accommodation>> GetUserAccommodations(Guid userId)
         {
-            List<Property> properties = await _dbContext
+            List<Accommodation> properties = await _dbContext
                                                     .Properties
                                                     .AsNoTracking()
                                                     .Where(p => p.UserId == userId)

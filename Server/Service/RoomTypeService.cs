@@ -31,7 +31,7 @@ namespace Service
 
         public async Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO, string username)
         {
-            Property property = await _unitOfWork.Properties.Find(newRoomTypeDTO.PropertyId);
+            Accommodation property = await _unitOfWork.Properties.Find(newRoomTypeDTO.PropertyId);
             if (property is null)
             {
                 throw new PropertyNotFoundException(newRoomTypeDTO.PropertyId);

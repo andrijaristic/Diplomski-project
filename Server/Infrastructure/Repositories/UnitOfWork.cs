@@ -11,7 +11,7 @@ namespace Infrastructure.Repositories
     {
         private readonly ProjectDbContext _dbContext;
         public IUserRepository Users { get; set; }
-        public IPropertyRepository Properties { get; set; }
+        public IAccommodationRepository Properties { get; set; }
         public IReservationRepository Reservations { get; set; }
         public IRoomRepository Rooms { get; set; }
         public IRoomTypeRepository RoomTypes { get; set; }
@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
 
         public UnitOfWork(ProjectDbContext dbContext,
                           IUserRepository users,
-                          IPropertyRepository properties,
+                          IAccommodationRepository properties,
                           IReservationRepository reservations,
                           IRoomRepository rooms,
                           IRoomTypeRepository roomTypes,

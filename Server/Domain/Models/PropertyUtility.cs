@@ -11,6 +11,6 @@ namespace Domain.Models
     {
         public Guid Id { get; set; }
         public PropertyUtilities Utility { get; set; }
-        public List<Property> Properties { get; set; }
+        public List<Accommodation> Properties { get; set; }
     }
 }

@@ -77,13 +77,13 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
         borderRadius: 2,
         // ml: "auto",
         // mr: "auto",
-        "@media (max-width: 1468px)": {
-          flexBasis: "32%",
-        },
-        "@media (max-width: 1260px)": {
+        // "@media (max-width: 1468px)": {
+        //   flexBasis: "32%",
+        // },
+        "@media (max-width: 1568px)": {
           flexBasis: "48%",
         },
-        "@media (max-width: 846px)": {
+        "@media (max-width: 1086px)": {
           flexBasis: "98%",
         },
       }}
@@ -109,6 +109,9 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
               right: 10,
               borderRadius: 8,
               backgroundColor: "nav.default",
+              "@media (max-width: 900px)": {
+                display: "none",
+              },
             }}
           >
             <IconButton size="medium" onClick={handleClick}>
@@ -125,6 +128,9 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
                 right: 60,
                 borderRadius: 8,
                 backgroundColor: "nav.default",
+                "@media (max-width: 900px)": {
+                  right: 10,
+                },
               }}
             >
               <Checkbox
@@ -177,7 +183,7 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
           </Grid>
           <Grid item sx={{ display: "flex", alignItems: "center" }}>
             <Typography variant="body2" sx={{ mr: 1 }}>
-              Starting price:
+              Starting Price:
             </Typography>
             <EuroSymbolIcon fontSize="medium" />
             <Typography variant="h6" sx={{ mb: 0.2 }}>

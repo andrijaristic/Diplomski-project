@@ -1,15 +1,7 @@
-﻿using Contracts.PropertyUtilityDTOs;
-using Contracts.RoomDTOs;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Contracts.PropertyDTOs
+﻿using Microsoft.AspNetCore.Http;
+namespace Contracts.AccommodationDTOs
 {
-    public class NewPropertyDTO
+    public class NewAccommodationDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; } 

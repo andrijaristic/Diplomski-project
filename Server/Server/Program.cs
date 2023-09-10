@@ -98,7 +98,7 @@ builder.Services.AddOptions();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IAccommodationService, AccommodationService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
 builder.Services.AddScoped<IReservationsService, ReservationService>();
@@ -111,7 +111,7 @@ builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
 builder.Services.AddScoped<IUtilityDataInitializer, UtilityDataInitializer>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
@@ -129,7 +129,7 @@ builder.Services.AddDbContext<ProjectDbContext>(options =>
 builder.Services.AddSingleton(new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserMappingProfile());
-    mc.AddProfile(new PropertyMappingProfile());
+    mc.AddProfile(new AccommodationMappingProfile());
     mc.AddProfile(new RoomMappingProfile());
     mc.AddProfile(new RoomTypeMappingProfile());
     mc.AddProfile(new ReservationMappingProfile());

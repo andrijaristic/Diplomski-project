@@ -4,26 +4,23 @@ using AutoMapper;
 using Domain.Models;
 using Domain.Models.AppSettings;
 using Contracts.Common;
-using Contracts.PropertyDTOs;
 using Service.Helpers;
 using Domain.Exceptions.PropertyExceptions;
 using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Exceptions.PropertyUtilityExceptions;
-using Contracts.PropertyUtilityDTOs;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.AccessControl;
+using Contracts.AccommodationDTOs;
 
 namespace Service
 {
-    public class PropertyService : IPropertyService
+    public class AccommodationService : IAccommodationService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IOptions<AppSettings> _settings;
         private readonly IHostEnvironment _hostEnvironment;
-        public PropertyService(IUnitOfWork unitOfWork, IMapper mapper, IOptions<AppSettings> settings, IHostEnvironment hostEnvironment)
+        public AccommodationService(IUnitOfWork unitOfWork, IMapper mapper, IOptions<AppSettings> settings, IHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -41,7 +38,7 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            Property accommodation = await _unitOfWork
+            Accommodation accommodation = await _unitOfWork
                                                 .Properties
                                                 .GetWithFavorites(accommodationId);
             if (accommodation is null) 
@@ -70,9 +67,9 @@ namespace Service
             await _unitOfWork.Save();
         }
 
-        public async Task<PagedListDTO<DisplayPropertyDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO, string username)
+        public async Task<PagedListDTO<DisplayAccommodationDTO>> GetAccommodations(SearchParamsDTO searchParamsDTO, string username)
         {
-            IEnumerable<Property> accommodations = await _unitOfWork
+            IEnumerable<Accommodation> accommodations = await _unitOfWork
                                                         .Properties
                                                         .GetFilteredAcccommodations(searchParamsDTO);
             if (accommodations == null)
@@ -80,8 +77,8 @@ namespace Service
                 throw new InvalidSearchParamsException();
             }
 
-            PagedListDTO<DisplayPropertyDTO> dtos =  
-                PaginationHelper<Property, DisplayPropertyDTO>
+            PagedListDTO<DisplayAccommodationDTO> dtos =  
+                PaginationHelper<Accommodation, DisplayAccommodationDTO>
                 .CreatePagedListDTO(accommodations,
                                     searchParamsDTO.Page,
                                     _settings.Value.AccommodationsPageSize,
@@ -98,7 +95,7 @@ namespace Service
                     return dtos;
                 }
 
-                foreach (Property accommodation in accommodations)
+                foreach (Accommodation accommodation in accommodations)
                 {
                     dtos.Items
                         .Where(item => item.Id == accommodation.Id)
@@ -111,44 +108,44 @@ namespace Service
             return dtos;
         }
 
-        public async Task<List<PropertyPreviewDTO>> GetHighestRatedAccommodations()
+        public async Task<List<AccommodationPreviewDTO>> GetHighestRatedAccommodations()
         {
-            List<Property> properties = await _unitOfWork
+            List<Accommodation> accommodations = await _unitOfWork
                                                     .Properties
                                                     .GetHighestRatedAccommodations();
-            return _mapper.Map<List<PropertyPreviewDTO>>(properties);
+            return _mapper.Map<List<AccommodationPreviewDTO>>(accommodations);
         }
 
-        public async Task<List<DisplayPropertyDTO>> GetUserAccommodations(Guid userId)
+        public async Task<List<DisplayAccommodationDTO>> GetUserAccommodations(Guid userId)
         {
-            List<Property> properties = await _unitOfWork
+            List<Accommodation> accommodations = await _unitOfWork
                                                     .Properties
                                                     .GetUserAccommodations(userId);
-            return _mapper.Map<List<DisplayPropertyDTO>>(properties);
+            return _mapper.Map<List<DisplayAccommodationDTO>>(accommodations);
         }
 
-        public async Task<DetailedPropertyDTO> GetById(Guid id)
+        public async Task<DetailedAccommodationDTO> GetById(Guid id)
         {
-            Property property = await _unitOfWork
+            Accommodation accommodation = await _unitOfWork
                                             .Properties
-                                            .GetFullPropertyById(id);
-            if (property is null)
+                                            .GetFullAccommodationById(id);
+            if (accommodation is null)
             {
                 throw new PropertyNotFoundException(id);
             }
 
-            for (int i = 0; i < property.Images.Count; i++)
+            for (int i = 0; i < accommodation.Images.Count; i++)
             {
-                property.Images[i].ImageURL = property.Images[i].ImageURL
+                accommodation.Images[i].ImageURL = accommodation.Images[i].ImageURL
                                                       .StartsWith("https://") ? 
-                                                            property.Images[i].ImageURL : 
-                                                            _settings.Value.DefaultImagePath + property.Images[i].ImageURL;
+                                                            accommodation.Images[i].ImageURL : 
+                                                            _settings.Value.DefaultImagePath + accommodation.Images[i].ImageURL;
             }
 
-            return _mapper.Map<DetailedPropertyDTO>(property);   
+            return _mapper.Map<DetailedAccommodationDTO>(accommodation);   
         }
 
-        public async Task<DetailedPropertyDTO> AddPropertyImage(Guid id, AddPropertyImageDTO addPropertyImageDTO, string username)
+        public async Task<DetailedAccommodationDTO> AddAccommodationImage(Guid id, AddAccommodationImageDTO addAccommodationImageDTO, string username)
         {
             User user = await _unitOfWork
                                     .Users
@@ -158,42 +155,42 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            if (user.Id != addPropertyImageDTO.UserId)
+            if (user.Id != addAccommodationImageDTO.UserId)
             {
                 throw new InvalidUserIdInNewPropertyException();
             }
 
-            Property property = await _unitOfWork
+            Accommodation accommodation = await _unitOfWork
                                             .Properties
-                                            .GetFullPropertyById(id);
-            if (property is null)
+                                            .GetFullAccommodationById(id);
+            if (accommodation is null)
             {
                 throw new PropertyNotFoundException(id);
             }
 
             AccommodationImage image = new AccommodationImage()
             {
-                ImageURL = addPropertyImageDTO.Image is null ?
+                ImageURL = addAccommodationImageDTO.Image is null ?
                                         _settings.Value.DefaultImagePath :
-                                        await ImageHelper.SaveImage(addPropertyImageDTO.Image, 
-                                                                    property.Id, 
+                                        await ImageHelper.SaveImage(addAccommodationImageDTO.Image, 
+                                                                    accommodation.Id, 
                                                                     _hostEnvironment.ContentRootPath)
             };
 
-            if (property.Images.Count == 5) 
+            if (accommodation.Images.Count == 5) 
             {
                 throw new PropertyImageAmountExceededException();
             }
 
-            property.Images.Add(image);
+            accommodation.Images.Add(image);
             await _unitOfWork.Save();
 
-            return _mapper.Map<DetailedPropertyDTO>(property);
+            return _mapper.Map<DetailedAccommodationDTO>(accommodation);
         }
 
-        public async Task<DisplayPropertyDTO> CreateProperty(NewPropertyDTO newPropertyDTO, string username)
+        public async Task<DisplayAccommodationDTO> CreateAccommodation(NewAccommodationDTO newAccommodationDTO, string username)
         {
-            ValidateNewProperty(newPropertyDTO);
+            ValidateNewProperty(newAccommodationDTO);
 
             User user = await _unitOfWork
                                     .Users
@@ -203,7 +200,7 @@ namespace Service
                 throw new UserNotFoundException(username);
             }
 
-            if (user.Id != newPropertyDTO.UserId)
+            if (user.Id != newAccommodationDTO.UserId)
             {
                 throw new InvalidUserIdInNewPropertyException();
             }
@@ -219,9 +216,9 @@ namespace Service
             }
 
 
-            Property property = _mapper.Map<Property>(newPropertyDTO);
+            Accommodation property = _mapper.Map<Accommodation>(newAccommodationDTO);
             property.Utilities = new List<PropertyUtility>();
-            foreach (Guid utilityId in newPropertyDTO.Utilities)
+            foreach (Guid utilityId in newAccommodationDTO.Utilities)
             {
                 PropertyUtility utility = await _unitOfWork
                                                     .PropertyUtilities
@@ -237,23 +234,23 @@ namespace Service
 
             property.ThumbnailImage = new AccommodationImage() 
             {
-                ImageURL = newPropertyDTO.ThumbnailImage is null ?
+                ImageURL = newAccommodationDTO.ThumbnailImage is null ?
                                         _settings.Value.DefaultImagePath :
-                                        await ImageHelper.SaveImage(newPropertyDTO.ThumbnailImage, 
+                                        await ImageHelper.SaveImage(newAccommodationDTO.ThumbnailImage, 
                                                                     property.Id, 
                                                                     _hostEnvironment.ContentRootPath)
             };
 
             await _unitOfWork.Save();
 
-            return _mapper.Map<DisplayPropertyDTO>(property); 
+            return _mapper.Map<DisplayAccommodationDTO>(property); 
         }
 
-        public async Task<DisplayPropertyDTO> UpdateBasicPropertyInformation(Guid id, UpdateBasicPropertyInformationDTO updatePropertyDTO, string username)
+        public async Task<DisplayAccommodationDTO> UpdateBasicAccommodationInformation(Guid id, UpdateBasicAccommodationInformationDTO updatePropertyDTO, string username)
         {
             ValidateUpdateProperty(updatePropertyDTO);
 
-            Property property = await _unitOfWork
+            Accommodation property = await _unitOfWork
                                             .Properties
                                             .Find(id);
             if (property is null)
@@ -279,12 +276,12 @@ namespace Service
 
             await _unitOfWork.Save();
 
-            return _mapper.Map<DisplayPropertyDTO>(property);
+            return _mapper.Map<DisplayAccommodationDTO>(property);
         }
 
-        public async Task DeleteProperty(Guid id, string username)
+        public async Task DeleteAccommodation(Guid id, string username)
         {
-            Property property = await _unitOfWork
+            Accommodation property = await _unitOfWork
                                             .Properties
                                             .Find(id);
             if (property == null)
@@ -312,16 +309,16 @@ namespace Service
 
         // Validations
 
-        private static void ValidateNewProperty(NewPropertyDTO newPropertyDTO)
+        private static void ValidateNewProperty(NewAccommodationDTO newAccommodationDTO)
         {
-            ValidateName(newPropertyDTO.Name);
-            ValidateDescription(newPropertyDTO.Description);
+            ValidateName(newAccommodationDTO.Name);
+            ValidateDescription(newAccommodationDTO.Description);
         }
 
-        private static void ValidateUpdateProperty(UpdateBasicPropertyInformationDTO updatePropertyDTO)
+        private static void ValidateUpdateProperty(UpdateBasicAccommodationInformationDTO updateAccommodationDTO)
         {
-            ValidateName(updatePropertyDTO.Name);
-            ValidateDescription(updatePropertyDTO.Description);
+            ValidateName(updateAccommodationDTO.Name);
+            ValidateDescription(updateAccommodationDTO.Description);
         }
 
         private static void ValidateName(string name)

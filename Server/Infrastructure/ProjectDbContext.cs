@@ -11,7 +11,7 @@ namespace Infrastructure
     public class ProjectDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Property> Properties { get; set; }
+        public DbSet<Accommodation> Properties { get; set; }
         public DbSet<Room> Rooms { get; set; }  
         public DbSet<RoomType> RoomTypes { get; set; }
         public DbSet<Reservation> Reservations { get; set; }

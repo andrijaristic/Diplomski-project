@@ -1,13 +1,8 @@
 ﻿using Contracts.AccommodationImageDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Contracts.PropertyDTOs
+namespace Contracts.AccommodationDTOs
 {
-    public class PropertyPreviewDTO
+    public class AccommodationPreviewDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

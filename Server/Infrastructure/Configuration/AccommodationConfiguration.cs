@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Configuration
 {
-    public class PropertyConfiguration : IEntityTypeConfiguration<Property>
+    public class AccommodationConfiguration : IEntityTypeConfiguration<Accommodation>
     {
-        public void Configure(EntityTypeBuilder<Property> builder)
+        public void Configure(EntityTypeBuilder<Accommodation> builder)
         {
             builder.HasKey(x => x.Id);
 

@@ -31,7 +31,7 @@ namespace Service
 
             foreach (var displayReservationDTO in displayReservationDTOs)
             {
-                Property property = await _unitOfWork
+                Accommodation property = await _unitOfWork
                                                 .Properties
                                                 .Find(displayReservationDTO.PropertyId);
                 if (property is null)

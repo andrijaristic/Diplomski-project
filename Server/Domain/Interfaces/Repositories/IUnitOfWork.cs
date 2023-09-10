@@ -9,7 +9,7 @@ namespace Domain.Interfaces.Repositories
     public interface IUnitOfWork
     {
         public IUserRepository Users { get; }
-        public IPropertyRepository Properties { get; }
+        public IAccommodationRepository Properties { get; }
         public IReservationRepository Reservations { get; }
         public IRoomRepository Rooms { get; }
         public IRoomTypeRepository RoomTypes { get; }
