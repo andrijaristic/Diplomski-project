@@ -8,6 +8,7 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
 using Domain.Models.AppSettings;
+using MailKit;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Service.Helpers;
@@ -97,11 +98,14 @@ namespace Service
 
                 foreach (Accommodation accommodation in accommodations)
                 {
-                    dtos.Items
-                        .Where(item => item.Id == accommodation.Id)
-                        .First().IsSaved = accommodation
-                                                .SavedAccommodations
-                                                .Any(acc => acc.UserId == user.Id);
+                    DisplayAccommodationDTO dto = dtos.Items
+                                                        .Where(item => item.Id == accommodation.Id)
+                                                        .First();
+
+                    dto.IsSaved = accommodation
+                                        .SavedAccommodations
+                                        .Any(acc => acc.UserId == user.Id);
+                    dto.Comments = accommodation.Comments.Count();
                 }
             }
 
@@ -276,6 +280,7 @@ namespace Service
 
             await _unitOfWork.Accommodations.Add(accommodation);
 
+            accommodation.Images = new List<AccommodationImage>();
             AccommodationImage thumbnailImage = new AccommodationImage()
             {
                 ImageURL = newAccommodationDTO.ThumbnailImage is null ?
@@ -286,7 +291,6 @@ namespace Service
             };
 
             accommodation.ThumbnailImage = thumbnailImage;
-            accommodation.Images.Add(thumbnailImage);
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayAccommodationDTO>(accommodation);

@@ -19,7 +19,12 @@ interface IProps {
   onNavigate: () => void;
 }
 
+const checkIfDatePassed = (endDate: Date) => {
+  return new Date(endDate) <= new Date(new Date().setHours(12, 0, 0, 0));
+};
+
 const ReservationItem: FC<IProps> = ({ reservation, onCancel, onNavigate }) => {
+  const reservationComplete = checkIfDatePassed(reservation?.departureDate);
   return (
     <Card
       sx={{
@@ -37,13 +42,22 @@ const ReservationItem: FC<IProps> = ({ reservation, onCancel, onNavigate }) => {
               divider={<Divider orientation="vertical" flexItem />}
               spacing={2}
             >
-              <Typography variant="h5">{reservation?.propertyName}</Typography>
-              <Typography
-                variant="h5"
-                color={`${reservation?.isPayed ? "green" : "error"}`}
-              >
-                {reservation?.isPayed ? "PAID" : "UNPAID"}
+              <Typography variant="h5">
+                {reservation?.accommodationName}
               </Typography>
+              {!reservationComplete && (
+                <Typography
+                  variant="h5"
+                  color={`${reservation?.isPayed ? "green" : "error"}`}
+                >
+                  {reservation?.isPayed ? "PAID" : "UNPAID"}
+                </Typography>
+              )}
+              {reservationComplete && (
+                <Typography variant="h5" color="green">
+                  COMPLETED
+                </Typography>
+              )}
             </Stack>
             <ReservationItemDate
               arrivalDate={reservation?.arrivalDate}
@@ -74,7 +88,12 @@ const ReservationItem: FC<IProps> = ({ reservation, onCancel, onNavigate }) => {
             View accommodation
           </Button>
           {!reservation?.isPayed && (
-            <Button variant="outlined" color="error" onClick={onCancel}>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={onCancel}
+              disabled={reservationComplete}
+            >
               Cancel reservation
             </Button>
           )}
@@ -85,45 +104,3 @@ const ReservationItem: FC<IProps> = ({ reservation, onCancel, onNavigate }) => {
 };
 
 export default ReservationItem;
-
-/*
-
-    <Grid container direction="column" sx={{ display: "flex" }}>
-      <Grid item sx={{ pt: 1 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="h6">{reservation?.propertyName}</Typography>
-          <Typography variant="subtitle2">{displayDate}</Typography>
-        </Box>
-      </Grid>
-      <Grid
-        item
-        sx={{
-          pt: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <Typography variant="h6" sx={{ pr: 1 }}>
-              Price:
-            </Typography>
-            <Typography variant="h6">{reservation?.price}</Typography>
-          </Box>
-          <Typography variant="caption">
-            (average price per day: {reservation?.price / days} / {days})
-          </Typography>
-        </Box>
-      </Grid>
-      <Divider />
-    </Grid>
-
-*/

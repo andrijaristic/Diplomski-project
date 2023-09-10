@@ -162,9 +162,11 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
         <Grid container direction="column" sx={{ display: "flex" }}>
           <Grid item sx={{ display: "flex" }}>
             <StarIcon sx={{ color: "primary.main" }} />
-            <Typography
-              sx={{ ml: 1 }}
-            >{`${accommodation?.averageGrade} (${accommodation?.comments} reviews)`}</Typography>
+            <Typography sx={{ ml: 1 }}>{`${accommodation?.averageGrade} (${
+              accommodation?.comments
+            } ${
+              accommodation?.comments === 1 ? "review" : "reviews"
+            })`}</Typography>
           </Grid>
           <Grid
             item

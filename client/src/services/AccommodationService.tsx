@@ -69,6 +69,10 @@ export const deleteAccomodationImage = async (
   );
 };
 
+export const deleteAccomodation = async (id: string) => {
+  return await axiosClient.delete(`${API}/accommodations/${id}`);
+};
+
 export const toggleFavoriteStatus = async (id: string) => {
   return await axiosClient.put(`${API}/accommodations/${id}/toggle-favorite`);
 };

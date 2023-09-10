@@ -33,10 +33,10 @@ namespace Service
 
             Accommodation property = await _unitOfWork
                                                 .Accommodations
-                                                .Find(newCommentDTO.PropertyId);
+                                                .Find(newCommentDTO.AccommodationId);
             if (property is null)
             {
-                throw new AccommodationNotFoundException(newCommentDTO.PropertyId);
+                throw new AccommodationNotFoundException(newCommentDTO.AccommodationId);
             }
 
             Reservation reservation = await _unitOfWork

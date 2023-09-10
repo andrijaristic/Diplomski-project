@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { IAccommodationMinimal } from "../../shared/interfaces/accommodationInterfaces";
+import { useAppDispatch } from "../../store/hooks";
+import { deleteAccommodationAction } from "../../store/accommodationSlice";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   ...theme.typography,
@@ -26,10 +28,12 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 
 interface IProps {
   accommodation: IAccommodationMinimal;
+  onDelete: () => void;
 }
 
-const MyListingsItem: FC<IProps> = ({ accommodation }) => {
+const MyListingsItem: FC<IProps> = ({ accommodation, onDelete }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleView = () => {
     navigate(`/listings/${accommodation.id}`);
@@ -39,8 +43,13 @@ const MyListingsItem: FC<IProps> = ({ accommodation }) => {
     navigate(`/listings/${accommodation.id}/edit`);
   };
 
-  const handleDelete = () => {
-    // API Call to delete
+  const handleDelete = async () => {
+    const response = await dispatch(
+      deleteAccommodationAction(accommodation?.id)
+    );
+    if (response) {
+      onDelete();
+    }
   };
 
   const handleAddRooms = () => {

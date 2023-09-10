@@ -12,7 +12,7 @@ const MyListingsPage: FC = () => {
   const token = useAppSelector((state) => state.user.token);
   const apiState = useAppSelector((state) => state.accommodations.apiState);
 
-  const { id } = jwtDecode<IJwt>(token ? token : "");
+  const { id } = jwtDecode<IJwt>(token ?? "");
 
   useEffect(() => {
     dispatch(getUserAccommodationsAction(id));

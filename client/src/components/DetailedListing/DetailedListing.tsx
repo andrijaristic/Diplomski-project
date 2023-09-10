@@ -78,10 +78,8 @@ const DetailedListing: FC = () => {
 
   const images: IAccommodationImage[] = [];
   if (accommodation?.thumbnailImage) {
+    images.push(accommodation?.thumbnailImage);
     accommodation?.images.map((image) => images.push(image));
-    if (images.length === 0) {
-      images.push(accommodation?.thumbnailImage);
-    }
   }
 
   const roomTypesContent: JSX.Element[] = roomTypes?.map((roomType) => {

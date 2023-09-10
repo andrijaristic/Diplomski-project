@@ -1,24 +1,51 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import MyListingsItem from "./MyListingsItem";
 import StyledButton from "../UI/Styled/StyledButton";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import EmptyArrayMessage from "../UI/EmptyArrayMessage/EmptyArrayMessage";
+import jwtDecode from "jwt-decode";
+import {
+  clearOwnerAccommodations,
+  getUserAccommodationsAction,
+} from "../../store/accommodationSlice";
+import { IJwt } from "../../shared/interfaces/userInterfaces";
 
 const MyListings: FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.user.token);
   const userAccommodations = useAppSelector(
     (state) => state.accommodations.userAccommodations
   );
+  const [refresh, setRefresh] = useState<boolean>(false);
+  const { id } = jwtDecode<IJwt>(token ?? "");
+
+  useEffect(() => {
+    if (!refresh) {
+      return;
+    }
+
+    dispatch(clearOwnerAccommodations());
+    dispatch(getUserAccommodationsAction(id));
+  }, [refresh, id, dispatch]);
 
   const handleCreate = () => {
     navigate("/listings/new");
   };
 
+  const handleDeleteRefresh = () => {
+    setRefresh(true);
+  };
+
   const content: JSX.Element[] | undefined = userAccommodations?.map(
     (accommodation) => (
-      <MyListingsItem key={accommodation.id} accommodation={accommodation} />
+      <MyListingsItem
+        key={accommodation.id}
+        accommodation={accommodation}
+        onDelete={handleDeleteRefresh}
+      />
     )
   );
 

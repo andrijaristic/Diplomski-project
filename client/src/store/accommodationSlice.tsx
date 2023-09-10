@@ -17,6 +17,7 @@ import {
 import {
   addAccommodationImage,
   createNewAccommodation,
+  deleteAccomodation,
   deleteAccomodationImage,
   getAccommodationById,
   getAccommodations,
@@ -140,6 +141,18 @@ export const deleteAccommodationImageAction = createAsyncThunk(
   async (accommodationImage: IDeleteAccomodationImage, thunkApi) => {
     try {
       const response = await deleteAccomodationImage(accommodationImage);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const deleteAccommodationAction = createAsyncThunk(
+  "accommodations/deleteAccommodation",
+  async (id: string, thunkApi) => {
+    try {
+      const response = await deleteAccomodation(id);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -357,6 +370,24 @@ const accommodationSlice = createSlice({
         errorNotification(error);
       }
     );
+
+    // DELETE ACCOMMODATION
+    builder.addCase(deleteAccommodationAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(deleteAccommodationAction.fulfilled, (state) => {
+      state.apiState = ApiCallState.COMPLETED;
+      successNotification("Successfully deleted accommodation image!");
+    });
+    builder.addCase(deleteAccommodationAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
 
     // TOGGLE FAVORITE
     builder.addCase(toggleFavoriteStatusAction.rejected, (state, action) => {

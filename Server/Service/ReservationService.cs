@@ -29,15 +29,15 @@ namespace Service
 
             foreach (var displayReservationDTO in displayReservationDTOs)
             {
-                Accommodation property = await _unitOfWork
+                Accommodation accommodation = await _unitOfWork
                                                     .Accommodations
-                                                    .Find(displayReservationDTO.AmenityId);
-                if (property is null)
+                                                    .Find(displayReservationDTO.AccommodationId);
+                if (accommodation is null)
                 {
-                    throw new AccommodationNotFoundException(displayReservationDTO.AmenityId);
+                    throw new AccommodationNotFoundException(displayReservationDTO.AccommodationId);
                 }
 
-                displayReservationDTO.AmenityName = property.Name;
+                displayReservationDTO.AccommodationName = accommodation.Name;
             }
 
             return displayReservationDTOs;
@@ -47,16 +47,16 @@ namespace Service
         {
             bool propertyExists = await _unitOfWork
                                                 .Accommodations
-                                                .Find(newReservationDTO.PropertyId) != null;
+                                                .Find(newReservationDTO.AccommodationId) != null;
             if (!propertyExists)
             {
-                throw new AccommodationNotFoundException(newReservationDTO.PropertyId);
+                throw new AccommodationNotFoundException(newReservationDTO.AccommodationId);
             }
 
             Room room = await _unitOfWork
                                     .Rooms
                                     .FindByIdAndAccommodation(newReservationDTO.RoomId,
-                                                        newReservationDTO.PropertyId);
+                                                        newReservationDTO.AccommodationId);
             if (room is null)
             {
                 throw new RoomForPropertyNotFoundException();
@@ -135,6 +135,11 @@ namespace Service
             if (reservation.IsPayed)
             {
                 throw new ReservationIsPaidForException();
+            }
+
+            if (reservation.DepartureDate.Date <= DateTime.Now.ToUniversalTime().Date)
+            {
+                throw new ReservationAlreadyHappenedException();
             }
 
             reservation.IsCancelled = true;

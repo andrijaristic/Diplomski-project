@@ -64,6 +64,7 @@ namespace Infrastructure.Repositories
                             .Include(p => p.Amenities)
                             .Include(p => p.ThumbnailImage)
                             .Include(p => p.SavedAccommodations)
+                            .Include(p => p.Comments)
                             .OrderByDescending(p => p.StartingPrice)
                             .AsQueryable();
 
@@ -223,7 +224,8 @@ namespace Infrastructure.Repositories
             List<Accommodation> properties = await _dbContext
                                                     .Accommodations
                                                     .AsNoTracking()
-                                                    .Where(p => p.UserId == userId)
+                                                    .Where(p => p.UserId == userId &&
+                                                               !p.IsDeleted)
                                                     .Include(p => p.ThumbnailImage)
                                                     .ToListAsync();
             return properties;

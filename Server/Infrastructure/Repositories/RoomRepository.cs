@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         {
             var source = _dbContext
                             .Rooms
-                            .Where(r => r.AccommodationId == searchRoomDTO.AmenityId)
+                            .Where(r => r.AccommodationId == searchRoomDTO.AccommodationId)
                             .Include(r => r.OccupiedDates)
                             .Include(r => r.RoomType)
                             .ThenInclude(rt => rt.SeasonalPricing)
