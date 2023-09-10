@@ -20,19 +20,11 @@ namespace Service
             _mapper = mapper;
         }
 
-        public async Task<List<DisplayRoomTypeDTO>> GetRoomTypesForAccommodation(Guid accommodationId, string username)
+        public async Task<List<DisplayRoomTypeDTO>> GetRoomTypesForAccommodation(Guid accommodationId)
         {
-            User user = await _unitOfWork
-                                    .Users
-                                    .FindByUsername(username);
-            if (user is null)
-            {
-                throw new UserNotFoundException(username);
-            }
-
             List<RoomType> roomTypes = await _unitOfWork
                                                     .RoomTypes
-                                                    .FindRoomTypesForAccommodation(accommodationId, user.Id);
+                                                    .FindRoomTypesForAccommodation(accommodationId);
 
             return _mapper.Map<List<DisplayRoomTypeDTO>>(roomTypes);
         }

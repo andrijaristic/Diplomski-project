@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLng } from "leaflet-geosearch/dist/providers/provider.js";
@@ -15,7 +15,10 @@ import ListingsItem from "./ListingsItem";
 import ListingActions from "./ListingActions";
 import "leaflet/dist/leaflet.css";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { getAccommodationsAction } from "../../store/accommodationSlice";
+import {
+  clearAccommodations,
+  getAccommodationsAction,
+} from "../../store/accommodationSlice";
 import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
 
 const getSearchParams = (searchParams: URLSearchParams) => {
@@ -59,6 +62,7 @@ const Listings: FC = () => {
     };
 
     setSearchParams(searchParamsData as unknown as URLSearchParams);
+    dispatch(clearAccommodations());
     dispatch(getAccommodationsAction(searchParamsData));
   };
 

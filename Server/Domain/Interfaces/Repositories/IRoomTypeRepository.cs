@@ -10,6 +10,6 @@ namespace Domain.Interfaces.Repositories
     public interface IRoomTypeRepository : IGenericRepository<RoomType>
     {
         Task<RoomType> FindDetailedRoomType(Guid id);
-        Task<List<RoomType>> FindRoomTypesForAccommodation(Guid accommodationId, Guid userId);
+        Task<List<RoomType>> FindRoomTypesForAccommodation(Guid accommodationId);
     }
 }

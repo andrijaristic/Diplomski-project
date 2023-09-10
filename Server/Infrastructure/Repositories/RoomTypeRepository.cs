@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         
         }
 
-        public async Task<List<RoomType>> FindRoomTypesForAccommodation(Guid accommodationId, Guid userId)
+        public async Task<List<RoomType>> FindRoomTypesForAccommodation(Guid accommodationId)
         {
             List<RoomType> roomTypes = await _dbContext
                                                     .RoomTypes
@@ -26,7 +26,7 @@ namespace Infrastructure.Repositories
                                                     .Include(rt => rt.SeasonalPricing)
                                                     .ToListAsync();
 
-            return roomTypes.Where(rt => rt.Property.UserId == userId).ToList();
+            return roomTypes;
         }
 
         public async Task<RoomType> FindDetailedRoomType(Guid id)

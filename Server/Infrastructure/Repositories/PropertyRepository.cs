@@ -67,6 +67,7 @@ namespace Infrastructure.Repositories
                             .Include(p => p.Utilities)
                             .Include(p => p.ThumbnailImage)
                             .Include(p => p.SavedProperties)
+                            .OrderByDescending(p => p.StartingPrice)
                             .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchParamsDTO.ArrivalDate))

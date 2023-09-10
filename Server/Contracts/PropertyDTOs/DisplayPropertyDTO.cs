@@ -13,6 +13,7 @@ namespace Contracts.PropertyDTOs
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public bool IsSaved { get; set; }
+        public double StartingPrice { get; set; }
         public AccommodationImageDTO ThumbnailImage { get; set; }  
     }
 }

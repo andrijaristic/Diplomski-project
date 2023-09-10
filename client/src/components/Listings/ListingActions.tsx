@@ -31,7 +31,12 @@ const ListingActions: FC<IProps> = ({ sort, onChange }) => {
       </StyledButton>
       <Box sx={{ ml: "auto", mr: 3, display: "flex", alignItems: "center" }}>
         <Typography sx={{ mr: 1 }}>Sort by</Typography>
-        <Select id="sortSelect" value={sort} onChange={onChange}>
+        <Select
+          id="sortSelect"
+          value={sort}
+          onChange={onChange}
+          sx={{ bgcolor: "nav.default", borderRadius: 2 }}
+        >
           <MenuItem value="HighestPrice">Highest Price</MenuItem>
           <MenuItem value="LowestPrice">Lowest Price</MenuItem>
           <MenuItem value="HighestRating">Highest Rating</MenuItem>

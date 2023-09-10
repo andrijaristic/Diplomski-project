@@ -17,6 +17,7 @@ import StarIcon from "@mui/icons-material/Star";
 import RoomIcon from "@mui/icons-material/Room";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import Favorite from "@mui/icons-material/Favorite";
+import EuroSymbolIcon from "@mui/icons-material/EuroSymbol";
 import StyledButton from "../UI/Styled/StyledButton";
 import { IAccommodationDisplay } from "../../shared/interfaces/accommodationInterfaces";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -174,7 +175,14 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
               </StyledTypography>
             </Box>
           </Grid>
-          <Grid item sx={{ display: "flex" }}>
+          <Grid item sx={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              Starting price:
+            </Typography>
+            <EuroSymbolIcon fontSize="medium" />
+            <Typography variant="h6" sx={{ mb: 0.2 }}>
+              {accommodation?.startingPrice}
+            </Typography>
             <StyledButton onClick={handleNavigationClick} sx={{ ml: "auto" }}>
               View Availability
             </StyledButton>
