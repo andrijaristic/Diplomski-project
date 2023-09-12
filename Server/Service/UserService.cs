@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Contracts.AccommodationDTOs;
+using Contracts.Common;
 using Contracts.UserDTOs;
 using Domain.Enums;
 using Domain.Exceptions.UserExceptions;

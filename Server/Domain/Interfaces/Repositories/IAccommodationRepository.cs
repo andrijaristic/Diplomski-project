@@ -12,5 +12,6 @@ namespace Domain.Interfaces.Repositories
         Task<Accommodation> GetFullAccommodationById(Guid id);
         Task<List<Accommodation>> GetUserAccommodations(Guid userId);
         Task<Accommodation> GetWithRooms(Guid id);
+        Task<List<Accommodation>> GetUserFavorites(Guid userId);
     }
 }

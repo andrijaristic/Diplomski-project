@@ -13,42 +13,60 @@ namespace Infrastructure.Repositories
 
         }
 
+        public async Task<List<Accommodation>> GetUserFavorites(Guid userId)
+        {
+            IEnumerable<Accommodation> accommodations =  _dbContext
+                                                            .Accommodations
+                                                            .AsNoTracking()
+                                                            .Where(x => x.IsVisible &&
+                                                                       !x.IsDeleted)
+                                                            .Include(x => x.SavedAccommodations
+                                                            .Where(y => y.UserId == userId))
+                                                            .Include(x => x.ThumbnailImage)
+                                                            .Include(x => x.Comments)
+                                                            .AsEnumerable();
+            return  accommodations
+                            .Where(x => x.SavedAccommodations
+                            .Any(y => y.UserId == userId))
+                            .ToList();
+        }
+
         public async Task<Accommodation> GetWithFavorites(Guid id)
         {
-            Accommodation property = await _dbContext
-                                            .Accommodations
-                                            .Where(p => p.Id == id &&
-                                                        p.IsVisible &&
-                                                       !p.IsDeleted)
-                                            .Include(p => p.SavedAccommodations)
-                                            .FirstOrDefaultAsync();
-            return property;
+            Accommodation accommodation = await _dbContext
+                                                    .Accommodations
+                                                    .Where(p => p.Id == id &&
+                                                                p.IsVisible &&
+                                                               !p.IsDeleted)
+                                                    .Include(p => p.SavedAccommodations)
+                                                    .FirstOrDefaultAsync();
+            return accommodation;
         }
 
         public async Task<List<Accommodation>> GetHighestRatedAccommodations()
         {
-            List<Accommodation> properties = await _dbContext
-                                                    .Accommodations
-                                                    .AsNoTracking()
-                                                    .Where(p => p.IsVisible &&
-                                                               !p.IsDeleted)
-                                                    .OrderBy(p => p.AverageGrade)
-                                                    .Take(5)
-                                                    .Include(p => p.ThumbnailImage)
-                                                    .ToListAsync();
-            return properties;
+            List<Accommodation> accommodations = await _dbContext
+                                                            .Accommodations
+                                                            .AsNoTracking()
+                                                            .Where(p => p.IsVisible &&
+                                                                       !p.IsDeleted)
+                                                            .OrderBy(p => p.AverageGrade)
+                                                            .Take(5)
+                                                            .Include(p => p.ThumbnailImage)
+                                                            .ToListAsync();
+            return accommodations;
         }
 
         public async Task<Accommodation> GetWithRooms(Guid id)
         {
-            Accommodation property = await _dbContext
-                                            .Accommodations
-                                            .AsNoTracking()
-                                            .Where(p => p.Id == id && !p.IsDeleted)
-                                            .Include(p => p.Rooms
-                                            .Where(r => !r.IsDeleted))
-                                            .FirstOrDefaultAsync();
-            return property;
+            Accommodation accommodation = await _dbContext
+                                                    .Accommodations
+                                                    .AsNoTracking()
+                                                    .Where(p => p.Id == id && !p.IsDeleted)
+                                                    .Include(p => p.Rooms
+                                                    .Where(r => !r.IsDeleted))
+                                                    .FirstOrDefaultAsync();
+            return accommodation;
         }
 
         public Task<IEnumerable<Accommodation>> GetFilteredAcccommodations(SearchParamsDTO searchParamsDTO)
@@ -210,25 +228,25 @@ namespace Infrastructure.Repositories
 
         public async Task<Accommodation> GetAccommodationWithOwner(Guid id)
         {
-            Accommodation property = await _dbContext
-                                            .Accommodations
-                                            .AsNoTracking()
-                                            .Where(p => p.Id == id)
-                                            .Include(u => u.User)
-                                            .FirstOrDefaultAsync();
-            return property;
+            Accommodation accommodation = await _dbContext
+                                                    .Accommodations
+                                                    .AsNoTracking()
+                                                    .Where(p => p.Id == id)
+                                                    .Include(u => u.User)
+                                                    .FirstOrDefaultAsync();
+            return accommodation;
         }
 
         public async Task<List<Accommodation>> GetUserAccommodations(Guid userId)
         {
-            List<Accommodation> properties = await _dbContext
-                                                    .Accommodations
-                                                    .AsNoTracking()
-                                                    .Where(p => p.UserId == userId &&
-                                                               !p.IsDeleted)
-                                                    .Include(p => p.ThumbnailImage)
-                                                    .ToListAsync();
-            return properties;
+            List<Accommodation> accommodations = await _dbContext
+                                                            .Accommodations
+                                                            .AsNoTracking()
+                                                            .Where(p => p.UserId == userId &&
+                                                                       !p.IsDeleted)
+                                                            .Include(p => p.ThumbnailImage)
+                                                            .ToListAsync();
+            return accommodations;
         }
     }
 }

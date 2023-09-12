@@ -19,6 +19,7 @@ import NewListingPage from "../pages/NewListingPage";
 import AddRoomsPage from "../pages/AddRoomsPage";
 import UnverifiedUsersPage from "../pages/UnverifiedUsersPage";
 import ViewRoomsPage from "../pages/ViewRoomsPage";
+import UserFavoritesPage from "../pages/UserFavoritesPage";
 
 const AppRoutes: FC = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -61,6 +62,7 @@ const AppRoutes: FC = () => {
                   path="change-password"
                   element={<PasswordChangePage />}
                 />
+                <Route path="favorites" element={<UserFavoritesPage />} />
                 <Route path="comments" element={<CommentsPage />} />
                 <Route path="reservations" element={<ReservationsPage />} />
                 {isOwner && (

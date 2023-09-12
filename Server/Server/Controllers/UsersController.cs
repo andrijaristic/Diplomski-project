@@ -1,7 +1,10 @@
-﻿using Contracts.UserDTOs;
+﻿using Contracts.AccommodationDTOs;
+using Contracts.Common;
+using Contracts.UserDTOs;
 using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace Web.API.Controllers
 {

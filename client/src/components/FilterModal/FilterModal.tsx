@@ -163,7 +163,7 @@ const FilterModal: FC<IProps> = (props) => {
       }
       id={amenity.id}
       key={amenity.id}
-      name={amenity.amenity}
+      name={amenity.accommodationAmenity}
       onChange={handleAmenitiesCheckChange(amenity.id)}
     />
   ));

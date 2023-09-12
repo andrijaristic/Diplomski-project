@@ -41,6 +41,14 @@ namespace Web.API.Controllers
             return Ok(displayAccommodationDTOs);
         }
 
+        [HttpGet("user/{id}/favorites")]
+        [Authorize]
+        public async Task<IActionResult> GetUserFavoriteAccommodations(Guid id)
+        {
+            List<DisplayAccommodationDTO> pagedAccommodations = await _accommodationService.GetUserFavorites(id, User.Identity.Name);
+            return Ok(pagedAccommodations);
+        }
+
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetDetailedAccommodation(Guid id)

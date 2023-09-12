@@ -16,5 +16,6 @@ namespace Domain.Interfaces.Services
         Task<DetailedAccommodationDTO> AddAccommodationImage(Guid id, AddAccommodationImageDTO addPropertyImageDTO, string username);
         Task<DetailedAccommodationDTO> DeleteAccommodationImage(Guid imageId, DeleteImageDTO deleteImageDTO, string username);
         Task ToggleAccommodationFavoriteStatus(Guid accommodationId, string username);
+        Task<List<DisplayAccommodationDTO>> GetUserFavorites(Guid id, string username);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Contracts.UserDTOs;
+﻿using Contracts.AccommodationDTOs;
+using Contracts.UserDTOs;
 
 namespace Domain.Interfaces.Services
 {

@@ -76,3 +76,9 @@ export const deleteAccomodation = async (id: string) => {
 export const toggleFavoriteStatus = async (id: string) => {
   return await axiosClient.put(`${API}/accommodations/${id}/toggle-favorite`);
 };
+
+export const getUserFavorites = async (userId: string) => {
+  return await axiosClient.get(
+    `${API}/accommodations/user/${userId}/favorites`
+  );
+};

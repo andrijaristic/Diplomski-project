@@ -34,11 +34,16 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 }));
 
 interface IProps {
+  favorites?: boolean;
   accommodation: IAccommodationDisplay;
-  onClick: (lat: number, lng: number) => void;
+  onClick?: (lat: number, lng: number) => void;
 }
 
-const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
+const ListingsItem: FC<IProps> = ({
+  favorites = true,
+  accommodation,
+  onClick,
+}) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -55,11 +60,14 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
   };
 
   const handleNavigationClick = () => {
-    navigate(`${pathname}/${accommodation?.id}`);
+    // navigate(`${pathname}/${accommodation?.id}`);
+    navigate(`/listings/${accommodation?.id}`);
   };
 
   const handleClick = () => {
-    onClick(accommodation.latitude, accommodation.longitude);
+    if (onClick) {
+      onClick(accommodation.latitude, accommodation.longitude);
+    }
   };
 
   const image =
@@ -103,25 +111,27 @@ const ListingsItem: FC<IProps> = ({ accommodation, onClick }) => {
           alt="property-thumbnail"
           image={image}
         />
-        <Tooltip title="Show location">
-          <Card
-            sx={{
-              position: "absolute",
-              top: 5,
-              right: 10,
-              borderRadius: 8,
-              backgroundColor: "nav.default",
-              "@media (max-width: 900px)": {
-                display: "none",
-              },
-            }}
-          >
-            <IconButton size="medium" onClick={handleClick}>
-              <RoomIcon fontSize="inherit" color="info" />
-            </IconButton>
-          </Card>
-        </Tooltip>
-        {isLoggedIn && (
+        {favorites && (
+          <Tooltip title="Show location">
+            <Card
+              sx={{
+                position: "absolute",
+                top: 5,
+                right: 10,
+                borderRadius: 8,
+                backgroundColor: "nav.default",
+                "@media (max-width: 900px)": {
+                  display: "none",
+                },
+              }}
+            >
+              <IconButton size="medium" onClick={handleClick}>
+                <RoomIcon fontSize="inherit" color="info" />
+              </IconButton>
+            </Card>
+          </Tooltip>
+        )}
+        {isLoggedIn && favorites && (
           <Tooltip title="Favorite listing">
             <Card
               sx={{

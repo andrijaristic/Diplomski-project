@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { Box, Container, Drawer, List, Stack } from "@mui/material";
+import { Drawer, List } from "@mui/material";
 import { useAppSelector } from "../../store/hooks";
 import PersonIcon from "@mui/icons-material/Person";
 import EnhancedEncryptionIcon from "@mui/icons-material/EnhancedEncryption";
@@ -9,7 +9,6 @@ import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import AccountNavigationDrawerItem from "./AccountNavigationDrawerItem";
 import { useLocation, useNavigate } from "react-router-dom";
-import EmptyArrayMessage from "../UI/EmptyArrayMessage/EmptyArrayMessage";
 
 type NavItem = {
   title: string;
@@ -33,6 +32,12 @@ const generateNavigationItems = (userType: string, isVerified: boolean) => {
     title: "Change password",
     to: `/account/change-password`,
     icon: <EnhancedEncryptionIcon fontSize="large" />,
+    index: index++,
+  });
+  items.push({
+    title: "Favorites",
+    to: `/account/favorites`,
+    icon: <MapsHomeWorkIcon fontSize="large" />,
     index: index++,
   });
   items.push({

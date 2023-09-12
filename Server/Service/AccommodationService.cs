@@ -8,9 +8,9 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
 using Domain.Models.AppSettings;
-using MailKit;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Asn1.X509;
 using Service.Helpers;
 
 namespace Service
@@ -27,6 +27,38 @@ namespace Service
             _mapper = mapper;
             _settings = settings;
             _hostEnvironment = hostEnvironment;
+        }
+
+        public async Task<List<DisplayAccommodationDTO>> GetUserFavorites(Guid id, string username)
+        {
+            User user = await _unitOfWork
+                                    .Users
+                                    .Find(id);
+            if (user is null)
+            {
+                throw new UserByIdNotFoundException(id);
+            }
+
+            if (!user.Username.Equals(username))
+            {
+                throw new InvalidFavoriteAccommodationsPermissionsException();
+            }
+
+            List<Accommodation> accommodations = await _unitOfWork
+                                                            .Accommodations
+                                                            .GetUserFavorites(id);
+
+            List<DisplayAccommodationDTO> dtos = _mapper.Map<List<DisplayAccommodationDTO>>(accommodations);
+            foreach (Accommodation accommodation in accommodations)
+            {
+                DisplayAccommodationDTO dto = dtos
+                                                .Where(item => item.Id == accommodation.Id)
+                                                .First();
+
+                dto.Comments = accommodation.Comments.Count;
+            }
+
+            return _mapper.Map<List<DisplayAccommodationDTO>>(accommodations);
         }
 
         public async Task ToggleAccommodationFavoriteStatus(Guid accommodationId, string username)

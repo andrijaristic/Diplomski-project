@@ -23,6 +23,7 @@ import {
   getAccommodations,
   getHighestRatedAccommodations,
   getUserAccommodations,
+  getUserFavorites,
   toggleFavoriteStatus,
   updateBasicAccommodationInformation,
 } from "../services/AccommodationService";
@@ -165,6 +166,18 @@ export const toggleFavoriteStatusAction = createAsyncThunk(
   async (accommodationId: string, thunkApi) => {
     try {
       const response = await toggleFavoriteStatus(accommodationId);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
+export const getUserFavoriteAction = createAsyncThunk(
+  "accommodations/getUserFavorites",
+  async (userId: string, thunkApi) => {
+    try {
+      const response = await getUserFavorites(userId);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.response.data.error);
@@ -391,6 +404,24 @@ const accommodationSlice = createSlice({
 
     // TOGGLE FAVORITE
     builder.addCase(toggleFavoriteStatusAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
+
+    // GET USER FAVORITES
+    builder.addCase(getUserFavoriteAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(getUserFavoriteAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+      state.accommodations = [...action.payload];
+    });
+    builder.addCase(getUserFavoriteAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;
 
       let error: string = defaultErrorMessage;

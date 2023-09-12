@@ -19,6 +19,7 @@ const EmptyArrayMessage: FC<IProps> = ({ message, secondary }) => {
         borderRadius: 4,
         height: "fit-content",
         border: `1px solid ${grey[400]}`,
+        width: "100%",
       }}
     >
       <Typography variant="h3" color="info">

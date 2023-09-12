@@ -37,6 +37,11 @@ const generateNavigationItems = (userType: string, isVerified: boolean) => {
     icon: <EnhancedEncryptionIcon />,
   });
   items.push({
+    title: "Favorites",
+    to: `/account/favorites`,
+    icon: <MapsHomeWorkIcon />,
+  });
+  items.push({
     title: "Comments",
     to: `/account/comments`,
     icon: <MessageIcon />,
