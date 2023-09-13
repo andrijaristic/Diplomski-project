@@ -25,5 +25,5 @@ dist-ssr
 
 # Project files
 package-lock.json
-.env
-src/vite-env.d.ts
+# .env
+# src/vite-env.d.ts
