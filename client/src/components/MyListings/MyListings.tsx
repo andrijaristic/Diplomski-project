@@ -8,9 +8,11 @@ import EmptyArrayMessage from "../UI/EmptyArrayMessage/EmptyArrayMessage";
 import jwtDecode from "jwt-decode";
 import {
   clearOwnerAccommodations,
+  deleteAccommodationAction,
   getUserAccommodationsAction,
 } from "../../store/accommodationSlice";
 import { IJwt } from "../../shared/interfaces/userInterfaces";
+import ConfirmationModal from "../UI/Modal/ConfirmationModal";
 
 const MyListings: FC = () => {
   const navigate = useNavigate();
@@ -20,6 +22,9 @@ const MyListings: FC = () => {
     (state) => state.accommodations.userAccommodations
   );
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedAccommodation, setSelectedAccommodation] =
+    useState<string>("");
   const { id } = jwtDecode<IJwt>(token ?? "");
 
   useEffect(() => {
@@ -29,14 +34,32 @@ const MyListings: FC = () => {
 
     dispatch(clearOwnerAccommodations());
     dispatch(getUserAccommodationsAction(id));
+    setRefresh(false);
   }, [refresh, id, dispatch]);
 
   const handleCreate = () => {
     navigate("/listings/new");
   };
 
-  const handleDeleteRefresh = () => {
-    setRefresh(true);
+  const handleDelete = async () => {
+    if (selectedAccommodation) {
+      const response = await dispatch(
+        deleteAccommodationAction(selectedAccommodation)
+      );
+      if (response) {
+        setOpen(false);
+        setRefresh(true);
+      }
+    }
+  };
+
+  const handleModalToggle = () => {
+    setOpen((prevState) => !prevState);
+  };
+
+  const handleModalToggleAccommodation = (id: string) => () => {
+    setOpen((prevState) => !prevState);
+    setSelectedAccommodation(id);
   };
 
   const content: JSX.Element[] | undefined = userAccommodations?.map(
@@ -44,7 +67,7 @@ const MyListings: FC = () => {
       <MyListingsItem
         key={accommodation.id}
         accommodation={accommodation}
-        onDelete={handleDeleteRefresh}
+        onDelete={handleModalToggleAccommodation(accommodation.id)}
       />
     )
   );
@@ -77,6 +100,15 @@ const MyListings: FC = () => {
           />
         )}
       </Box>
+      {open && (
+        <ConfirmationModal
+          open={open}
+          title="Delete accommodation?"
+          content="Are you sure you wish to delete this accommodation? This cannot be undone"
+          onClose={handleModalToggle}
+          onClick={handleDelete}
+        />
+      )}
     </Box>
   );
 };

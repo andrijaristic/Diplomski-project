@@ -30,9 +30,11 @@ import { IUserRegistration } from "../../shared/interfaces/userInterfaces";
 import { UserType } from "../../shared/types/enumerations";
 import { useAppDispatch } from "../../store/hooks";
 import { registerAction } from "../../store/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Registration: FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -219,7 +221,10 @@ const Registration: FC = () => {
       role: UserType[parseInt(role)].toString().trim(),
     };
 
-    dispatch(registerAction(userRegistration));
+    const response = await dispatch(registerAction(userRegistration));
+    if (response.meta.requestStatus === "fulfilled") {
+      navigate("login");
+    }
   };
 
   return (

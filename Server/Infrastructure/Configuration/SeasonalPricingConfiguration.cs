@@ -12,12 +12,6 @@ namespace Infrastructure.Configuration
             builder.HasIndex(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-
-            builder.Property(x => x.Season)
-                   .HasConversion(
-                        x => x.ToString(),
-                        x => Enum.Parse<Season>(x)
-                    );
         }
     }
 }

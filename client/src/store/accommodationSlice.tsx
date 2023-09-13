@@ -390,7 +390,7 @@ const accommodationSlice = createSlice({
     });
     builder.addCase(deleteAccommodationAction.fulfilled, (state) => {
       state.apiState = ApiCallState.COMPLETED;
-      successNotification("Successfully deleted accommodation image!");
+      successNotification("Successfully deleted accommodation!");
     });
     builder.addCase(deleteAccommodationAction.rejected, (state, action) => {
       state.apiState = ApiCallState.REJECTED;

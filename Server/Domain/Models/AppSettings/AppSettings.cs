@@ -13,6 +13,12 @@
         public string AdminFirstName { get; set; }
         public string AdminLastName { get; set; }
         public string AdminEmail { get; set; }
+        public string OwnerFirstName { get; set; }
+        public string OwnerLastName { get; set; }
+        public string OwnerEmail { get; set; }
+        public string RenteeFirstName { get; set; }
+        public string RenteeLastName { get; set; }
+        public string RenteeEmail { get; set; }
         public string EmailRegex { get; set; }
         public string PhoneNumberRegex { get; set; }
         public int MinUsernameLength { get; set; }

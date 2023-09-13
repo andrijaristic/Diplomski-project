@@ -12,7 +12,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { grey } from "@mui/material/colors";
 import StyledButton from "../UI/Styled/StyledButton";
 import Logo from "../UI/Logo/Logo";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useAppDispatch } from "../../store/hooks";
 import { externalLoginAction, loginAction } from "../../store/userSlice";
 import { IUserLogin } from "../../shared/interfaces/userInterfaces";
 import {
@@ -56,7 +56,7 @@ const Login: FC = () => {
     dispatch(
       externalLoginAction({
         token: response.credential,
-        service: "google",
+        service: "Google",
         role: "RENTEE",
       })
     );
@@ -78,8 +78,8 @@ const Login: FC = () => {
     }
 
     const userLogin: IUserLogin = {
-      username: username.toString().trim(),
-      password: password.toString().trim(),
+      username: username.toString().trim() ?? "",
+      password: password.toString().trim() ?? "",
     };
 
     dispatch(loginAction(userLogin));

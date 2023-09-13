@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -11,10 +12,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { IAccommodationMinimal } from "../../shared/interfaces/accommodationInterfaces";
-import { useAppDispatch } from "../../store/hooks";
-import { deleteAccommodationAction } from "../../store/accommodationSlice";
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   ...theme.typography,
@@ -33,7 +31,6 @@ interface IProps {
 
 const MyListingsItem: FC<IProps> = ({ accommodation, onDelete }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const handleView = () => {
     navigate(`/listings/${accommodation.id}`);
@@ -41,15 +38,6 @@ const MyListingsItem: FC<IProps> = ({ accommodation, onDelete }) => {
 
   const handleEdit = () => {
     navigate(`/listings/${accommodation.id}/edit`);
-  };
-
-  const handleDelete = async () => {
-    const response = await dispatch(
-      deleteAccommodationAction(accommodation?.id)
-    );
-    if (response) {
-      onDelete();
-    }
   };
 
   const handleAddRooms = () => {
@@ -101,7 +89,7 @@ const MyListingsItem: FC<IProps> = ({ accommodation, onDelete }) => {
             <Button size="medium" onClick={handleEdit}>
               Edit property
             </Button>
-            <Button size="medium" color="error" onClick={handleDelete}>
+            <Button size="medium" color="error" onClick={onDelete}>
               Delete property
             </Button>
           </Box>
