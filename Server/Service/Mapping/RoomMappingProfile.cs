@@ -4,11 +4,13 @@ using Domain.Models;
 
 namespace Service.Mapping
 {
-    public class RoomMappingProfile : Profile   
+    public class RoomMappingProfile : Profile
     {
-        public RoomMappingProfile() 
+        public RoomMappingProfile()
         {
-            CreateMap<DisplayRoomDTO, Room>().ReverseMap();
+            CreateMap<Room, DisplayRoomDTO>().ReverseMap();
+            CreateMap<Room, DisplayRoomBookingDTO>().ReverseMap();
+            CreateMap<Room, NewRoomDTO>().ReverseMap();
         }
     }
 }

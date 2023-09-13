@@ -2,11 +2,6 @@
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Configuration
 {
@@ -15,14 +10,14 @@ namespace Infrastructure.Configuration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
-            
+
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder.HasIndex(x => x.Username).IsUnique();
 
             builder.Property(x => x.Role)
                    .HasConversion(
-                            x => x.ToString(), 
+                            x => x.ToString(),
                             x => Enum.Parse<UserType>(x)
                     );
 
@@ -37,7 +32,7 @@ namespace Infrastructure.Configuration
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(x => x.Properties)
+            builder.HasMany(x => x.Accommodations)
                    .WithOne(x => x.User)
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
@@ -47,7 +42,7 @@ namespace Infrastructure.Configuration
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.SavedProperties)
+            builder.HasMany(x => x.SavedAccommodations)
                    .WithOne(x => x.User)
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.NoAction);

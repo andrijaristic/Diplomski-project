@@ -1,0 +1,30 @@
+.nav {
+  margin-left: auto;
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  list-style: none;
+}
+
+.nav__item,
+.nav__item:visited {
+  color: var(--text-color);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.nav__item > p {
+  text-transform: uppercase;
+}
+
+.div__bg {
+  height: 100%;
+  background-color: black;
+}
+
+@media only screen and (max-width: 926px) {
+  .nav {
+    width: 50%;
+  }
+}

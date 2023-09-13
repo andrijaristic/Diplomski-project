@@ -22,73 +22,54 @@ namespace Web.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Models.Comment", b =>
+            modelBuilder.Entity("AccommodationAmenity", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("AccommodationsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Grade")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Header")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PropertyId")
+                    b.Property<Guid>("AmenitiesId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasKey("AccommodationsId", "AmenitiesId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("AmenitiesId");
 
-                    b.HasIndex("Id");
-
-                    b.HasIndex("PropertyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
+                    b.ToTable("AccommodationAmenity");
                 });
 
-            modelBuilder.Entity("Domain.Models.Image", b =>
+            modelBuilder.Entity("Domain.Models.Accommodation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ImageURL")
+                    b.Property<string>("Area")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("PropertyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropertyId");
-
-                    b.ToTable("Image");
-                });
-
-            modelBuilder.Entity("Domain.Models.Property", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("AverageGrade")
+                        .ValueGeneratedOnAdd()
                         .HasPrecision(1, 2)
-                        .HasColumnType("float(1)");
+                        .HasColumnType("float(1)")
+                        .HasDefaultValue(1.0);
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -97,40 +78,102 @@ namespace Web.API.Migrations
                     b.Property<int>("StartingPrice")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("ThumbnailImageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("VerificationStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("ThumbnailImageId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Properties");
+                    b.ToTable("Accommodations");
                 });
 
-            modelBuilder.Entity("Domain.Models.PropertyUtility", b =>
+            modelBuilder.Entity("Domain.Models.AccommodationImage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Utility")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("AccommodationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImageURL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccommodationId");
+
+                    b.ToTable("AccommodationImage");
+                });
+
+            modelBuilder.Entity("Domain.Models.Amenity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccommodationAmenity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Id");
 
-                    b.ToTable("PropertyUtilities");
+                    b.ToTable("Amenities");
+                });
+
+            modelBuilder.Entity("Domain.Models.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccommodationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Grade")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Header")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserFullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccommodationId");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Domain.Models.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccommodationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ArrivalDate")
@@ -149,9 +192,6 @@ namespace Web.API.Migrations
                         .HasPrecision(4, 2)
                         .HasColumnType("float(4)");
 
-                    b.Property<Guid>("PropertyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uniqueidentifier");
 
@@ -160,9 +200,9 @@ namespace Web.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("AccommodationId");
 
-                    b.HasIndex("PropertyId");
+                    b.HasIndex("Id");
 
                     b.HasIndex("RoomId");
 
@@ -201,17 +241,20 @@ namespace Web.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PropertyId")
+                    b.Property<Guid>("AccommodationId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("RoomTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("AccommodationId");
 
-                    b.HasIndex("PropertyId");
+                    b.HasIndex("Id");
 
                     b.HasIndex("RoomTypeId");
 
@@ -224,31 +267,34 @@ namespace Web.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AccommodationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Adults")
                         .HasColumnType("int");
 
                     b.Property<int>("Children")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("PropertyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("AccommodationId");
 
-                    b.HasIndex("PropertyId");
+                    b.HasIndex("Id");
 
                     b.ToTable("RoomTypes");
                 });
 
-            modelBuilder.Entity("Domain.Models.SavedProperty", b =>
+            modelBuilder.Entity("Domain.Models.SavedAccommodation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PropertyId")
+                    b.Property<Guid>("AccommodationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
@@ -256,13 +302,13 @@ namespace Web.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("AccommodationId");
 
-                    b.HasIndex("PropertyId");
+                    b.HasIndex("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SavedProperties");
+                    b.ToTable("SavedAccommodations");
                 });
 
             modelBuilder.Entity("Domain.Models.SeasonalPricing", b =>
@@ -279,10 +325,6 @@ namespace Web.API.Migrations
 
                     b.Property<Guid>("RoomTypeId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Season")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -343,27 +385,51 @@ namespace Web.API.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PropertyPropertyUtility", b =>
+            modelBuilder.Entity("AccommodationAmenity", b =>
                 {
-                    b.Property<Guid>("PropertiesId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasOne("Domain.Models.Accommodation", null)
+                        .WithMany()
+                        .HasForeignKey("AccommodationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<Guid>("UtilitiesId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasOne("Domain.Models.Amenity", null)
+                        .WithMany()
+                        .HasForeignKey("AmenitiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasKey("PropertiesId", "UtilitiesId");
+            modelBuilder.Entity("Domain.Models.Accommodation", b =>
+                {
+                    b.HasOne("Domain.Models.AccommodationImage", "ThumbnailImage")
+                        .WithMany()
+                        .HasForeignKey("ThumbnailImageId");
 
-                    b.HasIndex("UtilitiesId");
+                    b.HasOne("Domain.Models.User", "User")
+                        .WithMany("Accommodations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.ToTable("PropertyPropertyUtility");
+                    b.Navigation("ThumbnailImage");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.AccommodationImage", b =>
+                {
+                    b.HasOne("Domain.Models.Accommodation", null)
+                        .WithMany("Images")
+                        .HasForeignKey("AccommodationId");
                 });
 
             modelBuilder.Entity("Domain.Models.Comment", b =>
                 {
-                    b.HasOne("Domain.Models.Property", "Property")
+                    b.HasOne("Domain.Models.Accommodation", "Accommodation")
                         .WithMany("Comments")
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("AccommodationId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Domain.Models.User", "User")
@@ -372,34 +438,16 @@ namespace Web.API.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Property");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Models.Image", b =>
-                {
-                    b.HasOne("Domain.Models.Property", null)
-                        .WithMany("Images")
-                        .HasForeignKey("PropertyId");
-                });
-
-            modelBuilder.Entity("Domain.Models.Property", b =>
-                {
-                    b.HasOne("Domain.Models.User", "User")
-                        .WithMany("Properties")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Accommodation");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.Reservation", b =>
                 {
-                    b.HasOne("Domain.Models.Property", "Property")
+                    b.HasOne("Domain.Models.Accommodation", "Accommodation")
                         .WithMany("Reservations")
-                        .HasForeignKey("PropertyId")
+                        .HasForeignKey("AccommodationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -415,7 +463,7 @@ namespace Web.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Property");
+                    b.Navigation("Accommodation");
 
                     b.Navigation("Room");
 
@@ -435,9 +483,9 @@ namespace Web.API.Migrations
 
             modelBuilder.Entity("Domain.Models.Room", b =>
                 {
-                    b.HasOne("Domain.Models.Property", "Property")
+                    b.HasOne("Domain.Models.Accommodation", "Accommodation")
                         .WithMany("Rooms")
-                        .HasForeignKey("PropertyId")
+                        .HasForeignKey("AccommodationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -447,37 +495,37 @@ namespace Web.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Property");
+                    b.Navigation("Accommodation");
 
                     b.Navigation("RoomType");
                 });
 
             modelBuilder.Entity("Domain.Models.RoomType", b =>
                 {
-                    b.HasOne("Domain.Models.Property", "Property")
+                    b.HasOne("Domain.Models.Accommodation", "Accommodation")
                         .WithMany("RoomTypes")
-                        .HasForeignKey("PropertyId")
+                        .HasForeignKey("AccommodationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Property");
+                    b.Navigation("Accommodation");
                 });
 
-            modelBuilder.Entity("Domain.Models.SavedProperty", b =>
+            modelBuilder.Entity("Domain.Models.SavedAccommodation", b =>
                 {
-                    b.HasOne("Domain.Models.Property", "Property")
-                        .WithMany("SavedProperties")
-                        .HasForeignKey("PropertyId")
+                    b.HasOne("Domain.Models.Accommodation", "Accommodation")
+                        .WithMany("SavedAccommodations")
+                        .HasForeignKey("AccommodationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Models.User", "User")
-                        .WithMany("SavedProperties")
+                        .WithMany("SavedAccommodations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Property");
+                    b.Navigation("Accommodation");
 
                     b.Navigation("User");
                 });
@@ -493,22 +541,7 @@ namespace Web.API.Migrations
                     b.Navigation("RoomType");
                 });
 
-            modelBuilder.Entity("PropertyPropertyUtility", b =>
-                {
-                    b.HasOne("Domain.Models.Property", null)
-                        .WithMany()
-                        .HasForeignKey("PropertiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Models.PropertyUtility", null)
-                        .WithMany()
-                        .HasForeignKey("UtilitiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Models.Property", b =>
+            modelBuilder.Entity("Domain.Models.Accommodation", b =>
                 {
                     b.Navigation("Comments");
 
@@ -520,7 +553,7 @@ namespace Web.API.Migrations
 
                     b.Navigation("Rooms");
 
-                    b.Navigation("SavedProperties");
+                    b.Navigation("SavedAccommodations");
                 });
 
             modelBuilder.Entity("Domain.Models.Room", b =>
@@ -539,13 +572,13 @@ namespace Web.API.Migrations
 
             modelBuilder.Entity("Domain.Models.User", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Accommodations");
 
-                    b.Navigation("Properties");
+                    b.Navigation("Comments");
 
                     b.Navigation("Reservations");
 
-                    b.Navigation("SavedProperties");
+                    b.Navigation("SavedAccommodations");
                 });
 #pragma warning restore 612, 618
         }

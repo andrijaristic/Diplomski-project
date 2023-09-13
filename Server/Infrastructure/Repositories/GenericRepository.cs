@@ -1,11 +1,5 @@
 ﻿using Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -32,8 +26,8 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            IEnumerable<T> entities = await _dbContext.Set<T>().ToListAsync();
-            return entities; ;
+            IEnumerable<T> entities = await _dbContext.Set<T>().AsNoTracking().ToListAsync();
+            return entities;
         }
 
         public void Remove(T entity)

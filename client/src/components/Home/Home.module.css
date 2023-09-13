@@ -1,0 +1,42 @@
+.image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 28rem;
+
+  background-attachment: static;
+  background-image: url("/header-background.jpg");
+
+  background-size: 100% 140%;
+  background-repeat: no-repeat;
+}
+
+.image__filter {
+  display: flex;
+  flex-direction: row;
+  position: sticky;
+  padding: 1rem;
+  background-color: rgba(242, 241, 241, 0.916);
+  border-radius: 6px;
+  height: fit-content;
+  width: fit-content;
+}
+
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  align-items: last baseline;
+
+  margin-top: 4rem;
+  margin-right: 5rem;
+  margin-left: 5rem;
+  margin-bottom: 10rem;
+}
+
+@media only screen and (max-width: 846px) {
+  .card {
+    justify-content: center;
+    align-items: center;
+  }
+}

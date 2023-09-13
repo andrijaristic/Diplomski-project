@@ -1,0 +1,8 @@
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  font-size: 4rem;
+  text-decoration: none;
+}

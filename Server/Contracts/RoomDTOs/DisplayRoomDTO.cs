@@ -6,5 +6,6 @@ namespace Contracts.RoomDTOs
     {
         public Guid Id { get; set; }
         public DisplayRoomTypeDTO RoomType { get; set; }
+        public int ReservationAmount { get; set; }
     }
 }

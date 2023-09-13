@@ -1,0 +1,9 @@
+.container__information {
+  display: "flex";
+  max-width: 8rem;
+}
+
+.container__price {
+  display: flex;
+  flex-direction: column;
+}

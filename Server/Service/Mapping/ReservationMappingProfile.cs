@@ -6,9 +6,10 @@ namespace Service.Mapping
 {
     public class ReservationMappingProfile : Profile
     {
-        public ReservationMappingProfile() 
+        public ReservationMappingProfile()
         {
-            CreateMap<NewReservationDTO, Reservation>().ReverseMap();
+            CreateMap<Reservation, NewReservationDTO>().ReverseMap();
+            CreateMap<Reservation, DisplayReservationDTO>().ReverseMap();
         }
     }
 }
