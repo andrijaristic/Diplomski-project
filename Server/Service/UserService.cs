@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Contracts.AccommodationDTOs;
+using Contracts.Common;
 using Contracts.UserDTOs;
 using Domain.Enums;
 using Domain.Exceptions.UserExceptions;
@@ -8,6 +10,7 @@ using Domain.Interfaces.Utilities;
 using Domain.Models;
 using Domain.Models.AppSettings;
 using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 namespace Service
 {
@@ -16,19 +19,27 @@ namespace Service
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthUtility _authUtility;
+        private readonly IEmailUtility _emailUtility;
         private readonly IOptions<AppSettings> _settings;
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IAuthUtility authUtility, IOptions<AppSettings> settings) 
+        public UserService(IMapper mapper,
+                           IUnitOfWork unitOfWork,
+                           IAuthUtility authUtility,
+                           IOptions<AppSettings> settings,
+                           IEmailUtility emailUtility)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _authUtility = authUtility;
             _settings = settings;
+            _emailUtility = emailUtility;
         }
 
         public async Task<DisplayUserDTO> GetById(Guid id)
         {
-            User user = await _unitOfWork.Users.Find(id);
+            User user = await _unitOfWork
+                                    .Users
+                                    .Find(id);
             if (user == null)
             {
                 throw new UserByIdNotFoundException(id);
@@ -37,10 +48,20 @@ namespace Service
             return _mapper.Map<DisplayUserDTO>(user);
         }
 
+        public async Task<List<DisplayUserDTO>> GetUnverifiedUsers()
+        {
+            List<User> users = await _unitOfWork
+                                            .Users
+                                            .GetUnverifiedUsers();
+            return _mapper.Map<List<DisplayUserDTO>>(users);
+        }
+
         public async Task<AuthDTO> Login(LoginDTO loginDTO)
         {
-            User user = await _unitOfWork.Users.FindByUsername(loginDTO.Username);
-            if(user == null)
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(loginDTO.Username);
+            if (user == null)
             {
                 throw new InvalidUsernameException();
             }
@@ -52,7 +73,15 @@ namespace Service
 
             AuthDTO authDTO = new AuthDTO()
             {
-                Token = _authUtility.CreateToken(user.Id, user.Username, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
+                Token = _authUtility.CreateToken(user.Id,
+                                                 user.Username,
+                                                 user.FirstName,
+                                                 user.LastName,
+                                                 user.Role,
+                                                 _settings.Value.SecretKey,
+                                                 _settings.Value.TokenIssuer,
+                                                 _settings.Value.TokenDuration),
+
                 VerificationStatus = user.VerificationStatus.ToString().Trim(),
                 IsVerified = user.IsVerified
             };
@@ -91,7 +120,7 @@ namespace Service
                     Country = _settings.Value.DefaultCountry,
                     PhoneNumber = _settings.Value.DefaultPhoneNumber,
                     Role = userType,
-                    IsVerified = userType != UserType.PROPERTYOWNER ? true : false,
+                    IsVerified = userType != UserType.OWNER,
                 };
 
                 user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
@@ -102,7 +131,7 @@ namespace Service
 
             AuthDTO authDTO = new AuthDTO()
             {
-                Token = _authUtility.CreateToken(user.Id, user.Username, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
+                Token = _authUtility.CreateToken(user.Id, user.Username, user.FirstName, user.LastName, user.Role, _settings.Value.SecretKey, _settings.Value.TokenIssuer, _settings.Value.TokenDuration),
                 IsVerified = user.IsVerified,
                 VerificationStatus = user.VerificationStatus.ToString()
             };
@@ -113,18 +142,18 @@ namespace Service
         public async Task<DisplayUserDTO> CreateUser(NewUserDTO newUserDTO)
         {
             bool exists = await _unitOfWork.Users.FindByUsername(newUserDTO.Username) != null;
-            if (exists) 
+            if (exists)
             {
                 throw new UserUsernameExistsException();
             }
 
             ValidateNewUser(newUserDTO);
 
-            User user = _mapper.Map<User>(newUserDTO); 
+            User user = _mapper.Map<User>(newUserDTO);
             user.Password = BCrypt.Net.BCrypt.HashPassword(newUserDTO.Password, BCrypt.Net.BCrypt.GenerateSalt());
 
-            user.IsVerified = user.Role != UserType.PROPERTYOWNER;
-            user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
+            user.IsVerified = user.Role != UserType.OWNER;
+            user.VerificationStatus = user.IsVerified ? VerificationStatus.ACCEPTED : VerificationStatus.PENDING;
 
             await _unitOfWork.Users.Add(user);
             await _unitOfWork.Save();
@@ -171,7 +200,7 @@ namespace Service
                 throw new InvalidUserInformationException();
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(changePasswordDTO.OldPassword, user.Password))
+            if (!BCrypt.Net.BCrypt.Verify(changePasswordDTO.CurrentPassword, user.Password))
             {
                 throw new InvalidPasswordException();
             }
@@ -193,7 +222,7 @@ namespace Service
                 throw new UserByIdNotFoundException(id);
             }
 
-            if (user.Role != UserType.PROPERTYOWNER)
+            if (user.Role != UserType.OWNER)
             {
                 throw new InvalidRoleForVerificationException(user.Role.ToString());
             }
@@ -203,16 +232,17 @@ namespace Service
                 throw new UserAlreadyVerifiedException();
             }
 
-            user.IsVerified = true;
-            user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED : VerificationStatus.REJECTED;
+            user.IsVerified = isAccepted;
+            user.VerificationStatus = isAccepted ? VerificationStatus.ACCEPTED :
+                                                   VerificationStatus.REJECTED;
 
             await _unitOfWork.Save();
+            await _emailUtility.SendEmail(user.Email, $"{user.FirstName} {user.LastName}", user.IsVerified);
 
             return _mapper.Map<DisplayUserDTO>(user);
         }
 
         // Validations
-        // TODO: Add proper validations for certain fields (ex. email & phone number) with regex
         private void ValidateNewUser(NewUserDTO newUserDTO)
         {
             ValidateUsername(newUserDTO.Username);
@@ -236,7 +266,8 @@ namespace Service
 
         private void ValidateUsername(string username)
         {
-            if (string.IsNullOrWhiteSpace(username) || username.Length <= _settings.Value.MinUsernameLength)
+            if (string.IsNullOrWhiteSpace(username) ||
+                username.Length <= _settings.Value.MinUsernameLength)
             {
                 throw new InvalidUsernameException();
             }
@@ -244,7 +275,8 @@ namespace Service
 
         private void ValidatePassword(string password)
         {
-            if (string.IsNullOrWhiteSpace(password) || password.Length <= _settings.Value.MinPasswordLength)
+            if (string.IsNullOrWhiteSpace(password) ||
+                password.Length <= _settings.Value.MinPasswordLength)
             {
                 throw new InvalidPasswordException();
             }
@@ -276,7 +308,11 @@ namespace Service
 
         private void ValidatePhoneNumber(string phoneNumber)
         {
-            if (string.IsNullOrWhiteSpace(phoneNumber))
+            Regex phoneNumberRegex = new Regex(_settings.Value.PhoneNumberRegex,
+                                               RegexOptions.Compiled);
+
+            if (string.IsNullOrWhiteSpace(phoneNumber) ||
+                !phoneNumberRegex.Match(phoneNumber).Success)
             {
                 throw new InvalidInputFieldException(nameof(phoneNumber).ToUpper());
             }
@@ -284,10 +320,15 @@ namespace Service
 
         private void ValidateEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
+            Regex emailRegex = new Regex(_settings.Value.EmailRegex,
+                                         RegexOptions.Compiled);
+
+            if (string.IsNullOrWhiteSpace(email) ||
+                !emailRegex.Match(email).Success)
             {
                 throw new InvalidInputFieldException(nameof(email).ToUpper());
             }
+
         }
 
         private void ValidateRole(string role)

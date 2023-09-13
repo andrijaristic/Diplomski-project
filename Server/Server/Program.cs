@@ -1,18 +1,22 @@
-using AutoMapper;
-using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
-using Domain.Interfaces.Utilities;
-using Domain.Models.AppSettings;
-using Infrastructure;
-using Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Stripe;
+using AutoMapper;
+using Domain.Models.AppSettings;
+using Domain.Interfaces.Services;
+using Domain.Interfaces.Utilities;
+using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Utilities.DataInitializers;
+using Infrastructure;
+using Infrastructure.Repositories;
 using Service;
 using Service.Mapping;
 using Service.Utilities;
-using System.Text;
+using Service.Utilities.DataInitializers;
 using Web.API.Middleware;
 
 string _cors = "cors";
@@ -62,7 +66,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: _cors, builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
+        builder.WithOrigins("http://localhost:5173")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .SetIsOriginAllowed(origin => true)
@@ -94,36 +98,59 @@ builder.Services.AddOptions();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IAccommodationService, AccommodationService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
 builder.Services.AddScoped<IReservationsService, ReservationService>();
+builder.Services.AddScoped<ICommentsService, CommentService>();
+builder.Services.AddScoped<IAmenityService, AmenityService>();
 
 builder.Services.AddScoped<IAuthUtility, AuthUtility>();
+builder.Services.AddScoped<IEmailUtility, EmailUtility>();
+builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
+builder.Services.AddScoped<IAmenityDataInitializer, UtilityDataInitializer>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
+builder.Services.AddScoped<IReservedDaysRepository, ReservedDaysRepository>();
+builder.Services.AddScoped<IAccommodationImageRepository, AccommodationImageRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<ProjectDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("BookingDatabase"),
+        builder.Configuration.GetConnectionString("AccommodationProviderDb"),
         b => b.MigrationsAssembly("Web.API"))
     );
 
 builder.Services.AddSingleton(new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserMappingProfile());
-    mc.AddProfile(new PropertyMappingProfile());
+    mc.AddProfile(new AccommodationMappingProfile());
     mc.AddProfile(new RoomMappingProfile());
     mc.AddProfile(new RoomTypeMappingProfile());
     mc.AddProfile(new ReservationMappingProfile());
+    mc.AddProfile(new CommentMappingProfile());
+    mc.AddProfile(new SeasonalPricingMappingProfile());
+    mc.AddProfile(new AccommodationImageMappingProfile(builder.Configuration.GetSection("AppSettings")["DefaultImagePath"]));
+    mc.AddProfile(new AmenityMappingProfile());
 }).CreateMapper());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    // apply new migrations on startup
+    var context = scope.ServiceProvider.GetRequiredService<ProjectDbContext>();
+    context.Database.EnsureCreated();
+
+    scope.ServiceProvider.GetRequiredService<IUserDataInitializer>().InitializeData();
+    scope.ServiceProvider.GetRequiredService<IAmenityDataInitializer>().InitializeData();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -134,9 +161,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "..", "Infrastructure", "Images")),
+    RequestPath = "/Images"
+});
+
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("AppSettings")["StripeSecretKey"];
 
 app.UseCors(_cors);
 

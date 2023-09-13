@@ -12,6 +12,9 @@ import NewListingRoomsFormItem from "./NewListingRoomsFormItem";
 import StyledButton from "../UI/Styled/StyledButton";
 import { errorNotification } from "../../utils/toastNotificationUtil";
 import { defaultFormErrorMessage } from "../../constants/Constants";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { createNewRoomTypeAction } from "../../store/roomTypeSlice";
+import { INewRoomType } from "../../shared/interfaces/roomTypeInterfaces";
 
 type DateField = {
   monthName: string;
@@ -32,8 +35,8 @@ function getMonths() {
     const month = i;
     months.push({
       monthName: getMonthName(month),
-      from: new Date(date.getFullYear(), month, 1),
-      to: new Date(date.getFullYear(), month + 1, 0),
+      from: new Date(date.getFullYear(), month, 1, 12, 0, 0, 0),
+      to: new Date(date.getFullYear(), month + 1, 0, 12, 0, 0, 0),
     });
   }
 
@@ -41,11 +44,16 @@ function getMonths() {
 }
 
 const NewListingRoomsForm: FC = () => {
+  const dispatch = useAppDispatch();
+  const accommodationId = useAppSelector(
+    (state) => state.accommodations.createdAccommodationId
+  );
+
   const months: DateField[] = useMemo(() => {
     return getMonths();
   }, []);
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
@@ -58,7 +66,7 @@ const NewListingRoomsForm: FC = () => {
     data.delete("adults");
     data.delete("children");
 
-    if (amountOfRooms === "0" || adults === "0" || children === "0") {
+    if (amountOfRooms === "0" || adults === "0") {
       errorNotification(defaultFormErrorMessage);
       return;
     }
@@ -83,15 +91,16 @@ const NewListingRoomsForm: FC = () => {
       }
     }
 
-    const newRoomType = {
-      adults: parseInt(adults as string),
-      children: parseInt(children as string),
-      amountOfRooms: parseInt(amountOfRooms as string),
-      propertyId: 1, // from redux-store
-      seasonalPricings,
+    const newRoomType: INewRoomType = {
+      adults: parseInt(adults as string) ?? 1,
+      children: parseInt(children as string) ?? 1,
+      amountOfRooms: parseInt(amountOfRooms as string) ?? 1,
+      accommodationId: accommodationId ?? "",
+      seasonalPricing: seasonalPricings,
     };
 
     console.log(newRoomType);
+    await dispatch(createNewRoomTypeAction(newRoomType));
   };
 
   return (

@@ -2,56 +2,56 @@ import { FC } from "react";
 import { Box, Divider, Grid, Rating, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import StyledButton from "../UI/Styled/StyledButton";
+import { IComment } from "../../shared/interfaces/commentInterfaces";
 
 interface IProps {
-  name?: string;
-  rating?: number;
-  date?: Date;
-  title?: string;
-  body?: string;
   flag?: boolean;
-  propertyName?: string;
-  propertyId?: number;
+  comment: IComment;
 }
 
-const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.`;
-
-const DUMMY_TITLE = `Beautiful rooms`;
-
-const Comment: FC<IProps> = (props) => {
+const Comment: FC<IProps> = ({ flag = false, comment }) => {
   const navigate = useNavigate();
   const handleNavigation = () => {
-    navigate(`/listings/${props?.propertyId}`);
+    navigate(`/listings/${comment?.accommodationId}`);
   };
 
   return (
     <Grid container direction="column" sx={{ display: "flex", width: "100%" }}>
       <Grid item sx={{ pt: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {!props.flag ? (
-            <Typography variant="h6">Andrija Ristic</Typography>
+          {!flag ? (
+            <Typography variant="h6">{comment?.userFullName}</Typography>
           ) : (
-            <Typography variant="h6">{props.propertyName}</Typography>
+            <Typography variant="h6">{comment?.accommodationName}</Typography>
           )}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="subtitle1">4.6</Typography>
-            <Rating value={4.6} precision={0.5} size="small" readOnly />
+            <Typography variant="subtitle1">{comment?.grade}</Typography>
+            <Rating
+              value={comment?.grade}
+              precision={0.5}
+              size="small"
+              readOnly
+            />
           </Box>
         </Box>
       </Grid>
       <Grid item>
-        <Typography variant="subtitle1">{new Date().toISOString()}</Typography>
+        <Typography variant="subtitle1">
+          {`${new Date(comment?.creationDate).toLocaleDateString(
+            "en-GB"
+          )}, ${new Date(comment?.creationDate).toLocaleTimeString("en-GB")}`}
+        </Typography>
       </Grid>
       <Grid item sx={{ pt: 4 }}>
-        <Typography variant="h6">{DUMMY_TITLE}</Typography>
+        <Typography variant="h6">{comment?.header}</Typography>
         <Box sx={{ pt: 1, pb: 1, heigth: "fit-content" }}>
           <Typography
             variant="body1"
             sx={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
           >
-            {DUMMY_DESCRIPTION}
+            {comment.content}
           </Typography>
-          {props.flag && (
+          {flag && (
             <StyledButton onClick={handleNavigation} sx={{ mt: 2 }}>
               View property
             </StyledButton>
@@ -61,11 +61,6 @@ const Comment: FC<IProps> = (props) => {
       <Divider />
     </Grid>
   );
-};
-
-Comment.defaultProps = {
-  flag: false,
-  propertyName: "Default property name",
 };
 
 export default Comment;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Contracts.AccommodationDTOs;
 using Contracts.UserDTOs;
 
 namespace Domain.Interfaces.Services
@@ -16,5 +12,6 @@ namespace Domain.Interfaces.Services
         Task<DisplayUserDTO> ChangePassword(Guid id, ChangePasswordDTO changePasswordDTO, string username);
         Task<DisplayUserDTO> VerifyUser(Guid id, bool isAccepted);
         Task<AuthDTO> ExternalLogin(ExternalLoginDTO externalLoginDTO);
+        Task<List<DisplayUserDTO>> GetUnverifiedUsers();
     }
 }

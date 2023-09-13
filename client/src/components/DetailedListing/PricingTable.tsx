@@ -11,12 +11,18 @@ import {
   TableHead,
   TextField,
   InputAdornment,
+  Box,
+  Typography,
 } from "@mui/material";
 import EuroSymbolIcon from "@mui/icons-material/EuroSymbol";
+import {
+  IRoomTypeAddDisplay,
+  IRoomTypeDisplay,
+} from "../../shared/interfaces/roomTypeInterfaces";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: theme.palette.secondary.main,
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -34,148 +40,158 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const DUMMY_PRICINGS = [
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-  {
-    id: Math.random() * 100,
-    startDate: new Date().toLocaleString().split(",")[0],
-    endDate: new Date().toLocaleString().split(",")[0],
-    price: 100,
-  },
-];
-
 interface IProps {
   edit: boolean;
+  addRoomForm?: boolean;
+  pricings?: IRoomTypeAddDisplay[];
+  roomType?: IRoomTypeDisplay;
 }
 
-const PricingTable: FC<IProps> = (props) => {
-  return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        display: "flex",
-        flexBasis: "32.33%",
-        borderRadius: 2,
+const PricingTable: FC<IProps> = ({
+  edit,
+  pricings,
+  addRoomForm,
+  roomType,
+}) => {
+  if (addRoomForm) {
+    return (
+      <TableContainer
+        component={Paper}
+        sx={{
+          display: "flex",
+          flexBasis: "32.33%",
+          borderRadius: 2,
 
-        "@media (max-width: 1468px)": {
-          flexBasis: "32%",
-        },
-        "@media (max-width: 1260px)": {
-          flexBasis: "48%",
-        },
-        "@media (max-width: 846px)": {
-          flexBasis: "98%",
-        },
-      }}
-    >
-      <Table id="table" size="small" aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell colSpan={3}>2 adults, 1 child</StyledTableCell>
-          </TableRow>
-          <TableRow>
-            <StyledTableCell>From</StyledTableCell>
-            <StyledTableCell>To</StyledTableCell>
-            <StyledTableCell>Price</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {DUMMY_PRICINGS.map((pricing) => (
-            <StyledTableRow key={pricing.id}>
-              <StyledTableCell>{pricing.startDate}</StyledTableCell>
-              <StyledTableCell>{pricing.endDate}</StyledTableCell>
-              <StyledTableCell>
-                {props.edit ? (
+          "@media (max-width: 1468px)": {
+            flexBasis: "32%",
+          },
+          "@media (max-width: 1260px)": {
+            flexBasis: "48%",
+          },
+          "@media (max-width: 846px)": {
+            flexBasis: "98%",
+          },
+        }}
+      >
+        <Table id="table" size="small" aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell colSpan={3}>2 adults, 1 child</StyledTableCell>
+            </TableRow>
+            <TableRow>
+              <StyledTableCell>From</StyledTableCell>
+              <StyledTableCell>To</StyledTableCell>
+              <StyledTableCell>Price</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {pricings?.map((pricing) => (
+              <StyledTableRow key={pricing.id}>
+                <StyledTableCell>
+                  {new Date(pricing?.startDate).toLocaleDateString("en-GB")}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {new Date(pricing?.endDate).toLocaleDateString("en-GB")}
+                </StyledTableCell>
+                <StyledTableCell>
                   <TextField
-                    id={pricing.id.toString()}
-                    name={(Math.random() * 100).toString()}
+                    id={pricing.id}
+                    name={pricing.id}
                     type="number"
                     variant="standard"
                     margin="dense"
-                    defaultValue={pricing.price}
+                    defaultValue={0}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <EuroSymbolIcon />
+                          <EuroSymbolIcon fontSize="small" />
                         </InputAdornment>
                       ),
                     }}
                   />
-                ) : (
-                  pricing.price
-                )}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  } else {
+    const title = `${roomType?.adults || "0"} ${
+      roomType?.adults === 1 ? "Adult" : "Adults"
+    }, ${roomType?.children || "0"} ${
+      roomType?.children === 1 ? "Child" : "Children"
+    }`;
+    return (
+      <TableContainer
+        component={Paper}
+        sx={{
+          display: "flex",
+          flexBasis: "32.33%",
+          borderRadius: 2,
+
+          "@media (max-width: 1468px)": {
+            flexBasis: "32%",
+          },
+          "@media (max-width: 1260px)": {
+            flexBasis: "48%",
+          },
+          "@media (max-width: 846px)": {
+            flexBasis: "98%",
+          },
+        }}
+      >
+        <Table id="table" size="small" aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell colSpan={3}>{title}</StyledTableCell>
+            </TableRow>
+            <TableRow>
+              <StyledTableCell>From</StyledTableCell>
+              <StyledTableCell>To</StyledTableCell>
+              <StyledTableCell>Price</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {roomType?.seasonalPricing.map((pricing) => (
+              <StyledTableRow key={pricing.id}>
+                <StyledTableCell>
+                  {new Date(pricing?.startDate).toLocaleDateString("en-GB")}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {new Date(pricing?.endDate).toLocaleDateString("en-GB")}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {edit ? (
+                    <TextField
+                      id={pricing.id.toString()}
+                      name={pricing.id.toString()}
+                      type="number"
+                      variant="standard"
+                      margin="dense"
+                      defaultValue={pricing.price}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <EuroSymbolIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  ) : (
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <EuroSymbolIcon fontSize="small" />
+                      <Typography variant="body1">{pricing.price}</Typography>
+                    </Box>
+                  )}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  }
 };
 
 export default PricingTable;

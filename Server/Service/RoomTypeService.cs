@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Contracts.RoomTypeDTOs;
 using Contracts.SeasonalPricingDTOs;
-using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.AccommodationExceptions;
 using Domain.Exceptions.RoomTypeExceptions;
+using Domain.Exceptions.UserExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
@@ -13,18 +14,40 @@ namespace Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public RoomTypeService(IUnitOfWork unitOfWork, IMapper mapper) 
+        public RoomTypeService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO)
+        public async Task<List<DisplayRoomTypeDTO>> GetRoomTypesForAccommodation(Guid accommodationId)
         {
-            Property property = await _unitOfWork.Properties.Find(newRoomTypeDTO.PropertyId);
-            if (property == null)
+            List<RoomType> roomTypes = await _unitOfWork
+                                                    .RoomTypes
+                                                    .FindRoomTypesForAccommodation(accommodationId);
+
+            return _mapper.Map<List<DisplayRoomTypeDTO>>(roomTypes);
+        }
+
+        public async Task<DisplayRoomTypeDTO> CreateRoomType(NewRoomTypeDTO newRoomTypeDTO, string username)
+        {
+            Accommodation accommodation = await _unitOfWork
+                                                        .Accommodations
+                                                        .Find(newRoomTypeDTO.AccommodationId);
+            if (accommodation is null)
             {
-                throw new PropertyNotFoundException(newRoomTypeDTO.PropertyId);
+                throw new AccommodationNotFoundException(newRoomTypeDTO.AccommodationId);
+            }
+
+            User user = await _unitOfWork.Users.FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (accommodation.UserId != user.Id)
+            {
+                throw new InvalidUserInAccommodationException();
             }
 
             ValidateNewRoomType(newRoomTypeDTO);
@@ -34,8 +57,17 @@ namespace Service
 
             for (int i = 0; i < newRoomTypeDTO.AmountOfRooms; i++)
             {
-                roomType.Rooms.Add(new Room() { PropertyId = roomType.PropertyId });
+                roomType.Rooms.Add(new Room() { AccommodationId = roomType.AccommodationId });
             }
+
+            int seasonalPricingMin = roomType.SeasonalPricing.Min(x => x.Price);
+            if (accommodation.StartingPrice == 0 || 
+               (accommodation.StartingPrice > 0 && accommodation.StartingPrice > seasonalPricingMin))
+            {
+                accommodation.StartingPrice = seasonalPricingMin;
+            }
+
+            accommodation.IsVisible = true;
 
             await _unitOfWork.RoomTypes.Add(roomType);
             await _unitOfWork.Save();
@@ -43,20 +75,33 @@ namespace Service
             return _mapper.Map<DisplayRoomTypeDTO>(roomType);
         }
 
-        public async Task<DisplayRoomTypeDTO> UpdateRoomType(Guid id,UpdateRoomTypeDTO updateRoomTypeDTO, string username)
+        public async Task<DisplayRoomTypeDTO> UpdateRoomType(Guid id, UpdateRoomTypeDTO updateRoomTypeDTO, string username)
         {
-            RoomType roomType = await _unitOfWork.RoomTypes.FindDetailedRoomType(id);
-            if (roomType == null)
+            RoomType roomType = await _unitOfWork
+                                            .RoomTypes
+                                            .FindDetailedRoomType(id);
+            if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(id);
             }
 
-            if (roomType.Property == null)
+            Accommodation accommodation = await _unitOfWork
+                                                    .Accommodations
+                                                    .Find(roomType.AccommodationId);
+            if (accommodation is null)
             {
-                throw new PropertyNotFoundException(roomType.PropertyId);
+                throw new AccommodationNotFoundException(roomType.AccommodationId);
             }
 
-            if (!String.Equals(roomType.Property.User.Username, username))
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (roomType.Accommodation.UserId != user.Id)
             {
                 throw new InvalidRoomTypePermissionsException();
             }
@@ -70,28 +115,48 @@ namespace Service
                 }
             }
 
+            int seasonalPricingMin = roomType.SeasonalPricing.Min(x => x.Price);
+            if (accommodation.StartingPrice == 0 ||
+               (accommodation.StartingPrice > 0 && accommodation.StartingPrice > seasonalPricingMin))
+            {
+                accommodation.StartingPrice = seasonalPricingMin;
+            }
+
+            await _unitOfWork.Save();
+
             return _mapper.Map<DisplayRoomTypeDTO>(roomType);
         }
 
         public async Task DeleteRoomType(Guid id, string username)
         {
-            RoomType roomType = await _unitOfWork.RoomTypes.FindDetailedRoomType(id);
-            if (roomType == null)
+            RoomType roomType = await _unitOfWork
+                                            .RoomTypes
+                                            .FindDetailedRoomType(id);
+            if (roomType is null)
             {
                 throw new RoomTypeNotFoundException(id);
             }
 
-            if (roomType.Property == null)
+            if (roomType.Accommodation is null)
             {
-                throw new PropertyNotFoundException(roomType.PropertyId);
+                throw new AccommodationNotFoundException(roomType.AccommodationId);
             }
 
-            if (!String.Equals(roomType.Property.User.Username, username))
+            User user = await _unitOfWork
+                                    .Users
+                                    .FindByUsername(username);
+            if (user is null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            if (roomType.Accommodation.UserId != user.Id)
             {
                 throw new InvalidRoomTypePermissionsException();
             }
 
-            _unitOfWork.RoomTypes.Remove(roomType);
+            roomType.IsDeleted = true;
+            //_unitOfWork.RoomTypes.Remove(roomType);
             await _unitOfWork.Save();
         }
 
@@ -105,7 +170,7 @@ namespace Service
 
         private static void ValidateAmountOfRooms(int rooms)
         {
-            if (rooms <= 0) 
+            if (rooms <= 0)
             {
                 throw new InvalidAmountOfRoomsException();
             }
@@ -152,7 +217,7 @@ namespace Service
                 throw new InvalidMonthAmountException();
             }
 
-            foreach(var price in pricings)
+            foreach (var price in pricings)
             {
                 if (price.Price <= 0)
                 {

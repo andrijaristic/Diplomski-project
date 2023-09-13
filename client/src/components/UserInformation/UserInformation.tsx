@@ -1,29 +1,29 @@
 import React, { FC, useState } from "react";
+import jwtDecode from "jwt-decode";
 import { Box, Button } from "@mui/material";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import RestoreIcon from "@mui/icons-material/Restore";
 import UserInformationField from "./UserInformationField";
 import StyledButton from "../UI/Styled/StyledButton";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { HookTypes } from "../../shared/types/enumerations";
+import { IJwt, IUserUpdate } from "../../shared/interfaces/userInterfaces";
 import {
   defaultFormErrorMessage,
   emailRegex,
   minTextInputLength,
   phoneNumberRegex,
 } from "../../constants/Constants";
-import { HookTypes } from "../../shared/types/enumerations";
 import { errorNotification } from "../../utils/toastNotificationUtil";
-
-const DUMMY_USER = {
-  firstName: "Andrija",
-  lastName: "Ristic",
-  email: "fake.email@gmail.com",
-  country: "Serbia",
-  address: "Adresa",
-  phoneNumber: "063111111",
-  role: "RENTEE",
-};
+import { updateAction } from "../../store/userSlice";
 
 const UserInformation: FC = () => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
+  const token = useAppSelector((state) => state.user.token);
+
+  const { id } = jwtDecode<IJwt>(token ? token : "");
+
   const [edit, setEdit] = useState<boolean>(false);
   const handleEditToggle = () => {
     setEdit((prevEdit) => !prevEdit);
@@ -37,24 +37,24 @@ const UserInformation: FC = () => {
     const lastName = data.get("lastName");
     const country = data.get("country");
     const phoneNumber = data.get("phoneNumber");
-    const address = data.get("address");
-    const role = data.get("role");
     const email = data.get("email");
 
-    if (
-      !firstName ||
-      !lastName ||
-      !country ||
-      !phoneNumber ||
-      !address ||
-      !role ||
-      !email
-    ) {
+    if (!firstName || !lastName || !country || !phoneNumber || !email) {
       errorNotification(defaultFormErrorMessage);
       return;
     }
 
-    console.log(data);
+    const userUpdate: IUserUpdate = {
+      id: id,
+      firstName: firstName.toString().trim(),
+      lastName: lastName.toString().trim(),
+      country: country.toString().trim(),
+      phoneNumber: phoneNumber.toString().trim(),
+      email: email.toString().trim(),
+    };
+
+    dispatch(updateAction(userUpdate));
+    setEdit(false); // Closes off form for edit / spam submit
   };
 
   return (
@@ -98,7 +98,7 @@ const UserInformation: FC = () => {
             <UserInformationField
               label="First name"
               id="firstName"
-              defaultValue={DUMMY_USER.firstName}
+              defaultValue={user?.firstName}
               disabled={edit}
               type={HookTypes.TEXT}
               minChars={minTextInputLength}
@@ -106,7 +106,7 @@ const UserInformation: FC = () => {
             <UserInformationField
               label="Last name"
               id="lastName"
-              defaultValue={DUMMY_USER.lastName}
+              defaultValue={user?.lastName}
               disabled={edit}
               type={HookTypes.TEXT}
               minChars={minTextInputLength}
@@ -116,7 +116,7 @@ const UserInformation: FC = () => {
             <UserInformationField
               label="Country"
               id="country"
-              defaultValue={DUMMY_USER.country}
+              defaultValue={user?.country}
               disabled={edit}
               type={HookTypes.TEXT}
               minChars={minTextInputLength}
@@ -124,7 +124,7 @@ const UserInformation: FC = () => {
             <UserInformationField
               label="Phone number"
               id="phoneNumber"
-              defaultValue={DUMMY_USER.phoneNumber}
+              defaultValue={user?.phoneNumber}
               disabled={edit}
               type={HookTypes.REGEX}
               regex={phoneNumberRegex}
@@ -132,22 +132,14 @@ const UserInformation: FC = () => {
             <UserInformationField
               label="Role"
               id="role"
-              defaultValue={DUMMY_USER.role}
+              defaultValue={user?.role}
               type={HookTypes.TEXT}
             />
           </Box>
           <UserInformationField
-            label="Address"
-            id="address"
-            defaultValue={DUMMY_USER.address}
-            disabled={edit}
-            type={HookTypes.TEXT}
-            minChars={minTextInputLength}
-          />
-          <UserInformationField
             label="Email addres"
             id="email"
-            defaultValue={DUMMY_USER.email}
+            defaultValue={user?.email}
             disabled={edit}
             type={HookTypes.REGEX}
             regex={emailRegex}

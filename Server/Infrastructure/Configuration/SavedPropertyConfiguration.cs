@@ -1,27 +1,22 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Configuration
 {
-    public class SavedPropertyConfiguration : IEntityTypeConfiguration<SavedProperty>
+    public class SavedPropertyConfiguration : IEntityTypeConfiguration<SavedAccommodation>
     {
-        public void Configure(EntityTypeBuilder<SavedProperty> builder)
+        public void Configure(EntityTypeBuilder<SavedAccommodation> builder)
         {
             builder.HasIndex(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder.HasOne(x => x.User)
-                   .WithMany(x => x.SavedProperties);
+                   .WithMany(x => x.SavedAccommodations);
 
-            builder.HasOne(x => x.Property)
-                   .WithMany(x => x.SavedProperties);
+            builder.HasOne(x => x.Accommodation)
+                   .WithMany(x => x.SavedAccommodations);
         }
     }
 }

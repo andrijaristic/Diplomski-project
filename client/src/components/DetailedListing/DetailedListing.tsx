@@ -1,31 +1,33 @@
-import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Box, Divider, Fade, Grid, Rating, Typography } from "@mui/material";
+import { FC, useEffect } from "react";
+import {
+  Box,
+  Card,
+  Divider,
+  Fade,
+  Grid,
+  Rating,
+  Typography,
+} from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
 import DetailedListingAmenity from "./DetailedListingAmenity";
 import DetailedListingSearchAction from "./DetailedListingSearchAction";
-import StyledButton from "../UI/Styled/StyledButton";
-import Comment from "../Comment/Comment";
 import NewCommentForm from "../Comment/NewCommentForm";
-
-const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
-
-Nullam non dapibus lorem. Aenean hendrerit, dolor in ornare consectetur, ligula ligula commodo lacus, non tincidunt sapien quam at lacus. Pellentesque vitae sem vulputate neque commodo aliquam. Nunc interdum eu diam sit amet condimentum. In sit amet volutpat mi, sed condimentum nibh. Cras fringilla tempor dui, vel fringilla tellus hendrerit id. Integer auctor ut sapien ac hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Nam nec laoreet nulla, nec aliquet leo.
-
-Proin rhoncus non ante vel scelerisque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris quis lorem mi. Vestibulum tempus sapien arcu, vel molestie tellus gravida dapibus. Morbi consequat tincidunt quam quis posuere. Ut tristique pulvinar mauris, eu tempor quam pretium ut. Vivamus ac lorem laoreet, tincidunt elit ut, sodales mauris. Fusce eget nunc et risus molestie finibus. Proin a dolor a magna eleifend convallis a nec velit. Donec quis pretium nisl, sit amet bibendum ligula. Aenean orci nisi, mattis fringilla ex ut, consequat suscipit ex. Integer finibus est in nisi convallis venenatis. Nulla volutpat bibendum arcu in finibus. Maecenas dictum auctor turpis, non pretium metus faucibus eu. In scelerisque consequat aliquet.
-
-Curabitur auctor turpis ac tortor varius, vitae egestas magna egestas. Suspendisse id nulla luctus, porttitor turpis in, imperdiet nunc. Proin in tortor lorem. Sed purus ante, dapibus ac nulla vitae, tincidunt pellentesque massa. Ut et felis gravida, lobortis purus eget, rutrum neque. Aenean non quam in erat euismod hendrerit. Cras lobortis vestibulum est id malesuada. Proin vitae metus rutrum, aliquam sem a, bibendum nunc. Curabitur id aliquet elit, et finibus dui. Etiam vel sem tempus, porttitor orci eleifend, commodo elit. Mauris augue velit, malesuada quis blandit non, congue nec turpis.
-
-Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non dapibus neque. Donec tellus ligula, tristique at eleifend in, euismod eget ante. Praesent eget elementum sapien. Nullam leo lacus, venenatis id elit et, sagittis accumsan felis. Duis ut odio luctus lorem maximus aliquam. Phasellus vel finibus massa. Fusce consectetur velit quis ex scelerisque malesuada. 
-
-Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non dapibus neque. Donec tellus ligula, tristique at eleifend in, euismod eget ante. Praesent eget elementum sapien. Nullam leo lacus, venenatis id elit et, sagittis accumsan felis. Duis ut odio luctus lorem maximus aliquam. Phasellus vel finibus massa. Fusce consectetur velit quis ex scelerisque malesuada.`;
-
-const DUMMY_AMENITIES: JSX.Element[] = [];
-for (let i = 0; i < 10; i++) {
-  DUMMY_AMENITIES.push(<DetailedListingAmenity key={Math.random() * 100} />);
-}
+import ImageDisplay from "../EditListing/ImageDisplay";
+import StyledButton from "../UI/Styled/StyledButton";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
+import { defaultNoAmenitiesForListingMessage } from "../../constants/Constants";
+import DetailedListingRoomBooking from "./DetailedListingRoomBooking";
+import { IRoomSearch } from "../../shared/interfaces/roomInterfaces";
+import {
+  clearBookingRooms,
+  getFilteredRoomsAction,
+} from "../../store/roomSlice";
+import { clearSuccessfulReservation } from "../../store/reservationSlice";
+import DetailedListingComments from "./DetailedListingComments";
+import { grey } from "@mui/material/colors";
+import PricingTable from "./PricingTable";
 
 const noAmenitiesMessage: JSX.Element = (
   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -37,8 +39,32 @@ const noAmenitiesMessage: JSX.Element = (
 );
 
 const DetailedListing: FC = () => {
-  const navigate = useNavigate();
-  const [rating, setRating] = useState<number>(4.2);
+  const dispatch = useAppDispatch();
+  const successfulReservation = useAppSelector(
+    (state) => state.reservations.successfulReservation
+  );
+  const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const accommodation = useAppSelector(
+    (state) => state.accommodations.detailedAccommodation
+  );
+  const roomTypes = useAppSelector((state) => state.roomTypes.roomTypes);
+  const bookingRooms = useAppSelector((state) => state.rooms.bookingRooms);
+
+  useEffect(() => {
+    if (successfulReservation) {
+      dispatch(clearBookingRooms());
+      dispatch(clearSuccessfulReservation());
+    }
+  }, [dispatch, successfulReservation]);
+
+  const utilities: JSX.Element[] | undefined = accommodation?.amenities?.map(
+    (amenity) => (
+      <DetailedListingAmenity
+        key={amenity.id}
+        name={amenity.accommodationAmenity}
+      />
+    )
+  );
 
   const handleBookingSectionNavigation = () => {
     // navigate(`${originalPathname}/#bookings`);
@@ -49,6 +75,24 @@ const DetailedListing: FC = () => {
     const element: HTMLElement | null = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const images: IAccommodationImage[] = [];
+  if (accommodation?.thumbnailImage) {
+    images.push(accommodation?.thumbnailImage);
+    accommodation?.images.map((image) => images.push(image));
+  }
+
+  const roomTypesContent: JSX.Element[] = roomTypes?.map((roomType) => {
+    return <PricingTable key={roomType.id} edit={false} roomType={roomType} />;
+  });
+
+  const handleRoomSearch = (booking: IRoomSearch) => {
+    dispatch(getFilteredRoomsAction(booking));
+  };
+
+  const bookingRoomsContent: JSX.Element[] = bookingRooms?.map((room) => {
+    return <DetailedListingRoomBooking key={room.id} room={room} />;
+  });
 
   return (
     <Fade in>
@@ -65,144 +109,197 @@ const DetailedListing: FC = () => {
                   Prices & Booking
                 </StyledButton>
                 <StyledButton onClick={scrollToSection("reviews")}>
-                  Reviews
+                  Comments
                 </StyledButton>
               </Box>
             </Grid>
-            <Grid item sx={{ p: 1 }}>
-              <Box>
-                <Box
-                  component="img"
-                  src="/header-background.jpg"
-                  alt="thumbnail-image"
-                  sx={{
-                    width: "100%",
-                    aspectRatio: "1.66 / 1",
-                  }}
-                />
-                <Box>Every other image in carousel</Box>
-              </Box>
+            <Grid item sx={{ p: 1, pt: 0 }}>
+              <Card
+                sx={{
+                  height: "80%",
+                  width: 1200,
+                  maxWidth: { xs: 1600 },
+                  borderRadius: 2,
+                  border: `1px solid ${grey[400]}`,
+                }}
+              >
+                <ImageDisplay edit={false} images={images} />
+              </Card>
             </Grid>
             <Grid item sx={{ p: 1, pt: 2 }}>
-              <Typography id="description" variant="h5" sx={{ pb: 1 }}>
-                Our description
-              </Typography>
-              <Box
-                sx={{
-                  height: "fit-content",
-                }}
+              <Card
+                sx={{ borderRadius: 2, p: 2, border: `1px solid ${grey[400]}` }}
+              >
+                <Typography
+                  id="description"
+                  variant="h4"
+                  sx={{ pb: 1, scrollMargin: "8rem" }}
+                >
+                  Our description
+                </Typography>
+                <Divider />
+                <Box
+                  sx={{
+                    height: "fit-content",
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      variant="body1"
+                      sx={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
+                    >
+                      {accommodation?.description}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ pt: 4 }}>
+                    <Divider />
+                    <Typography variant="h4">Available amenities</Typography>
+                    <Box
+                      sx={{ display: "flex", flexWrap: "wrap", gap: 2, pt: 2 }}
+                    >
+                      {utilities && utilities?.length > 0
+                        ? utilities
+                        : noAmenitiesMessage}
+                    </Box>
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+            <Grid item sx={{ p: 1, pt: 4 }}>
+              <Card
+                sx={{ borderRadius: 2, p: 2, border: `1px solid ${grey[400]}` }}
               >
                 <Box>
                   <Typography
-                    variant="body1"
-                    sx={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
+                    id="bookings"
+                    variant="h4"
+                    sx={{ scrollMargin: "8rem", scrollPadding: "8rem" }}
                   >
-                    {DUMMY_DESCRIPTION}
+                    Bookings
                   </Typography>
-                </Box>
-                <Box sx={{ pt: 4 }}>
-                  <Typography variant="h6">Available amenities</Typography>
+                  <Divider />
+                  <DetailedListingSearchAction onSearch={handleRoomSearch} />
                   <Box
-                    sx={{ display: "flex", flexWrap: "wrap", gap: 2, pt: 2 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                   >
-                    {DUMMY_AMENITIES ?? noAmenitiesMessage}
+                    {bookingRoomsContent.length > 0 && bookingRoomsContent}
+                  </Box>
+                  <Box
+                    sx={{
+                      pt: 2,
+                      display: "flex",
+                      flexWrap: "wrap",
+                      flexGrow: 1,
+                      flexShrink: 1,
+                      gap: 2,
+                    }}
+                  >
+                    {roomTypesContent.length > 0 && roomTypesContent}
                   </Box>
                 </Box>
-              </Box>
+              </Card>
             </Grid>
-            <Grid item sx={{ pt: 4 }}>
-              <Box>
-                <Typography id="bookings" variant="h5">
-                  Bookings
-                </Typography>
-                <DetailedListingSearchAction />
-              </Box>
-            </Grid>
-            <Grid item sx={{ pt: 4 }}>
-              <Box>
-                <Typography id="reviews" variant="h5">
-                  Comments
-                </Typography>
-                <NewCommentForm />
-                <Box
-                  sx={{
-                    pt: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                  }}
-                >
-                  <Comment />
-                  <Comment />
-                  <Comment />
-                  <Comment />
+            <Grid item sx={{ p: 1, pt: 4 }}>
+              <Card
+                sx={{ borderRadius: 2, p: 2, border: `1px solid ${grey[400]}` }}
+              >
+                <Box>
+                  <Typography
+                    id="reviews"
+                    variant="h4"
+                    sx={{ scrollMargin: "8rem", scrollPaddingTop: "8rem" }}
+                  >
+                    Comments
+                  </Typography>
+                  <Divider />
+                  {isLoggedIn && (
+                    <NewCommentForm
+                      accommodationId={
+                        accommodation?.id ? accommodation?.id : ""
+                      }
+                    />
+                  )}
+                  <Box
+                    sx={{
+                      pt: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                    }}
+                  >
+                    <DetailedListingComments />
+                  </Box>
                 </Box>
-              </Box>
+              </Card>
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "80%",
-            }}
+        <Grid item xs={3} sx={{ pt: 8.6 }}>
+          <Card
+            sx={{ borderRadius: 2, p: 2, border: `1px solid ${grey[400]}` }}
           >
-            <Typography variant="h5" sx={{ pt: 2, pb: 2 }}>
-              Property name
-            </Typography>
-            <Divider />
             <Box
               sx={{
-                pt: 2,
-                pb: 2,
                 display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: "column",
+                width: "80%",
               }}
             >
-              <Rating
-                value={rating}
-                precision={0.5}
-                readOnly
-                sx={{ ml: "auto" }}
-              />
-              <Typography variant="body1" sx={{ pl: 1, pr: 1 }}>
-                {rating}
+              <Typography variant="h5" sx={{ pt: 2, pb: 2 }}>
+                {accommodation?.name}
               </Typography>
-            </Box>
-            <Divider />
-            <Box
-              sx={{
-                pt: 2,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Typography>Starting from</Typography>
+              <Divider />
               <Box
                 sx={{
-                  ml: "auto",
+                  pt: 2,
+                  pb: 2,
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
                 }}
               >
-                <AttachMoneyIcon sx={{ fontSize: 28 }} />
-                <Typography variant="h5" sx={{ pr: 1 }}>
-                  {rating}
+                <Rating
+                  value={accommodation?.averageGrade}
+                  precision={0.5}
+                  readOnly
+                  sx={{ ml: "auto" }}
+                />
+                <Typography variant="body1" sx={{ pl: 1, pr: 1 }}>
+                  {accommodation?.averageGrade}
                 </Typography>
               </Box>
+              <Divider />
+              <Box
+                sx={{
+                  pt: 2,
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Typography>Starting from</Typography>
+                <Box
+                  sx={{
+                    ml: "auto",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <AttachMoneyIcon sx={{ fontSize: 28 }} />
+                  <Typography variant="h5" sx={{ pr: 1 }}>
+                    {accommodation?.startingPrice}
+                  </Typography>
+                </Box>
+              </Box>
+              <StyledButton
+                onClick={handleBookingSectionNavigation}
+                sx={{ mt: 2 }}
+              >
+                Book now
+              </StyledButton>
             </Box>
-            <StyledButton
-              onClick={handleBookingSectionNavigation}
-              sx={{ mt: 2 }}
-            >
-              Book now
-            </StyledButton>
-          </Box>
+          </Card>
         </Grid>
       </Grid>
     </Fade>

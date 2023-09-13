@@ -11,7 +11,7 @@ export enum CommentLocation {
 
 export enum UserType {
   RENTEE,
-  PROPERTYOWNER,
+  OWNER,
 }
 
 export enum HookTypes {

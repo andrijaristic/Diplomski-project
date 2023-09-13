@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Exceptions.Common;
+﻿using Domain.Exceptions.Common;
 
 namespace Domain.Exceptions.UserExceptions
 {
     public class InvalidInputFieldException : BadRequestException
     {
-        public InvalidInputFieldException(string field) : base($"${field} is invalid.") { }
+        public InvalidInputFieldException(string field) : base($"{field} is invalid.") { }
     }
 }

@@ -2,7 +2,11 @@ import { FC } from "react";
 import { Box, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
 
-const DetailedListingAmenity: FC = () => (
+interface IProps {
+  name: string;
+}
+
+const DetailedListingAmenity: FC<IProps> = ({ name }) => (
   <Box
     sx={{
       display: "flex",
@@ -12,7 +16,7 @@ const DetailedListingAmenity: FC = () => (
     }}
   >
     <CheckCircleIcon color="success" />
-    <Typography variant="subtitle1">Amenity name</Typography>
+    <Typography variant="subtitle1">{name || "Amenity name"}</Typography>
   </Box>
 );
 

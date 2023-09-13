@@ -1,23 +1,27 @@
 import { FC } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Comment from "../Comment/Comment";
-
-const DUMMY_PROPERTY_NAME = "Template property name";
+import { useAppSelector } from "../../store/hooks";
+import EmptyArrayMessage from "../UI/EmptyArrayMessage/EmptyArrayMessage";
 
 const CommentList: FC = () => {
+  const userComments = useAppSelector((state) => state.comments.userComments);
+  const noCommentsMessage = (
+    <EmptyArrayMessage message="Oops! Seems like you haven't made any comments." />
+  );
+  const content = userComments?.map((comment) => (
+    <Comment flag comment={comment} />
+  ));
+
   return (
     <Box
       sx={{
-        pl: 2,
+        p: 2,
         display: "flex",
         flexDirection: "column",
-        width: "80%",
       }}
     >
-      <Comment flag propertyName={DUMMY_PROPERTY_NAME} />
-      <Comment flag propertyName={DUMMY_PROPERTY_NAME} />
-      <Comment flag propertyName={DUMMY_PROPERTY_NAME} />
-      <Comment flag propertyName={DUMMY_PROPERTY_NAME} />
+      {content.length > 0 ? content : noCommentsMessage}
     </Box>
   );
 };

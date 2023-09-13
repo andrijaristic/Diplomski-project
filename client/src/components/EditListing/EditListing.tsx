@@ -1,30 +1,50 @@
 import React, { FC, useRef, useState } from "react";
-import { Box, Button, Divider, Fade, Grid } from "@mui/material";
+import { Box, Divider, Fade, Grid, Typography } from "@mui/material";
 import { HookTypes } from "../../shared/types/enumerations";
 import PricingTable from "../DetailedListing/PricingTable";
 import UserInformationField from "../UserInformation/UserInformationField";
 import StyledButton from "../UI/Styled/StyledButton";
 import ImageDisplay from "./ImageDisplay";
 import AddImagePicker from "./AddImagePicker";
-
-const DUMMY_DESCRIPTION = `Lorem ipsum dolor`;
-
-// const DUMMY_DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis rutrum aliquam. Pellentesque sed pulvinar eros, ac luctus sapien. Fusce ut leo commodo urna luctus varius eget nec justo. In euismod molestie imperdiet. Proin rhoncus fringilla ex sit amet facilisis. Duis eget placerat turpis, vitae mollis sem. Aenean pulvinar venenatis turpis. Proin venenatis vel massa pellentesque blandit. Duis egestas lectus quis nulla tempor laoreet.
-
-// Nullam non dapibus lorem. Aenean hendrerit, dolor in ornare consectetur, ligula ligula commodo lacus, non tincidunt sapien quam at lacus. Pellentesque vitae sem vulputate neque commodo aliquam. Nunc interdum eu diam sit amet condimentum. In sit amet volutpat mi, sed condimentum nibh. Cras fringilla tempor dui, vel fringilla tellus hendrerit id. Integer auctor ut sapien ac hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Nam nec laoreet nulla, nec aliquet leo.
-
-// Proin rhoncus non ante vel scelerisque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris quis lorem mi. Vestibulum tempus sapien arcu, vel molestie tellus gravida dapibus. Morbi consequat tincidunt quam quis posuere. Ut tristique pulvinar mauris, eu tempor quam pretium ut. Vivamus ac lorem laoreet, tincidunt elit ut, sodales mauris. Fusce eget nunc et risus molestie finibus. Proin a dolor a magna eleifend convallis a nec velit. Donec quis pretium nisl, sit amet bibendum ligula. Aenean orci nisi, mattis fringilla ex ut, consequat suscipit ex. Integer finibus est in nisi convallis venenatis. Nulla volutpat bibendum arcu in finibus. Maecenas dictum auctor turpis, non pretium metus faucibus eu. In scelerisque consequat aliquet.
-
-// Curabitur auctor turpis ac tortor varius, vitae egestas magna egestas. Suspendisse id nulla luctus, porttitor turpis in, imperdiet nunc. Proin in tortor lorem. Sed purus ante, dapibus ac nulla vitae, tincidunt pellentesque massa. Ut et felis gravida, lobortis purus eget, rutrum neque. Aenean non quam in erat euismod hendrerit. Cras lobortis vestibulum est id malesuada. Proin vitae metus rutrum, aliquam sem a, bibendum nunc. Curabitur id aliquet elit, et finibus dui. Etiam vel sem tempus, porttitor orci eleifend, commodo elit. Mauris augue velit, malesuada quis blandit non, congue nec turpis.
-
-// Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non dapibus neque. Donec tellus ligula, tristique at eleifend in, euismod eget ante. Praesent eget elementum sapien. Nullam leo lacus, venenatis id elit et, sagittis accumsan felis. Duis ut odio luctus lorem maximus aliquam. Phasellus vel finibus massa. Fusce consectetur velit quis ex scelerisque malesuada.
-
-// Nulla dignissim lorem vel lorem molestie faucibus. Vivamus eu lobortis erat, non dapibus neque. Donec tellus ligula, tristique at eleifend in, euismod eget ante. Praesent eget elementum sapien. Nullam leo lacus, venenatis id elit et, sagittis accumsan felis. Duis ut odio luctus lorem maximus aliquam. Phasellus vel finibus massa. Fusce consectetur velit quis ex scelerisque malesuada.`;
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { NavLink, useParams } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+import { IJwt } from "../../shared/interfaces/userInterfaces";
+import {
+  IAccommodationBasicInformation,
+  IAddAccommodationImage,
+  IDeleteAccomodationImage,
+} from "../../shared/interfaces/accommodationInterfaces";
+import {
+  addAccommodationImageAction,
+  deleteAccommodationImageAction,
+  updateBasicAccommodationInformationAction,
+} from "../../store/accommodationSlice";
+import { IAccommodationImage } from "../../shared/interfaces/accommodationImageInterfaces";
+import { IUpdateRoomType } from "../../shared/interfaces/roomTypeInterfaces";
+import { IUpdateSeasonalPricing } from "../../shared/interfaces/seasonalPricingInterfaces";
+import { updateRoomTypeAction } from "../../store/roomTypeSlice";
 
 const EditListingPage: FC = () => {
+  const dispatch = useAppDispatch();
+  const { id: accommodationId } = useParams();
+  const token = useAppSelector((state) => state.user.token);
+  const accommodation = useAppSelector(
+    (state) => state.accommodations.detailedAccommodation
+  );
+  const roomTypes = useAppSelector((state) => state.roomTypes.roomTypes);
+
+  const { id: userId } = jwtDecode<IJwt>(token ?? "");
+
   const imageInput = useRef<HTMLInputElement>(null);
   const [displayImage, setDisplayImage] = useState<string | undefined>("");
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+
+  const images: IAccommodationImage[] = [];
+  if (accommodation?.thumbnailImage) {
+    images.push(accommodation?.thumbnailImage);
+    accommodation?.images.map((image) => images.push(image));
+  }
 
   const imageUploadHandler = () => {
     if (!imageInput.current) {
@@ -51,42 +71,98 @@ const EditListingPage: FC = () => {
   };
 
   const handleImageAdd = () => {
-    console.log(uploadedImage);
+    if (uploadedImage === null) {
+      return;
+    }
+
+    const data = new FormData();
+    data.append("userId", userId.toString());
+    data.append("image", uploadedImage);
+
+    const addAccommodationImage: IAddAccommodationImage = {
+      accommodationId: accommodationId ?? "",
+      data: data,
+    };
+
+    dispatch(addAccommodationImageAction(addAccommodationImage));
+  };
+
+  const handleImageDelete = (imageId: string) => {
+    const deleteImage: IDeleteAccomodationImage = {
+      accommodationId: accommodationId ?? "",
+      imageId: imageId ?? "",
+      userId: userId ?? "",
+    };
+
+    dispatch(deleteAccommodationImageAction(deleteImage));
   };
 
   const handleEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
-    const title = data.get("title");
+    const name = data.get("name");
     const description = data.get("description");
 
-    if (!title || !description) {
+    if (!name || !description) {
       return;
     }
 
-    console.log(title, description);
+    const basicInformation: IAccommodationBasicInformation = {
+      accommodationId: accommodationId ?? "",
+      userId: userId,
+      name: name.toString().trim(),
+      description: description.toString().trim(),
+    };
+
+    dispatch(updateBasicAccommodationInformationAction(basicInformation));
   };
 
-  const handlePriceEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handlePriceEditSubmit =
+    (roomTypeId: string) => (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    // Extracts all prices from table
-    const data = new FormData(event.currentTarget);
-    const pricings: any[] = []; // proper type
-    for (const kvp of data.entries()) {
-      pricings.push({ id: parseInt(kvp[0]), price: kvp[1] });
-    }
+      // Extracts all prices from table
+      const data = new FormData(event.currentTarget);
+      const pricings: IUpdateSeasonalPricing[] = []; // proper type
+      for (const kvp of data.entries()) {
+        pricings.push({ id: kvp[0], price: kvp[1] as string });
+      }
 
-    console.log(pricings);
-  };
+      const updateRoomType: IUpdateRoomType = {
+        roomTypeId: roomTypeId,
+        seasonalPrices: pricings,
+      };
+
+      dispatch(updateRoomTypeAction(updateRoomType));
+    };
+
+  const pricingTables: JSX.Element[] | undefined = roomTypes?.map(
+    (roomType) => (
+      <Box
+        component="form"
+        key={roomType.id}
+        onSubmit={handlePriceEditSubmit(roomType.id)}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "fit-content",
+        }}
+      >
+        <PricingTable edit={true} roomType={roomType} />
+        <StyledButton submit sx={{ ml: "auto", mt: 1 }}>
+          Submit price changes
+        </StyledButton>
+      </Box>
+    )
+  );
 
   return (
     <Fade in>
       <Grid
         container
         direction="column"
-        sx={{ pt: 8, pl: "10%", pr: "10%", pb: "5%" }}
+        sx={{ pt: 8, pl: "10%", pr: "10%", pb: "20%" }}
       >
         {/* Title, Description, Pricing, Images (add/delete) */}
         <Box
@@ -96,8 +172,9 @@ const EditListingPage: FC = () => {
         >
           <Grid item>
             <UserInformationField
-              id="title"
-              label="Property listing title"
+              id="name"
+              label="Accommodation listing name"
+              defaultValue={accommodation?.name}
               disabled={true}
               type={HookTypes.TEXT}
             />
@@ -105,8 +182,8 @@ const EditListingPage: FC = () => {
           <Grid item>
             <UserInformationField
               id="description"
-              label="Property listing title"
-              defaultValue={DUMMY_DESCRIPTION}
+              label="Accommodation listing description"
+              defaultValue={accommodation?.description}
               disabled={true}
               type={HookTypes.TEXT}
               minRows={12}
@@ -119,65 +196,34 @@ const EditListingPage: FC = () => {
 
         <Divider />
         <Grid item sx={{ pt: 2 }}>
+          <Typography variant="h4">Room pricings</Typography>
           <Box
             sx={{
+              pt: 2,
+              pb: 2,
               display: "flex",
               flexWrap: "wrap",
-              justifyContent: "space-around",
               flexGrow: 1,
               flexShrink: 1,
               gap: 1,
             }}
           >
-            <Box
-              component="form"
-              onSubmit={handlePriceEditSubmit}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "fit-content",
-              }}
-            >
-              <PricingTable edit={true} />
-              <Button type="submit" sx={{ ml: "auto", pt: 1 }}>
-                Submit price changes
-              </Button>
-            </Box>
-
-            <Box
-              component="form"
-              onSubmit={handlePriceEditSubmit}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "fit-content",
-              }}
-            >
-              <PricingTable edit={true} />
-              <Button type="submit" sx={{ ml: "auto", pt: 1 }}>
-                Submit price changes
-              </Button>
-            </Box>
-
-            <Box
-              component="form"
-              onSubmit={handlePriceEditSubmit}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "fit-content",
-              }}
-            >
-              <PricingTable edit={true} />
-              <Button type="submit" sx={{ ml: "auto", pt: 1 }}>
-                Submit price changes
-              </Button>
-            </Box>
+            {pricingTables?.length > 0 ? (
+              pricingTables
+            ) : (
+              <Typography variant="h4">
+                Oops! It seems like there are no rooms registered for this
+                accommodation. <br />
+                <NavLink to={`/listings/${accommodation?.id}/add-rooms`}>
+                  How about you add some?
+                </NavLink>
+              </Typography>
+            )}
           </Box>
         </Grid>
         <Divider />
         <Grid item sx={{ display: "flex" }}>
-          <ImageDisplay edit />
+          <ImageDisplay edit images={images} onDelete={handleImageDelete} />
           <AddImagePicker
             header
             image={displayImage}

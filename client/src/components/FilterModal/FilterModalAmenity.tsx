@@ -37,7 +37,7 @@ const FilterModalAmenity: FC<IProps> = ({
         name={id.toString()}
         checked={checked}
         onChange={handleChange}
-        sx={{ "& .MuiSvgIcon-root": { fontSize: 36 } }}
+        sx={{ "& .MuiSvgIcon-root": { fontSize: 30 } }}
         inputProps={{ "aria-label": "controlled" }}
       />
       <Typography variant="subtitle2" sx={{ ml: -1 }}>

@@ -1,3 +1,4 @@
+import { grey } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
@@ -16,11 +17,13 @@ declare module "@mui/material/styles" {
 
 declare module "@mui/material/styles" {
   interface Palette {
-    custom: Palette["primary"];
+    custom: Palette["secondary"];
+    nav: { default: string };
   }
 
   interface PaletteOptions {
-    custom?: PaletteOptions["primary"];
+    custom?: PaletteOptions["secondary"];
+    nav?: { default: string };
   }
 }
 
@@ -41,8 +44,11 @@ export const lightTheme = createTheme({
     },
   },
   palette: {
-    background: {
+    nav: {
       default: "#fafafa",
+    },
+    background: {
+      default: grey[200],
     },
     primary: {
       main: "#748ae2",

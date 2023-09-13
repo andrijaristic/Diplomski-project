@@ -1,5 +1,5 @@
-import { FC, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -56,7 +56,7 @@ const Login: FC = () => {
     dispatch(
       externalLoginAction({
         token: response.credential,
-        service: "google",
+        service: "Google",
         role: "RENTEE",
       })
     );
@@ -78,8 +78,8 @@ const Login: FC = () => {
     }
 
     const userLogin: IUserLogin = {
-      username: username.toString().trim(),
-      password: password.toString().trim(),
+      username: username.toString().trim() ?? "",
+      password: password.toString().trim() ?? "",
     };
 
     dispatch(loginAction(userLogin));

@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Backdrop,
   Box,
@@ -22,6 +23,9 @@ import {
   defaultGuests,
 } from "../../constants/Constants";
 import StyledButton from "../UI/Styled/StyledButton";
+import { ISearchParams } from "../../shared/interfaces/accommodationInterfaces";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { getAccommodationsAction } from "../../store/accommodationSlice";
 
 const style = {
   position: "absolute",
@@ -43,61 +47,47 @@ interface IProps {
   onClose: () => void;
 }
 
-const DUMMY_AMENTIES = [
-  {
-    id: 1,
-    name: "Dummy amenity",
-  },
-  {
-    id: 2,
-    name: "Dummy amenity",
-  },
-  {
-    id: 3,
-    name: "Dummy amenity",
-  },
-  {
-    id: 4,
-    name: "Dummy amenity",
-  },
-  {
-    id: 5,
-    name: "Dummy amenity",
-  },
-  {
-    id: 6,
-    name: "Dummy amenity",
-  },
-  {
-    id: 7,
-    name: "Dummy amenity",
-  },
-  {
-    id: 8,
-    name: "Dummy amenity",
-  },
-  {
-    id: 9,
-    name: "Dummy amenity",
-  },
-  {
-    id: 10,
-    name: "Dummy amenity",
-  },
-];
-
 const FilterModal: FC<IProps> = (props) => {
-  const [priceRange, setPriceRange] = useState<number[]>([min, max]);
-  const [checkinDate, setCheckinDate] = useState<Date | null>(null);
-  const [checkoutDate, setCheckoutDate] = useState<Date | null>(null);
-  const [adults, setAdults] = useState<number>(defaultGuests);
-  const [children, setChildren] = useState<number>(defaultGuests);
-  const [checkedAmenities, setCheckedAmenities] = useState<number[]>([]);
+  const dispatch = useAppDispatch();
+  const amenities = useAppSelector((state) => state.amenities.amenities);
+  const page = useAppSelector((state) => state.accommodations.page);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const handlePriceRangeChange = (
-    event: Event,
-    newValue: number | number[]
-  ) => {
+  const [priceRange, setPriceRange] = useState<number[]>([
+    searchParams.get("minPrice")
+      ? parseInt(searchParams.get("minPrice") as string)
+      : min,
+    searchParams.get("maxPrice")
+      ? parseInt(searchParams.get("maxPrice") as string)
+      : max,
+  ]);
+  const [checkinDate, setCheckinDate] = useState<Date | null>(
+    searchParams.get("arrivalDate")
+      ? new Date(searchParams.get("arrivalDate") as string)
+      : null
+  );
+  const [checkoutDate, setCheckoutDate] = useState<Date | null>(
+    searchParams.get("arrivalDate")
+      ? new Date(searchParams.get("departureDate") as string)
+      : null
+  );
+  const [adults, setAdults] = useState<number>(
+    searchParams.get("adults")
+      ? parseInt(searchParams.get("adults") as string)
+      : defaultGuests
+  );
+  const [children, setChildren] = useState<number>(
+    searchParams.get("children")
+      ? parseInt(searchParams.get("children") as string)
+      : defaultGuests
+  );
+  const [checkedAmenities, setCheckedAmenities] = useState<string[]>(
+    searchParams.getAll("utilities")
+      ? searchParams.getAll("utilities")?.map(String)
+      : []
+  );
+
+  const handlePriceRangeChange = (_: unknown, newValue: number | number[]) => {
     setPriceRange(newValue as number[]);
   };
 
@@ -121,26 +111,59 @@ const FilterModal: FC<IProps> = (props) => {
 
   const handleAmenitiesCheckChange = (id: number) => () => {
     const exists: boolean =
-      checkedAmenities.find((amenityId) => amenityId === id) !== undefined;
+      checkedAmenities.find((amenityId) => amenityId === id.toString()) !==
+      undefined;
 
     if (exists)
       setCheckedAmenities((prevAmenities) =>
-        prevAmenities.filter((amenityId) => amenityId !== id)
+        prevAmenities.filter((amenityId) => amenityId !== id.toString())
       );
     else
       setCheckedAmenities((prevAmenities) => {
-        return [...prevAmenities, id];
+        return [...prevAmenities, id.toString()];
       });
   };
 
-  const amenities = DUMMY_AMENTIES.map((amenity) => (
+  const handleFilter = () => {
+    const queryParams: ISearchParams = {
+      arrivalDate: checkinDate?.toISOString() || "",
+      departureDate: checkoutDate?.toISOString() || "",
+      minPrice: priceRange[0].toString(),
+      maxPrice: priceRange[1].toString(),
+      adults: adults !== defaultGuests ? adults.toString() : "",
+      children: children !== defaultGuests ? children.toString() : "",
+      utilities: checkedAmenities,
+      sort: searchParams?.get("sort") ?? "",
+      page: page,
+    };
+
+    setSearchParams(queryParams as unknown as URLSearchParams);
+    dispatch(getAccommodationsAction(queryParams));
+  };
+
+  const handleReset = () => {
+    const searchParams: ISearchParams = {
+      arrivalDate: "",
+      departureDate: "",
+      adults: "",
+      children: "",
+      page: 1,
+    };
+
+    setSearchParams(searchParams as unknown as URLSearchParams);
+    dispatch(getAccommodationsAction(searchParams));
+  };
+
+  const displayAmenities = amenities.map((amenity) => (
     <FilterModalAmenity
       initialState={
-        checkedAmenities.find((checked) => checked === amenity.id) !== undefined
+        checkedAmenities.find(
+          (checked) => checked === amenity.id.toString()
+        ) !== undefined
       }
       id={amenity.id}
       key={amenity.id}
-      name={amenity.name}
+      name={amenity.accommodationAmenity}
       onChange={handleAmenitiesCheckChange(amenity.id)}
     />
   ));
@@ -197,7 +220,7 @@ const FilterModal: FC<IProps> = (props) => {
                     <DatePicker
                       disablePast
                       sx={{ width: "11rem", mr: 1 }}
-                      value={checkinDate}
+                      defaultValue={checkinDate}
                       onChange={(newValue) => setCheckinDate(newValue)}
                     />
                   </Box>
@@ -349,14 +372,23 @@ const FilterModal: FC<IProps> = (props) => {
                     flexGrow: 1,
                   }}
                 >
-                  {amenities}
+                  {displayAmenities}
                 </Box>
               </Grid>
             </Grid>
           </Box>
           <Box sx={{ p: 2, display: "flex", minHeight: 100, maxHeight: 100 }}>
-            <StyledButton sx={{ ml: "auto", width: "8rem", fontSize: 20 }}>
-              Search
+            <Button
+              sx={{ mr: "auto", width: "8rem", fontSize: 20 }}
+              onClick={handleReset}
+            >
+              Reset
+            </Button>
+            <StyledButton
+              sx={{ ml: "auto", width: "8rem", fontSize: 20 }}
+              onClick={handleFilter}
+            >
+              Filter
             </StyledButton>
           </Box>
         </Box>

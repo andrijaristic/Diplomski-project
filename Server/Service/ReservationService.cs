@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Contracts.ReservationDTOs;
-using Domain.Models;
-using Domain.Exceptions.PropertyExceptions;
+using Domain.Exceptions.AccommodationExceptions;
 using Domain.Exceptions.ReservationExceptions;
 using Domain.Exceptions.RoomExceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Domain.Models;
 
 namespace Service
 {
@@ -20,66 +20,84 @@ namespace Service
             _mapper = mapper;
         }
 
-        public async Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO)
+        public async Task<List<DisplayReservationDTO>> GetReservations(Guid id)
         {
-            bool propertyExists = await _unitOfWork.Properties.Find(newReservationDTO.PropertyId) != null;
-            if (!propertyExists) 
+            List<Reservation> reservations = await _unitOfWork
+                                                        .Reservations
+                                                        .FindUserReservations(id);
+            List<DisplayReservationDTO> displayReservationDTOs = _mapper.Map<List<DisplayReservationDTO>>(reservations);
+
+            foreach (var displayReservationDTO in displayReservationDTOs)
             {
-                throw new PropertyNotFoundException(newReservationDTO.PropertyId);
+                Accommodation accommodation = await _unitOfWork
+                                                    .Accommodations
+                                                    .Find(displayReservationDTO.AccommodationId);
+                if (accommodation is null)
+                {
+                    throw new AccommodationNotFoundException(displayReservationDTO.AccommodationId);
+                }
+
+                displayReservationDTO.AccommodationName = accommodation.Name;
             }
 
-            Room room = await _unitOfWork.Rooms.FindByIdAndProperty(newReservationDTO.RoomId, newReservationDTO.PropertyId);
-            if (room == null)
+            return displayReservationDTOs;
+        }
+
+        public async Task<DisplayReservationDTO> CreateReservation(NewReservationDTO newReservationDTO, bool online)
+        {
+            bool propertyExists = await _unitOfWork
+                                                .Accommodations
+                                                .Find(newReservationDTO.AccommodationId) != null;
+            if (!propertyExists)
+            {
+                throw new AccommodationNotFoundException(newReservationDTO.AccommodationId);
+            }
+
+            Room room = await _unitOfWork
+                                    .Rooms
+                                    .FindByIdAndAccommodation(newReservationDTO.RoomId,
+                                                        newReservationDTO.AccommodationId);
+            if (room is null)
             {
                 throw new RoomForPropertyNotFoundException();
             }
 
             ValidateDates(newReservationDTO.ArrivalDate, newReservationDTO.DepartureDate);
 
-            DateTime date;
             int days = (newReservationDTO.DepartureDate - newReservationDTO.ArrivalDate).Days;
-            List<ReservedDays> existingReservations = room.OccupiedDates.Where(
-                rd => newReservationDTO.ArrivalDate.Month == rd.ArrivalDate.Month ||
-                      newReservationDTO.ArrivalDate.Month == rd.DepartureDate.Month ||
-                      newReservationDTO.DepartureDate.Month == rd.ArrivalDate.Month ||
-                      newReservationDTO.DepartureDate.Month == rd.DepartureDate.Month).ToList();
-
-            foreach (ReservedDays occupiedDates in existingReservations)
+            List<ReservedDays> reservedDays = room
+                                                .OccupiedDates
+                                                .Where(x => newReservationDTO.ArrivalDate < x.DepartureDate &&
+                                                            x.ArrivalDate < newReservationDTO.DepartureDate)
+                                                .ToList();
+            if (reservedDays.Count > 0)
             {
-                date = newReservationDTO.ArrivalDate;
-                for (int i = 0; i < days; i++)
-                {
-                    if (date >= occupiedDates.ArrivalDate &&
-                        date <= occupiedDates.DepartureDate)
-                    {
-                        throw new RoomAlreadyOccupiedException();
-                    }
-
-                    date.AddDays(1);
-                }
+                throw new RoomAlreadyOccupiedException();
             }
 
-            // Go through each date of the month 
-            // Find pricing that matches arrivalDate
-            // Iterate and with each iteration check if month is same
-            // If month isn't same, find new pricing and continue iterating until departureDate (DepartureDate - ArrivalDate to get amount of iterations)
-
-            SeasonalPricing pricing = room.RoomType.SeasonalPricing.Where(sp => sp.StartDate.Month == newReservationDTO.ArrivalDate.Month).First();
-            date = newReservationDTO.ArrivalDate.AddDays(1);
-            double price = pricing.Price;
-            for (int i = 0; i < days; i++)
+            SeasonalPricing pricing = room
+                                        .RoomType
+                                        .SeasonalPricing
+                                        .Where(sp => sp.StartDate.Month == newReservationDTO.ArrivalDate.Month)
+                                        .First();
+            double price = 0;
+            for (var day = newReservationDTO.ArrivalDate.Date; day.Date < newReservationDTO.DepartureDate.Date; day = day.AddDays(1))
             {
-                if (date.Month != pricing.StartDate.Month)
+                if (day.Month != pricing.StartDate.Month)
                 {
-                    pricing = room.RoomType.SeasonalPricing.Where(sp => sp.StartDate.Month == date.Month).First();
+                    pricing = room
+                                .RoomType
+                                .SeasonalPricing
+                                .Where(sp => sp.StartDate.Month == day.Month)
+                                .First();
                 }
 
                 price += pricing.Price;
-                date = date.AddDays(1);
             }
 
             newReservationDTO.Price = price;
             Reservation reservation = _mapper.Map<Reservation>(newReservationDTO);
+            reservation.IsPayed = online;
 
             room.OccupiedDates.Add(
                 new ReservedDays()
@@ -96,8 +114,10 @@ namespace Service
 
         public async Task<DisplayReservationDTO> CancelReservation(Guid id, string username)
         {
-            Reservation reservation = await _unitOfWork.Reservations.FindByIdWithUser(id);
-            if (reservation == null) 
+            Reservation reservation = await _unitOfWork
+                                                .Reservations
+                                                .FindByIdWithUser(id);
+            if (reservation is null)
             {
                 throw new ReservationNotFoundException(id);
             }
@@ -117,7 +137,22 @@ namespace Service
                 throw new ReservationIsPaidForException();
             }
 
+            if (reservation.DepartureDate.Date <= DateTime.Now.ToUniversalTime().Date)
+            {
+                throw new ReservationAlreadyHappenedException();
+            }
+
             reservation.IsCancelled = true;
+
+            ReservedDays reservedDays = await _unitOfWork
+                                                    .ReservedDays
+                                                    .FindByDatesAndRoom(reservation.ArrivalDate,
+                                                                        reservation.DepartureDate,
+                                                                        reservation.RoomId);
+            if (reservedDays != null)
+            {
+                _unitOfWork.ReservedDays.Remove(reservedDays);
+            }
             await _unitOfWork.Save();
 
             return _mapper.Map<DisplayReservationDTO>(reservation);

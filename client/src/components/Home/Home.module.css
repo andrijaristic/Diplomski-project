@@ -4,11 +4,10 @@
   align-items: center;
   height: 28rem;
 
-  background-attachment: fixed;
+  background-attachment: static;
   background-image: url("/header-background.jpg");
 
-  /* background-size: 100% 100%; */
-  background-size: 100% 100%;
+  background-size: 100% 140%;
   background-repeat: no-repeat;
 }
 

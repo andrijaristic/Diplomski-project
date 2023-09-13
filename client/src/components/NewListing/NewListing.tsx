@@ -1,4 +1,5 @@
 import { FC, useEffect, useRef, useState } from "react";
+import jwtDecode from "jwt-decode";
 import {
   Stepper,
   Step,
@@ -11,8 +12,16 @@ import {
 import { MapContainer, TileLayer, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
+import Search from "./MapSearchBox";
 import UserInformationField from "../UserInformation/UserInformationField";
+import NewListingRoomsForm from "./NewListingRoomsForm";
+import FilterModalAmenity from "../FilterModal/FilterModalAmenity";
+import AddImagePicker from "../EditListing/AddImagePicker";
+import StyledButton from "../UI/Styled/StyledButton";
+import { createNewAccommodationAction } from "../../store/accommodationSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { ApiCallState, HookTypes } from "../../shared/types/enumerations";
+import { IJwt } from "../../shared/interfaces/userInterfaces";
 import {
   defaultCoordinateErrorMessage,
   defaultFormErrorMessage,
@@ -20,24 +29,25 @@ import {
   defaultLng,
   minTextInputLength,
 } from "../../constants/Constants";
-import AddImagePicker from "../EditListing/AddImagePicker";
-import StyledButton from "../UI/Styled/StyledButton";
-import Search from "./MapSearchBox";
 import { errorNotification } from "../../utils/toastNotificationUtil";
-import { INewProperty } from "../../shared/interfaces/propertyInterfaces";
-import NewListingRoomsForm from "./NewListingRoomsForm";
 
 const NewListing: FC = () => {
+  const dispatch = useAppDispatch();
+  const apiState = useAppSelector((state) => state.accommodations.apiState);
+  const amenities = useAppSelector((state) => state.amenities.amenities);
+
+  const token = useAppSelector((state) => state.user.token);
+  const { id } = jwtDecode<IJwt>(token ? token : "");
+
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [dummyApiState, setDummyApiState] = useState<ApiCallState>(
-    ApiCallState.PENDING
-  );
+  const [indicator, setIndicator] = useState<boolean>(false);
+  const [checkedAmenities, setCheckedAmenities] = useState<string[]>([]);
 
   useEffect(() => {
-    if (dummyApiState === ApiCallState.COMPLETED) {
+    if (indicator && apiState === ApiCallState.COMPLETED) {
       setActiveStep((prevStep) => ++prevStep);
     }
-  }, [dummyApiState]);
+  }, [indicator, apiState]);
 
   const imageInput = useRef<HTMLInputElement>(null);
   const [displayImage, setDisplayImage] = useState<string | undefined>("");
@@ -75,11 +85,11 @@ const NewListing: FC = () => {
     }
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
-    const name = data.get("title");
+    const name = data.get("name");
     const description = data.get("description");
     const country = data.get("country");
     const area = data.get("area");
@@ -94,19 +104,16 @@ const NewListing: FC = () => {
       return;
     }
 
-    // appropriate type
-    const newProperty: INewProperty = {
-      userId: 1,
-      name: name.toString().trim(),
-      description: description.toString().trim(),
-    };
+    data.append("userId", id);
+    data.append("thumbnailImage", uploadedImage);
+    data.append("latitude", coords.lat.toString());
+    data.append("longitude", coords.lng.toString());
+    checkedAmenities.forEach((amenity) => {
+      data.append("amenities", amenity);
+    });
 
-    if (uploadedImage) {
-      newProperty.thumbnail = uploadedImage;
-    }
-
-    console.log(newProperty);
-    setDummyApiState(ApiCallState.COMPLETED);
+    await dispatch(createNewAccommodationAction(data));
+    setIndicator(true);
   };
 
   const handleNextStep = (event: React.FormEvent<HTMLFormElement>) => {
@@ -152,10 +159,39 @@ const NewListing: FC = () => {
   // Fixes map not rendering properly on load
   // by forcing it to resize
   const ResizeMap = () => {
-    const map = useMap();
+    const map: L.Map = useMap();
     map._onResize();
     return null;
   };
+
+  const handleAmenitiesCheckChange = (id: number) => () => {
+    const exists: boolean =
+      checkedAmenities.find((amenityId) => amenityId === id.toString()) !==
+      undefined;
+
+    if (exists)
+      setCheckedAmenities((prevAmenities) =>
+        prevAmenities.filter((amenityId) => amenityId !== id.toString())
+      );
+    else
+      setCheckedAmenities((prevAmenities) => {
+        return [...prevAmenities, id.toString()];
+      });
+  };
+
+  const displayAmenities = amenities.map((amenity) => (
+    <FilterModalAmenity
+      initialState={
+        checkedAmenities.find(
+          (checked) => checked === amenity.id.toString()
+        ) !== undefined
+      }
+      id={amenity.id}
+      key={amenity.id}
+      name={amenity.accommodationAmenity}
+      onChange={handleAmenitiesCheckChange(amenity.id)}
+    />
+  ));
 
   return (
     <Box sx={{ pt: 4 }}>
@@ -194,7 +230,7 @@ const NewListing: FC = () => {
               </StyledButton>
               <UserInformationField
                 disabled
-                id="title"
+                id="name"
                 label="Your property name"
                 type={HookTypes.TEXT}
                 minChars={minTextInputLength}
@@ -229,6 +265,18 @@ const NewListing: FC = () => {
                 minChars={minTextInputLength}
                 minRows={6}
               />
+              <Box>
+                <Typography variant="h6">Choose your utilities</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    flexGrow: 1,
+                  }}
+                >
+                  {displayAmenities}
+                </Box>
+              </Box>
             </Box>
             <Box
               sx={{
