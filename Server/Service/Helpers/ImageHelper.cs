@@ -8,7 +8,7 @@ namespace Service.Helpers
         {
             string imageName = new string(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(20).ToArray()).Replace(' ', '-');
             imageName = imageName + id.ToString() + Path.GetExtension(imageFile.FileName);
-            var imagePath = Path.Combine(rootPath, "../Infrastructure/Images", imageName);
+            var imagePath = Path.Combine(rootPath, "Infrastructure", "Images", imageName);
 
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {

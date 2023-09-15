@@ -69,7 +69,6 @@ builder.Services.AddCors(options =>
         builder.WithOrigins("http://localhost:5173")
                .AllowAnyHeader()
                .AllowAnyMethod()
-               .SetIsOriginAllowed(origin => true)
                .AllowCredentials();
     });
 });
@@ -163,7 +162,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "..", "Infrastructure", "Images")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Infrastructure", "Images")),
     RequestPath = "/Images"
 });
 

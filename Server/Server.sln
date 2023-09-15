@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.API", "Server\Web.API.csproj", "{83CD3E30-AA50-46DB-A002-63661A4CDE2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.API", "Server\Web.API.csproj", "{83CD3E30-AA50-46DB-A002-63661A4CDE2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B4E8B5EB-E2C4-4110-B049-C9F54E589CF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B4E8B5EB-E2C4-4110-B049-C9F54E589CF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{A356A082-505F-4383-ACC9-A2D278FB9BF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{A356A082-505F-4383-ACC9-A2D278FB9BF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{172D9CEF-0063-4898-893A-FA8611D3F63F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{172D9CEF-0063-4898-893A-FA8611D3F63F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{F32150DA-7811-4964-B33A-1A104BA22806}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{F32150DA-7811-4964-B33A-1A104BA22806}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{95B924B8-D9E4-44ED-B673-E8FB3687903C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{F32150DA-7811-4964-B33A-1A104BA22806}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F32150DA-7811-4964-B33A-1A104BA22806}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F32150DA-7811-4964-B33A-1A104BA22806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B924B8-D9E4-44ED-B673-E8FB3687903C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B924B8-D9E4-44ED-B673-E8FB3687903C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B924B8-D9E4-44ED-B673-E8FB3687903C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B924B8-D9E4-44ED-B673-E8FB3687903C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
