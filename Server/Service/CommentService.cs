@@ -96,15 +96,15 @@ namespace Service
 
             foreach (var displayCommentDTO in displayCommentDTOs)
             {
-                Accommodation property = await _unitOfWork
-                                                    .Accommodations
-                                                    .Find(displayCommentDTO.PropertyId);
-                if (property is null)
+                Accommodation accommodation = await _unitOfWork
+                                                        .Accommodations
+                                                        .Find(displayCommentDTO.AccommodationId);
+                if (accommodation is null)
                 {
-                    throw new AccommodationNotFoundException(displayCommentDTO.PropertyId);
+                    throw new AccommodationNotFoundException(displayCommentDTO.AccommodationId);
                 }
 
-                displayCommentDTO.PropertyName = property.Name;
+                displayCommentDTO.AccommodationName = accommodation.Name;
             }
 
             return displayCommentDTOs;

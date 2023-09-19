@@ -43,7 +43,5 @@ namespace Infrastructure.Repositories
                                                 .ToListAsync();
             return comments;
         }
-
-
     }
 }

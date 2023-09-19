@@ -86,6 +86,8 @@ namespace Infrastructure.Repositories
                             .OrderByDescending(p => p.StartingPrice)
                             .AsQueryable();
 
+            var src1 = source.ToList();
+
             if (!String.IsNullOrEmpty(searchParamsDTO.ArrivalDate))
             {
                 if (!DateTime.TryParse(searchParamsDTO.ArrivalDate, out DateTime arrivalDate))
