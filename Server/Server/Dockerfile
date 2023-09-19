@@ -10,6 +10,7 @@ COPY ["Server/Web.API.csproj", "Server/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Contracts/Contracts.csproj", "Contracts/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+COPY ["Infrastructure/Images/*", "Infrastructure/Images/"]
 COPY ["Service/Service.csproj", "Service/"]
 RUN dotnet restore "Server/Web.API.csproj"
 COPY . .

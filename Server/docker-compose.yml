@@ -16,8 +16,8 @@ services:
       dockerfile: Server/Dockerfile
     ports:
         - "7221:80"
-    volumes:
-      - ./my-app/Server/Infrastructure/Images:/app/Infrastructure/Images # Mount the images directory
+    #volumes:
+    #  - ./my-app/Server/Infrastructure/Images:/app/Infrastructure/Images # Mount the images directory
     depends_on:
       - project-db
 
