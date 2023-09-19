@@ -109,6 +109,7 @@ builder.Services.AddScoped<IAuthUtility, AuthUtility>();
 builder.Services.AddScoped<IEmailUtility, EmailUtility>();
 builder.Services.AddScoped<IUserDataInitializer, UserDataInitializer>();
 builder.Services.AddScoped<IAmenityDataInitializer, UtilityDataInitializer>();
+builder.Services.AddScoped<IAccommodationDataInitializer, AccommodationDataInitializer>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
@@ -150,6 +151,7 @@ using (var scope = app.Services.CreateScope())
 
     scope.ServiceProvider.GetRequiredService<IUserDataInitializer>().InitializeData();
     scope.ServiceProvider.GetRequiredService<IAmenityDataInitializer>().InitializeData();
+    scope.ServiceProvider.GetRequiredService<IAccommodationDataInitializer>().InitializeData();
 }
 
 // Configure the HTTP request pipeline.

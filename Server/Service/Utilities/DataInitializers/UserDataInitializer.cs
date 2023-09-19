@@ -23,7 +23,6 @@ namespace Service.Utilities.DataInitializers
             string defaultUsername = _settings.Value.AdminFirstName.ToLower();
             Task<User> task = _unitOfWork.Users.FindByUsername(defaultUsername);
             task.Wait();
-
             
             if (task.Result != null)
             {
@@ -46,6 +45,7 @@ namespace Service.Utilities.DataInitializers
 
             User owner = new User()
             {
+                Id = Guid.Parse("111467e6-41b4-4d44-9652-08dbb480deb8"),
                 FirstName = _settings.Value.OwnerFirstName,
                 LastName = _settings.Value.OwnerLastName,
                 Username = _settings.Value.OwnerFirstName.ToLower(),
