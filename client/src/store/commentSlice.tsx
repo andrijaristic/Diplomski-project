@@ -38,7 +38,7 @@ export const getAccommodationCommentsAction = createAsyncThunk(
 );
 
 export const getUserCommentsAction = createAsyncThunk(
-  "comments/getAccommodationComments",
+  "comments/getUserComments",
   async (userId: string, thunkApi) => {
     try {
       const response = await getUserComments(userId);
@@ -94,6 +94,24 @@ const commentSlice = createSlice({
         errorNotification(error);
       }
     );
+
+    // GET USER COMMENTS
+    builder.addCase(getUserCommentsAction.pending, (state) => {
+      state.apiState = ApiCallState.PENDING;
+    });
+    builder.addCase(getUserCommentsAction.fulfilled, (state, action) => {
+      state.apiState = ApiCallState.COMPLETED;
+      state.userComments = [...action.payload];
+    });
+    builder.addCase(getUserCommentsAction.rejected, (state, action) => {
+      state.apiState = ApiCallState.REJECTED;
+
+      let error: string = defaultErrorMessage;
+      if (typeof action.payload === "string") {
+        error = action.payload;
+      }
+      errorNotification(error);
+    });
 
     // CREATE COMMENT
     builder.addCase(createCommentAction.pending, (state) => {
